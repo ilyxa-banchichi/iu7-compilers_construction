@@ -10,7 +10,7 @@ if [[ ! -f "$ANTLR_JAR" ]]; then
 fi
 
 # Запускаем генерацию парсера для Python3
-java -jar "$ANTLR_JAR" -Dlanguage=Python3 -visitor LuaLexer.g4 LuaParser.g4
+java -jar "$ANTLR_JAR" -Dlanguage=Python3 -visitor Pascal.g4
 
 # Проверяем успешность выполнения
 if [[ $? -eq 0 ]]; then
