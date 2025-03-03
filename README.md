@@ -1,2 +1,2 @@
-# iu7-compilers_construction
- 
+# Конструирование Компиляторов (Compilers Construction)
+ 2 семестр ИУ7 магистратура
