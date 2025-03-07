@@ -194,21 +194,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#variantPart.
-    def visitVariantPart(self, ctx:PascalParser.VariantPartContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#tag.
-    def visitTag(self, ctx:PascalParser.TagContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#variant.
-    def visitVariant(self, ctx:PascalParser.VariantContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#setType.
     def visitSetType(self, ctx:PascalParser.SetTypeContext):
         return self.visitChildren(ctx)
@@ -399,11 +384,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#gotoStatement.
-    def visitGotoStatement(self, ctx:PascalParser.GotoStatementContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#emptyStatement_.
     def visitEmptyStatement_(self, ctx:PascalParser.EmptyStatement_Context):
         return self.visitChildren(ctx)
@@ -439,16 +419,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#caseStatement.
-    def visitCaseStatement(self, ctx:PascalParser.CaseStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#caseListElement.
-    def visitCaseListElement(self, ctx:PascalParser.CaseListElementContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#repetetiveStatement.
     def visitRepetetiveStatement(self, ctx:PascalParser.RepetetiveStatementContext):
         return self.visitChildren(ctx)
@@ -456,11 +426,6 @@ class PascalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by PascalParser#whileStatement.
     def visitWhileStatement(self, ctx:PascalParser.WhileStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#repeatStatement.
-    def visitRepeatStatement(self, ctx:PascalParser.RepeatStatementContext):
         return self.visitChildren(ctx)
 
 
@@ -481,16 +446,6 @@ class PascalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by PascalParser#finalValue.
     def visitFinalValue(self, ctx:PascalParser.FinalValueContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#withStatement.
-    def visitWithStatement(self, ctx:PascalParser.WithStatementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#recordVariableList.
-    def visitRecordVariableList(self, ctx:PascalParser.RecordVariableListContext):
         return self.visitChildren(ctx)
 
 

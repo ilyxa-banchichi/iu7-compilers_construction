@@ -341,33 +341,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#variantPart.
-    def enterVariantPart(self, ctx:PascalParser.VariantPartContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#variantPart.
-    def exitVariantPart(self, ctx:PascalParser.VariantPartContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#tag.
-    def enterTag(self, ctx:PascalParser.TagContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#tag.
-    def exitTag(self, ctx:PascalParser.TagContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#variant.
-    def enterVariant(self, ctx:PascalParser.VariantContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#variant.
-    def exitVariant(self, ctx:PascalParser.VariantContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#setType.
     def enterSetType(self, ctx:PascalParser.SetTypeContext):
         pass
@@ -710,15 +683,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#gotoStatement.
-    def enterGotoStatement(self, ctx:PascalParser.GotoStatementContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#gotoStatement.
-    def exitGotoStatement(self, ctx:PascalParser.GotoStatementContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#emptyStatement_.
     def enterEmptyStatement_(self, ctx:PascalParser.EmptyStatement_Context):
         pass
@@ -782,24 +746,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#caseStatement.
-    def enterCaseStatement(self, ctx:PascalParser.CaseStatementContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#caseStatement.
-    def exitCaseStatement(self, ctx:PascalParser.CaseStatementContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#caseListElement.
-    def enterCaseListElement(self, ctx:PascalParser.CaseListElementContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#caseListElement.
-    def exitCaseListElement(self, ctx:PascalParser.CaseListElementContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#repetetiveStatement.
     def enterRepetetiveStatement(self, ctx:PascalParser.RepetetiveStatementContext):
         pass
@@ -815,15 +761,6 @@ class PascalListener(ParseTreeListener):
 
     # Exit a parse tree produced by PascalParser#whileStatement.
     def exitWhileStatement(self, ctx:PascalParser.WhileStatementContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#repeatStatement.
-    def enterRepeatStatement(self, ctx:PascalParser.RepeatStatementContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#repeatStatement.
-    def exitRepeatStatement(self, ctx:PascalParser.RepeatStatementContext):
         pass
 
 
@@ -860,24 +797,6 @@ class PascalListener(ParseTreeListener):
 
     # Exit a parse tree produced by PascalParser#finalValue.
     def exitFinalValue(self, ctx:PascalParser.FinalValueContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#withStatement.
-    def enterWithStatement(self, ctx:PascalParser.WithStatementContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#withStatement.
-    def exitWithStatement(self, ctx:PascalParser.WithStatementContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#recordVariableList.
-    def enterRecordVariableList(self, ctx:PascalParser.RecordVariableListContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#recordVariableList.
-    def exitRecordVariableList(self, ctx:PascalParser.RecordVariableListContext):
         pass
 
 

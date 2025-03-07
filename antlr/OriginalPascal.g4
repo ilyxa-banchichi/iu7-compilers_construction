@@ -132,7 +132,8 @@ typeIdentifier
     ;
 
 structuredType
-    : unpackedStructuredType  // Удален PACKED
+    : PACKED unpackedStructuredType
+    | unpackedStructuredType
     ;
 
 unpackedStructuredType
@@ -168,7 +169,8 @@ recordType
     ;
 
 fieldList
-    : fixedPart  // Удален variantPart
+    : fixedPart (SEMI variantPart)?
+    | variantPart
     ;
 
 fixedPart
@@ -177,6 +179,19 @@ fixedPart
 
 recordSection
     : identifierList COLON type_
+    ;
+
+variantPart
+    : CASE tag OF variant (SEMI variant)*
+    ;
+
+tag
+    : identifier COLON typeIdentifier
+    | typeIdentifier
+    ;
+
+variant
+    : constList COLON LPAREN fieldList RPAREN
     ;
 
 setType
@@ -261,7 +276,8 @@ unlabelledStatement
 simpleStatement
     : assignmentStatement
     | procedureStatement
-    | emptyStatement_  // Удален gotoStatement
+    | gotoStatement
+    | emptyStatement_
     ;
 
 assignmentStatement
@@ -368,6 +384,10 @@ parameterwidth
     : COLON expression
     ;
 
+gotoStatement
+    : GOTO label
+    ;
+
 emptyStatement_
     :
     ;
@@ -380,7 +400,8 @@ empty_
 structuredStatement
     : compoundStatement
     | conditionalStatement
-    | repetetiveStatement  // Удален withStatement
+    | repetetiveStatement
+    | withStatement
     ;
 
 compoundStatement
@@ -392,20 +413,34 @@ statements
     ;
 
 conditionalStatement
-    : ifStatement  // Удален caseStatement
+    : ifStatement
+    | caseStatement
     ;
 
 ifStatement
-    : IF expression THEN statement (ELSE statement)?
+    : IF expression THEN statement (: ELSE statement)?
+    ;
+
+caseStatement
+    : CASE expression OF caseListElement (SEMI caseListElement)* (SEMI ELSE statements)? END
+    ;
+
+caseListElement
+    : constList COLON statement
     ;
 
 repetetiveStatement
     : whileStatement
-    | forStatement  // Удален repeatStatement
+    | repeatStatement
+    | forStatement
     ;
 
 whileStatement
     : WHILE expression DO statement
+    ;
+
+repeatStatement
+    : REPEAT statements UNTIL expression
     ;
 
 forStatement
@@ -424,7 +459,13 @@ finalValue
     : expression
     ;
 
-// Удалены withStatement и связанные правила
+withStatement
+    : WITH recordVariableList DO statement
+    ;
+
+recordVariableList
+    : variable (COMMA variable)*
+    ;
 
 AND
     : 'AND'
@@ -440,6 +481,10 @@ BEGIN
 
 BOOLEAN
     : 'BOOLEAN'
+    ;
+
+CASE
+    : 'CASE'
     ;
 
 CHAR
@@ -486,6 +531,10 @@ FUNCTION
     : 'FUNCTION'
     ;
 
+GOTO
+    : 'GOTO'
+    ;
+
 IF
     : 'IF'
     ;
@@ -522,6 +571,10 @@ OR
     : 'OR'
     ;
 
+PACKED
+    : 'PACKED'
+    ;
+
 PROCEDURE
     : 'PROCEDURE'
     ;
@@ -536,6 +589,10 @@ REAL
 
 RECORD
     : 'RECORD'
+    ;
+
+REPEAT
+    : 'REPEAT'
     ;
 
 SET
@@ -564,6 +621,10 @@ VAR
 
 WHILE
     : 'WHILE'
+    ;
+
+WITH
+    : 'WITH'
     ;
 
 PLUS
