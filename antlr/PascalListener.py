@@ -53,24 +53,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#labelDeclarationPart.
-    def enterLabelDeclarationPart(self, ctx:PascalParser.LabelDeclarationPartContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#labelDeclarationPart.
-    def exitLabelDeclarationPart(self, ctx:PascalParser.LabelDeclarationPartContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#label.
-    def enterLabel(self, ctx:PascalParser.LabelContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#label.
-    def exitLabel(self, ctx:PascalParser.LabelContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#constantDefinitionPart.
     def enterConstantDefinitionPart(self, ctx:PascalParser.ConstantDefinitionPartContext):
         pass
@@ -494,15 +476,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#unlabelledStatement.
-    def enterUnlabelledStatement(self, ctx:PascalParser.UnlabelledStatementContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#unlabelledStatement.
-    def exitUnlabelledStatement(self, ctx:PascalParser.UnlabelledStatementContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#simpleStatement.
     def enterSimpleStatement(self, ctx:PascalParser.SimpleStatementContext):
         pass
@@ -689,15 +662,6 @@ class PascalListener(ParseTreeListener):
 
     # Exit a parse tree produced by PascalParser#emptyStatement_.
     def exitEmptyStatement_(self, ctx:PascalParser.EmptyStatement_Context):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#empty_.
-    def enterEmpty_(self, ctx:PascalParser.Empty_Context):
-        pass
-
-    # Exit a parse tree produced by PascalParser#empty_.
-    def exitEmpty_(self, ctx:PascalParser.Empty_Context):
         pass
 
 

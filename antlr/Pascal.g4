@@ -19,8 +19,8 @@ identifier
 
 block
     : (
-        labelDeclarationPart
-        | constantDefinitionPart
+        // Удален labelDeclarationPart
+        constantDefinitionPart
         | typeDefinitionPart
         | variableDeclarationPart
         | procedureAndFunctionDeclarationPart
@@ -33,13 +33,7 @@ usesUnitsPart
     : USES identifierList SEMI
     ;
 
-labelDeclarationPart
-    : LABEL label (COMMA label)* SEMI
-    ;
-
-label
-    : unsignedInteger
-    ;
+// Удалено правило labelDeclarationPart
 
 constantDefinitionPart
     : CONST (constantDefinition SEMI)+
@@ -132,7 +126,7 @@ typeIdentifier
     ;
 
 structuredType
-    : unpackedStructuredType  // Удален PACKED
+    : unpackedStructuredType
     ;
 
 unpackedStructuredType
@@ -168,7 +162,7 @@ recordType
     ;
 
 fieldList
-    : fixedPart  // Удален variantPart
+    : fixedPart
     ;
 
 fixedPart
@@ -249,11 +243,6 @@ resultType
     ;
 
 statement
-    : label COLON unlabelledStatement
-    | unlabelledStatement
-    ;
-
-unlabelledStatement
     : simpleStatement
     | structuredStatement
     ;
@@ -261,7 +250,7 @@ unlabelledStatement
 simpleStatement
     : assignmentStatement
     | procedureStatement
-    | emptyStatement_  // Удален gotoStatement
+    | emptyStatement_
     ;
 
 assignmentStatement
@@ -372,15 +361,10 @@ emptyStatement_
     :
     ;
 
-empty_
-    :
-    /* empty */
-    ;
-
 structuredStatement
     : compoundStatement
     | conditionalStatement
-    | repetetiveStatement  // Удален withStatement
+    | repetetiveStatement
     ;
 
 compoundStatement
@@ -392,7 +376,7 @@ statements
     ;
 
 conditionalStatement
-    : ifStatement  // Удален caseStatement
+    : ifStatement
     ;
 
 ifStatement
@@ -401,7 +385,7 @@ ifStatement
 
 repetetiveStatement
     : whileStatement
-    | forStatement  // Удален repeatStatement
+    | forStatement
     ;
 
 whileStatement
@@ -424,308 +408,83 @@ finalValue
     : expression
     ;
 
-// Удалены withStatement и связанные правила
-
-AND
-    : 'AND'
-    ;
-
-ARRAY
-    : 'ARRAY'
-    ;
-
-BEGIN
-    : 'BEGIN'
-    ;
-
-BOOLEAN
-    : 'BOOLEAN'
-    ;
-
-CHAR
-    : 'CHAR'
-    ;
-
-CHR
-    : 'CHR'
-    ;
-
-CONST
-    : 'CONST'
-    ;
-
-DIV
-    : 'DIV'
-    ;
-
-DO
-    : 'DO'
-    ;
-
-DOWNTO
-    : 'DOWNTO'
-    ;
-
-ELSE
-    : 'ELSE'
-    ;
-
-END
-    : 'END'
-    ;
-
-FILE
-    : 'FILE'
-    ;
-
-FOR
-    : 'FOR'
-    ;
-
-FUNCTION
-    : 'FUNCTION'
-    ;
-
-IF
-    : 'IF'
-    ;
-
-IN
-    : 'IN'
-    ;
-
-INTEGER
-    : 'INTEGER'
-    ;
-
-LABEL
-    : 'LABEL'
-    ;
-
-MOD
-    : 'MOD'
-    ;
-
-NIL
-    : 'NIL'
-    ;
-
-NOT
-    : 'NOT'
-    ;
-
-OF
-    : 'OF'
-    ;
-
-OR
-    : 'OR'
-    ;
-
-PROCEDURE
-    : 'PROCEDURE'
-    ;
-
-PROGRAM
-    : 'PROGRAM'
-    ;
-
-REAL
-    : 'REAL'
-    ;
-
-RECORD
-    : 'RECORD'
-    ;
-
-SET
-    : 'SET'
-    ;
-
-THEN
-    : 'THEN'
-    ;
-
-TO
-    : 'TO'
-    ;
-
-TYPE
-    : 'TYPE'
-    ;
-
-UNTIL
-    : 'UNTIL'
-    ;
-
-VAR
-    : 'VAR'
-    ;
-
-WHILE
-    : 'WHILE'
-    ;
-
-PLUS
-    : '+'
-    ;
-
-MINUS
-    : '-'
-    ;
-
-STAR
-    : '*'
-    ;
-
-SLASH
-    : '/'
-    ;
-
-ASSIGN
-    : ':='
-    ;
-
-COMMA
-    : ','
-    ;
-
-SEMI
-    : ';'
-    ;
-
-COLON
-    : ':'
-    ;
-
-EQUAL
-    : '='
-    ;
-
-NOT_EQUAL
-    : '<>'
-    ;
-
-LT
-    : '<'
-    ;
-
-LE
-    : '<='
-    ;
-
-GE
-    : '>='
-    ;
-
-GT
-    : '>'
-    ;
-
-LPAREN
-    : '('
-    ;
-
-RPAREN
-    : ')'
-    ;
-
-LBRACK
-    : '['
-    ;
-
-LBRACK2
-    : '(.'
-    ;
-
-RBRACK
-    : ']'
-    ;
-
-RBRACK2
-    : '.)'
-    ;
-
-POINTER
-    : '^'
-    ;
-
-AT
-    : '@'
-    ;
-
-DOT
-    : '.'
-    ;
-
-DOTDOT
-    : '..'
-    ;
-
-LCURLY
-    : '{'
-    ;
-
-RCURLY
-    : '}'
-    ;
-
-UNIT
-    : 'UNIT'
-    ;
-
-INTERFACE
-    : 'INTERFACE'
-    ;
-
-USES
-    : 'USES'
-    ;
-
-STRING
-    : 'STRING'
-    ;
-
-IMPLEMENTATION
-    : 'IMPLEMENTATION'
-    ;
-
-TRUE
-    : 'TRUE'
-    ;
-
-FALSE
-    : 'FALSE'
-    ;
-
-WS
-    : [ \t\r\n] -> skip
-    ;
-
-COMMENT_1
-    : '(*' .*? '*)' -> skip
-    ;
-
-COMMENT_2
-    : '{' .*? '}' -> skip
-    ;
-
-IDENT
-    : ('A' .. 'Z') ('A' .. 'Z' | '0' .. '9' | '_')*
-    ;
-
-STRING_LITERAL
-    : '\'' ('\'\'' | ~ ('\''))* '\''
-    ;
-
-NUM_INT
-    : ('0' .. '9')+
-    ;
-
-NUM_REAL
-    : ('0' .. '9')+ (('.' ('0' .. '9')+ (EXPONENT)?)? | EXPONENT)
-    ;
-
-fragment EXPONENT
-    : ('E') ('+' | '-')? ('0' .. '9')+
-    ;
+// Лексер (удалены LABEL и GOTO)
+AND          : 'AND';
+ARRAY        : 'ARRAY';
+BEGIN        : 'BEGIN';
+BOOLEAN      : 'BOOLEAN';
+CASE         : 'CASE';
+CHAR         : 'CHAR';
+CHR          : 'CHR';
+CONST        : 'CONST';
+DIV          : 'DIV';
+DO           : 'DO';
+DOWNTO       : 'DOWNTO';
+ELSE         : 'ELSE';
+END          : 'END';
+FILE         : 'FILE';
+FOR          : 'FOR';
+FUNCTION     : 'FUNCTION';
+IF           : 'IF';
+IN           : 'IN';
+INTEGER      : 'INTEGER';
+MOD          : 'MOD';
+NIL          : 'NIL';
+NOT          : 'NOT';
+OF           : 'OF';
+OR           : 'OR';
+PACKED       : 'PACKED';
+PROCEDURE    : 'PROCEDURE';
+PROGRAM      : 'PROGRAM';
+REAL         : 'REAL';
+RECORD       : 'RECORD';
+REPEAT       : 'REPEAT';
+SET          : 'SET';
+THEN         : 'THEN';
+TO           : 'TO';
+TYPE         : 'TYPE';
+UNTIL        : 'UNTIL';
+VAR          : 'VAR';
+WHILE        : 'WHILE';
+WITH         : 'WITH';
+PLUS         : '+';
+MINUS        : '-';
+STAR         : '*';
+SLASH        : '/';
+ASSIGN       : ':=';
+COMMA        : ',';
+SEMI         : ';';
+COLON        : ':';
+EQUAL        : '=';
+NOT_EQUAL    : '<>';
+LT           : '<';
+LE           : '<=';
+GE           : '>=';
+GT           : '>';
+LPAREN       : '(';
+RPAREN       : ')';
+LBRACK       : '[';
+LBRACK2      : '(.';
+RBRACK       : ']';
+RBRACK2      : '.)';
+POINTER      : '^';
+AT           : '@';
+DOT          : '.';
+DOTDOT       : '..';
+LCURLY       : '{';
+RCURLY       : '}';
+UNIT         : 'UNIT';
+INTERFACE    : 'INTERFACE';
+USES         : 'USES';
+STRING       : 'STRING';
+IMPLEMENTATION: 'IMPLEMENTATION';
+TRUE         : 'TRUE';
+FALSE        : 'FALSE';
+
+WS           : [ \t\r\n]+ -> skip;
+COMMENT_1    : '(*' .*? '*)' -> skip;
+COMMENT_2    : '{' .*? '}' -> skip;
+IDENT        : [A-Za-z][A-Za-z0-9_]*;
+STRING_LITERAL: '\'' ('\'\'' | ~'\'')* '\'';
+NUM_INT      : [0-9]+;
+NUM_REAL     : [0-9]+ ('.' [0-9]+)? ([Ee] [+-]? [0-9]+)?;

@@ -34,16 +34,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#labelDeclarationPart.
-    def visitLabelDeclarationPart(self, ctx:PascalParser.LabelDeclarationPartContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#label.
-    def visitLabel(self, ctx:PascalParser.LabelContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#constantDefinitionPart.
     def visitConstantDefinitionPart(self, ctx:PascalParser.ConstantDefinitionPartContext):
         return self.visitChildren(ctx)
@@ -279,11 +269,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#unlabelledStatement.
-    def visitUnlabelledStatement(self, ctx:PascalParser.UnlabelledStatementContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#simpleStatement.
     def visitSimpleStatement(self, ctx:PascalParser.SimpleStatementContext):
         return self.visitChildren(ctx)
@@ -386,11 +371,6 @@ class PascalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by PascalParser#emptyStatement_.
     def visitEmptyStatement_(self, ctx:PascalParser.EmptyStatement_Context):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#empty_.
-    def visitEmpty_(self, ctx:PascalParser.Empty_Context):
         return self.visitChildren(ctx)
 
 
