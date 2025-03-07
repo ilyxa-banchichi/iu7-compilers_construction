@@ -1,0 +1,225 @@
+<program> ::= <program_heading> ["INTERFACE"] <block> "." 
+
+<program_heading> ::= "PROGRAM" <identifier> ["(" <identifier_list> ")"] ";" 
+                    | "UNIT" <identifier> ";"
+
+<identifier> ::= <IDENT>
+
+<block> ::= { <label_declaration_part> 
+            | <constant_definition_part> 
+            | <type_definition_part> 
+            | <variable_declaration_part> 
+            | <procedure_and_function_declaration_part> 
+            | <uses_units_part> 
+            | "IMPLEMENTATION" }* 
+            <compound_statement>
+
+<uses_units_part> ::= "USES" <identifier_list> ";"
+
+<label_declaration_part> ::= "LABEL" <label> {"," <label>}* ";"
+
+<label> ::= <unsigned_integer>
+
+<constant_definition_part> ::= "CONST" {<constant_definition> ";"}+
+
+<constant_definition> ::= <identifier> "=" <constant>
+
+<constant_chr> ::= "CHR" "(" <unsigned_integer> ")"
+
+<constant> ::= <unsigned_number> 
+              | <sign> <unsigned_number> 
+              | <identifier> 
+              | <sign> <identifier> 
+              | <string> 
+              | <constant_chr>
+
+<unsigned_number> ::= <unsigned_integer> | <unsigned_real>
+
+<unsigned_integer> ::= <NUM_INT>
+
+<unsigned_real> ::= <NUM_REAL>
+
+<sign> ::= "+" | "-"
+
+<bool> ::= "TRUE" | "FALSE"
+
+<string> ::= <STRING_LITERAL>
+
+<type_definition_part> ::= "TYPE" {<type_definition> ";"}+
+
+<type_definition> ::= <identifier> "=" ( <type> | <function_type> | <procedure_type> )
+
+<function_type> ::= "FUNCTION" [<formal_parameter_list>] ":" <result_type>
+
+<procedure_type> ::= "PROCEDURE" [<formal_parameter_list>]
+
+<type> ::= <simple_type> | <structured_type> | <pointer_type>
+
+<simple_type> ::= <scalar_type> | <subrange_type> | <type_identifier> | <string_type>
+
+<scalar_type> ::= "(" <identifier_list> ")"
+
+<subrange_type> ::= <constant> ".." <constant>
+
+<type_identifier> ::= <identifier> | ("CHAR" | "BOOLEAN" | "INTEGER" | "REAL" | "STRING")
+
+<structured_type> ::= ["PACKED"] <unpacked_structured_type>
+
+<unpacked_structured_type> ::= <array_type> | <record_type> | <set_type> | <file_type>
+
+<string_type> ::= "STRING" "[" ( <identifier> | <unsigned_number> ) "]"
+
+<array_type> ::= "ARRAY" ("[" | "(") <type_list> ("]" | ")") "OF" <component_type>
+
+<type_list> ::= <index_type> {"," <index_type>}*
+
+<index_type> ::= <simple_type>
+
+<component_type> ::= <type>
+
+<record_type> ::= "RECORD" [<field_list>] "END"
+
+<field_list> ::= <fixed_part> [";" <variant_part>] | <variant_part>
+
+<fixed_part> ::= <record_section> {";" <record_section>}*
+
+<record_section> ::= <identifier_list> ":" <type>
+
+<variant_part> ::= "CASE" <tag> "OF" <variant> {";" <variant>}*
+
+<tag> ::= [<identifier> ":"] <type_identifier>
+
+<variant> ::= <const_list> ":" "(" <field_list> ")"
+
+<set_type> ::= "SET" "OF" <base_type>
+
+<base_type> ::= <simple_type>
+
+<file_type> ::= "FILE" ["OF" <type>]
+
+<pointer_type> ::= "^" <type_identifier>
+
+<variable_declaration_part> ::= "VAR" <variable_declaration> {";" <variable_declaration>}* ";"
+
+<variable_declaration> ::= <identifier_list> ":" <type>
+
+<procedure_and_function_declaration_part> ::= <procedure_or_function_declaration> ";"
+
+<procedure_or_function_declaration> ::= <procedure_declaration> | <function_declaration>
+
+<procedure_declaration> ::= "PROCEDURE" <identifier> [<formal_parameter_list>] ";" <block>
+
+<formal_parameter_list> ::= "(" <formal_parameter_section> {";" <formal_parameter_section>}* ")"
+
+<formal_parameter_section> ::= ["VAR" | "FUNCTION" | "PROCEDURE"] <parameter_group>
+
+<parameter_group> ::= <identifier_list> ":" <type_identifier>
+
+<identifier_list> ::= <identifier> {"," <identifier>}*
+
+<const_list> ::= <constant> {"," <constant>}*
+
+<function_declaration> ::= "FUNCTION" <identifier> [<formal_parameter_list>] ":" <result_type> ";" <block>
+
+<result_type> ::= <type_identifier>
+
+<statement> ::= [<label> ":"] <unlabelled_statement>
+
+<unlabelled_statement> ::= <simple_statement> | <structured_statement>
+
+<simple_statement> ::= <assignment_statement> 
+                     | <procedure_statement> 
+                     | <goto_statement> 
+                     | <empty_statement>
+
+<assignment_statement> ::= <variable> ":=" <expression>
+
+<variable> ::= ("@" <identifier> | <identifier>) 
+              { ("[" | "(") <expression> {"," <expression>}* ("]" | ")") 
+              | "." <identifier> 
+              | "^" }*
+
+<expression> ::= <simple_expression> [<relational_operator> <expression>]
+
+<relational_operator> ::= "=" | "<>" | "<" | "<=" | ">=" | ">" | "IN"
+
+<simple_expression> ::= <term> [<additive_operator> <simple_expression>]
+
+<additive_operator> ::= "+" | "-" | "OR"
+
+<term> ::= <signed_factor> [<multiplicative_operator> <term>]
+
+<multiplicative_operator> ::= "*" | "/" | "DIV" | "MOD" | "AND"
+
+<signed_factor> ::= ["+" | "-"] <factor>
+
+<factor> ::= <variable> 
+            | "(" <expression> ")" 
+            | <function_designator> 
+            | <unsigned_constant> 
+            | <set> 
+            | "NOT" <factor> 
+            | <bool>
+
+<unsigned_constant> ::= <unsigned_number> | <constant_chr> | <string> | "NIL"
+
+<function_designator> ::= <identifier> "(" <parameter_list> ")"
+
+<parameter_list> ::= <actual_parameter> {"," <actual_parameter>}*
+
+<set> ::= ("[" | "(") [<element_list>] ("]" | ")")
+
+<element_list> ::= <element> {"," <element>}*
+
+<element> ::= <expression> [".." <expression>]
+
+<procedure_statement> ::= <identifier> ["(" <parameter_list> ")"]
+
+<actual_parameter> ::= <expression> {<parameter_width>}*
+
+<parameter_width> ::= ":" <expression>
+
+<goto_statement> ::= "GOTO" <label>
+
+<empty_statement> ::= 
+
+<structured_statement> ::= <compound_statement> 
+                         | <conditional_statement> 
+                         | <repetitive_statement> 
+                         | <with_statement>
+
+<compound_statement> ::= "BEGIN" <statements> "END"
+
+<statements> ::= <statement> {";" <statement>}*
+
+<conditional_statement> ::= <if_statement> | <case_statement>
+
+<if_statement> ::= "IF" <expression> "THEN" <statement> ["ELSE" <statement>]
+
+<case_statement> ::= "CASE" <expression> "OF" <case_list_element> {";" <case_list_element>}* [";" "ELSE" <statements>] "END"
+
+<case_list_element> ::= <const_list> ":" <statement>
+
+<repetitive_statement> ::= <while_statement> | <repeat_statement> | <for_statement>
+
+<while_statement> ::= "WHILE" <expression> "DO" <statement>
+
+<repeat_statement> ::= "REPEAT" <statements> "UNTIL" <expression>
+
+<for_statement> ::= "FOR" <identifier> ":=" <for_list> "DO" <statement>
+
+<for_list> ::= <initial_value> ("TO" | "DOWNTO") <final_value>
+
+<initial_value> ::= <expression>
+
+<final_value> ::= <expression>
+
+<with_statement> ::= "WITH" <record_variable_list> "DO" <statement>
+
+<record_variable_list> ::= <variable> {"," <variable>}*
+
+/* Терминалы */
+<IDENT> ::= "[A-Za-z][A-Za-z0-9_]*"
+<STRING_LITERAL> ::= "'([^']|'')*'"
+<NUM_INT> ::= "[0-9]+"
+<NUM_REAL> ::= "[0-9]+(\.[0-9]*)?([eE][+-]?[0-9]+)?"
