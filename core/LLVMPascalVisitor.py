@@ -1,19 +1,16 @@
 from antlr.PascalVisitor import PascalVisitor
 from antlr.PascalParser import PascalParser
 from llvmlite import ir
+from core.PascalTypes import PascalTypes
+from core.SymbolTable import SymbolTable
+from core.BuiltinSymbols import BuiltinSymbols
 
 class LLVMPascalVisitor(PascalVisitor):
     def __init__(self):
         self.module = ir.Module('pascal_program')
-        self.builder = None
-        self.function = None
-        self.variables = {}
-        self.procedures = {}
-        self.declareWriteln()
-
-    def declareWriteln(self):
-        writeln_ty = ir.FunctionType(ir.IntType(32), [ir.PointerType(ir.IntType(8))], var_arg=True)
-        self.procedures["writeln"] = ir.Function(self.module, writeln_ty, name="printf")
+        self.builder = ir.IRBuilder()
+        self.symbolTable = SymbolTable()
+        BuiltinSymbols.addBuiltinSymbols(self.symbolTable, self.module)
 
     def save(self, filename):
         with open(filename, "w") as f:
@@ -23,23 +20,25 @@ class LLVMPascalVisitor(PascalVisitor):
         return isinstance(value.type, ir.PointerType)
 
     def visitProgram(self, ctx):
-        func_type = ir.FunctionType(ir.VoidType(), [])
-        self.function = ir.Function(self.module, func_type, name="main")
-        block = self.function.append_basic_block('entry')
-        self.builder = ir.IRBuilder(block)
+        self.builder = ir.IRBuilder(self.symbolTable["main"].append_basic_block('entry'))
+        self.symbolTable.enter_scope()
 
         self.visit(ctx.block())
         self.builder.ret_void()
 
         return str(self.module)
 
-    def visitVariableDeclarationPart(self, ctx:PascalParser.VariableDeclarationPartContext):
-        for decl in ctx.variableDeclaration():
-            for var in decl.identifierList().identifier():
-                var_name = self.visit(var)
-                var_type = ir.IntType(32)  # Тип всегда Integer
-                alloca_inst = self.builder.alloca(var_type, name=var_name)
-                self.variables[var_name] = alloca_inst
+    def visitVariableDeclaration(self, ctx:PascalParser.VariableDeclarationContext):
+        varType = self.visit(ctx.type_())
+        varNames = self.visit(ctx.identifierList())
+        for varName in varNames:
+            allocaInstance = self.builder.alloca(varType, name=varName)
+            self.symbolTable[varName] = allocaInstance
+
+    def visitTypeIdentifier(self, ctx:PascalParser.TypeIdentifierContext):
+        text = ctx.getText()
+        type = PascalTypes.strToType[text]
+        return type
 
     def visitAssignmentStatement(self, ctx:PascalParser.AssignmentStatementContext):
         variable = self.visit(ctx.variable())
@@ -48,7 +47,7 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
         identifier = self.visit(ctx.identifier())
-        procedure = self.procedures[identifier]
+        procedure = self.symbolTable[identifier]
 
         inputStr = ir.Constant(ir.ArrayType(ir.IntType(8), 4), bytearray("%d\n".encode("utf8") + b"\0"))
         strVar = self.builder.alloca(ir.ArrayType(ir.IntType(8), 4))
@@ -102,13 +101,20 @@ class LLVMPascalVisitor(PascalVisitor):
     # Возвращает указатель на переменную
     def visitVariable(self, ctx:PascalParser.VariableContext):
         identifier = self.visit(ctx.identifier(0))
-        return self.variables[identifier]
+        return self.symbolTable[identifier]
 
     def visitAdditiveoperator(self, ctx:PascalParser.AdditiveoperatorContext):
         return ctx
 
     def visitMultiplicativeoperator(self, ctx:PascalParser.MultiplicativeoperatorContext):
         return ctx
+
+    def visitIdentifierList(self, ctx:PascalParser.IdentifierListContext):
+        lst = []
+        for identifier in ctx.identifier():
+            lst.append(self.visit(identifier))
+
+        return lst
 
     def visitIdentifier(self, ctx:PascalParser.IdentifierContext):
         return ctx.IDENT().getText()
