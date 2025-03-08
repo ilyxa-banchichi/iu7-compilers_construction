@@ -2,6 +2,9 @@ class RedefinitionException(Exception):
     def __init__(self, name):
         self.name = name
 
+class IncompatibleTypesException(Exception):
+    def __init__(self, name):
+        self.name = name
 
 class SymbolTable:
     def __init__(self):
