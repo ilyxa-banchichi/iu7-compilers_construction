@@ -208,8 +208,13 @@ class LLVMPascalVisitor(PascalVisitor):
 
         val = ctx.STRING_LITERAL().getText()[1:-1]
         val = val.replace("''", "'")
+        val = bytes(val, "utf-8").decode("unicode_escape").encode("utf-8")
 
-        if len(val) < self.leftPartType.count - 1:
-            val = val.ljust(self.leftPartType.count - 1, '\0')
+        valLenWithTerm = len(val) + 1 
 
-        return ir.Constant(self.leftPartType, bytearray(val.encode("utf-8") + b"\x00"))
+        if valLenWithTerm > self.leftPartType.count:
+            raise TypeError(f"Длина строки {valLenWithTerm} привышает размер переменной string {self.leftPartType.count}")
+        elif valLenWithTerm < self.leftPartType.count:
+            val = val.ljust(self.leftPartType.count - 1, b"\x00")
+
+        return ir.Constant(self.leftPartType, bytearray(val + b"\x00"))

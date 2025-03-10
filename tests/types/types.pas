@@ -32,10 +32,13 @@ begin
 
     charVar := 'a';
     writeln(charVar);
-    
+
     floatVar := 0.00001;
     writeln(floatVar);
-    
+
+    floatVar := 5;
+    writeln(floatVar);
+
     doubleVar := 0.00000000001;
     writeln(doubleVar);
 end.
