@@ -1,0 +1,3 @@
+EMPTY_SET_CHAR = '∅'
+EPSILON_CHAR = 'ε'
+END_CHAIN_CHAR = '#'
