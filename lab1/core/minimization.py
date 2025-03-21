@@ -1,26 +1,25 @@
 from core.dfa import DFA
 from collections import deque
-from typing import List, Tuple, Dict, Set, FrozenSet
-from core.printDfa import saveDfaSvg
+from typing import List, Tuple, Dict, Set
 
-def reverse(dfa: DFA) -> Tuple[Set[str], Set[str], Dict[Tuple[str, str], Set[str]], Set[str]]:
-    reverseTransitions: Dict[Tuple[str, str], Set[str]] = {}
+def reverse(dfa: DFA) -> Tuple[Set[int], Set[int], Dict[Tuple[int, int], Set[int]]]:
+    reverseTransitions = {}
     for (src, symbol), dst in dfa.transitionDict.items():
         key = (dst, symbol)
         if key not in reverseTransitions:
             reverseTransitions[key] = set()
         reverseTransitions[key].add(src)
 
-    nfa_start = set(dfa.accepts)
-    nfa_accepts = {dfa.initial}
-    return nfa_start, nfa_accepts, reverseTransitions, set(dfa.states)
+    reverseStart = set(dfa.accepts)
+    reverseAccepts = {dfa.initial}
+    return reverseStart, reverseAccepts, reverseTransitions
 
-def determinize(nfa_start: Set[str], nfa_accepts: Set[str], nfa_transitions: Dict[Tuple[str, str], Set[str]], states: Set[str], alphabet: List[str]) -> DFA:
+def determinize(reverseStart: Set[int], reverseAccepts: Set[int], reverseTransitions: Dict[Tuple[int, int], Set[int]], alphabet: List[str]) -> DFA:
     state_id = 0
-    state_map: Dict[FrozenSet[str], str] = {}
+    state_map = {}
     queue = deque()
 
-    start_state = frozenset(nfa_start)
+    start_state = frozenset(reverseStart)
     state_map[start_state] = state_id
     queue.append(start_state)
     state_id += 1
@@ -32,15 +31,15 @@ def determinize(nfa_start: Set[str], nfa_accepts: Set[str], nfa_transitions: Dic
         current = queue.popleft()
         current_name = state_map[current]
 
-        if any(s in nfa_accepts for s in current):
+        if any(s in reverseAccepts for s in current):
             dfa_accepts.append(current_name)
 
         for symbolId in range(0, len(alphabet)):
             next_states = set()
             for state in current:
                 key = (state, symbolId)
-                if key in nfa_transitions:
-                    next_states.update(nfa_transitions[key])
+                if key in reverseTransitions:
+                    next_states.update(reverseTransitions[key])
 
             if not next_states:
                 continue
@@ -64,11 +63,11 @@ def determinize(nfa_start: Set[str], nfa_accepts: Set[str], nfa_transitions: Dic
         transitions=dfa_transitions
     )
 
-def brzozowski_minimization(dfa: DFA) -> tuple[DFA, DFA]:
-    nfa_start, nfa_accepts, nfa_trans, nfa_states = reverse(dfa)
-    intermediate_dfa = determinize(nfa_start, nfa_accepts, nfa_trans, nfa_states, dfa.alphabet)
+def brzozowskiMinimization(dfa: DFA) -> tuple[DFA, DFA]:
+    reverseStart, reverseAccepts, reverseTransitions = reverse(dfa)
+    intermediate_dfa = determinize(reverseStart, reverseAccepts, reverseTransitions, dfa.alphabet)
 
-    nfa_start2, nfa_accepts2, nfa_trans2, nfa_states2 = reverse(intermediate_dfa)
-    minimized_dfa = determinize(nfa_start2, nfa_accepts2, nfa_trans2, nfa_states2, dfa.alphabet)
+    reverseStart2, reverseAccepts2, reverseTrans2 = reverse(intermediate_dfa)
+    minimized_dfa = determinize(reverseStart2, reverseAccepts2, reverseTrans2, dfa.alphabet)
 
     return minimized_dfa, intermediate_dfa

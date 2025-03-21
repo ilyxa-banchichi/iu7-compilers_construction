@@ -1,11 +1,11 @@
 from core.buildDfa import regexToDfa
-from core.minimization import brzozowski_minimization
+from core.minimization import brzozowskiMinimization
 from core.printDfa import saveDfaSvg
 
 if __name__ == "__main__":
     regex = input("Введите регулярное выражение: ")
     dfa = regexToDfa(regex)
-    minimized, intermediate = brzozowski_minimization(dfa)
+    minimized, intermediate = brzozowskiMinimization(dfa)
 
     saveDfaSvg(dfa, "output/dfa")
     saveDfaSvg(intermediate, "output/intermediate")

@@ -1,9 +1,5 @@
-from collections import deque
 from dataclasses import dataclass
-from typing import List, Tuple
-from core.rpn import regexToRpn
-from core.markedTree import *
-from core.markedTree import buildMarkedTree
+from typing import List, Tuple, Dict
 from core.symbols import *
 
 @dataclass
@@ -15,7 +11,7 @@ class DFA:
     transitions: List[Tuple[int, int, int]]
     transitionDict: Dict[Tuple[int, int], int]
 
-    def __init__(self, alphabet: List[str], states: List[str], initial: str, accepts: List[str], transitions: List[Tuple[str, str, str]]):
+    def __init__(self, alphabet: List[str], states: List[str], initial: int, accepts: List[int], transitions: List[Tuple[int, int, int]]):
         self.alphabet = alphabet
         self.states = states
         self.initial = initial
@@ -23,7 +19,7 @@ class DFA:
         self.transitions = transitions
         self.transitionDict = self._buildTransitionDict()
 
-    def _buildTransitionDict(self) -> Dict[Tuple[str, str], str]:
+    def _buildTransitionDict(self) -> Dict[Tuple[int, int], int]:
         return {(src, symbol): dst for src, symbol, dst in self.transitions}
 
     def simulate(self, inputStr: str) -> bool:

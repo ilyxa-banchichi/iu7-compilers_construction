@@ -30,18 +30,21 @@ def collectSymbols(node: MarkedNode):
     return symbolPositions, pos2Symbol, endPosition
 
 def AddDeathState(dfa: DFA):
-    dfa.states.append(EMPTY_SET_CHAR)
-    deathStateIndex = len(dfa.states) - 1
+    needDeathState = False
+    deathStateIndex = len(dfa.states)
     for stateId in range(0, deathStateIndex):
         for symbolId in range(0, len(dfa.alphabet)):
             transitionKey = (stateId, symbolId)
             if transitionKey not in dfa.transitionDict:
+                needDeathState = True
                 dfa.transitions.append((stateId, symbolId, deathStateIndex))
                 dfa.transitionDict[transitionKey] = deathStateIndex
 
-    for symbolId in range(0, len(dfa.alphabet)):
-        dfa.transitions.append((deathStateIndex, symbolId, deathStateIndex))
-        dfa.transitionDict[(deathStateIndex, symbolId)] = deathStateIndex
+    if needDeathState:
+        dfa.states.append(EMPTY_SET_CHAR)
+        for symbolId in range(0, len(dfa.alphabet)):
+            dfa.transitions.append((deathStateIndex, symbolId, deathStateIndex))
+            dfa.transitionDict[(deathStateIndex, symbolId)] = deathStateIndex
 
 def buildDfa(root: MarkedNode) -> DFA:
     followpos = {}

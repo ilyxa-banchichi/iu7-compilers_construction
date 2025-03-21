@@ -10,7 +10,7 @@ def insertConcatDots(regex: str) -> str:
     prev = ""
     for i, curr in enumerate(regex):
         if prev:
-            if ((prev.isalnum() or prev in "*+?)") and (curr.isalnum() or curr == "(")):
+            if ((prev.isalnum() or prev in "*+?)") and (curr.isalnum() or curr in "(#")):
                 result += "."
         result += curr
         prev = curr
