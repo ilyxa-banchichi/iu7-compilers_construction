@@ -5,17 +5,21 @@ var
     longintVar: longint;
     byteVar: byte;
 
-    booleanVar: boolean;
-
-    charVar: char;
-
     floatVar: real;
     doubleVar: double;
+
+    booleanVar: boolean;
+    strVar: string;
+
+    charVar: char;
 begin
     intVar := 32767;
     writeln(intVar);
 
     intVar := -32768;
+    writeln(intVar);
+
+    intVar := 7;
     writeln(intVar);
 
     longintVar := 2147483647;
@@ -27,18 +31,30 @@ begin
     byteVar := 255;
     writeln(byteVar);
 
-    booleanVar := true;
-    writeln(booleanVar);
-
-    charVar := 'a';
-    writeln(charVar);
-
-    floatVar := 0.00001;
+    floatVar := 1.01;
     writeln(floatVar);
 
     floatVar := 5;
     writeln(floatVar);
 
-    doubleVar := 0.00000000001;
+    doubleVar := 245.123456789;
     writeln(doubleVar);
+
+    booleanVar := true;
+    writeln(booleanVar);
+
+    booleanVar := false;
+    writeln(booleanVar);
+
+    strVar := 'B';
+    writeln(strVar);
+
+    strVar := 'Hello world\n';
+    writeln(strVar);
+
+    strVar := 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n';
+    writeln(strVar);
+
+    charVar := 'Z';
+    writeln(charVar);
 end.

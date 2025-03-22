@@ -29,6 +29,6 @@ def GenerateIR(input_filename, output_filename):
     #     error_listener.print_errors()
     #     return False
 
-inputFile = "tests/types/types_t.pas"
+inputFile = "tests/types/types.pas"
 outputFile = inputFile[:-4] + ".ll"
 GenerateIR(inputFile, outputFile)

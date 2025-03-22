@@ -105,19 +105,6 @@ entry:
   store [4 x i8] c"%c\0a\00", [4 x i8]* %".90"
   %".92" = getelementptr [4 x i8], [4 x i8]* %".90", i8 0, i8 0
   %".93" = call i32 (i8*, ...) @"printf"(i8* %".92", i8 %".89")
-  store i8 72, i8* %"byteVar"
-  %".95" = load i8, i8* %"byteVar"
-  %".96" = alloca [5 x i8]
-  store [5 x i8] c"%d \0a\00", [5 x i8]* %".96"
-  %".98" = getelementptr [5 x i8], [5 x i8]* %".96", i8 0, i8 0
-  %".99" = call i32 (i8*, ...) @"printf"(i8* %".98", i8 %".95")
-  %".100" = load i8, i8* %"byteVar"
-  store i8 %".100", i8* %"charVar"
-  %".102" = load i8, i8* %"charVar"
-  %".103" = alloca [4 x i8]
-  store [4 x i8] c"%c\0a\00", [4 x i8]* %".103"
-  %".105" = getelementptr [4 x i8], [4 x i8]* %".103", i8 0, i8 0
-  %".106" = call i32 (i8*, ...) @"printf"(i8* %".105", i8 %".102")
   ret void
 }
 
