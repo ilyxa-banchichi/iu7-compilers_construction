@@ -6,6 +6,10 @@ class UnsupportedLiteralException(Exception):
         self.name = name
 
 class PascalTypes(object):
+    numericSemanticLabel = "numericSemanticLabel"
+    charSemanticLabel = "charSemanticLabel"
+    boolSemanticLabel = "boolSemanticLabel"
+
     intLabel = "integer"
     int = ir.IntType(16)
 
@@ -24,17 +28,21 @@ class PascalTypes(object):
     doubleLabel = "double"
     double = ir.DoubleType()
 
+    charLabel = "char"
+    char = ir.IntType(8)
+
     defaultStringLabel = "string"
     defaultString = ir.ArrayType(ir.IntType(8), 255)
 
     strToType = {
-        intLabel: int,
-        longintLabel: longint,
-        byteLabel: byte,
-        booleanLabel: boolean,
-        realLabel: real,
-        doubleLabel: double,
-        defaultStringLabel: defaultString,
+        intLabel: (int, numericSemanticLabel),
+        longintLabel: (longint, numericSemanticLabel),
+        byteLabel: (byte, numericSemanticLabel),
+        booleanLabel: (boolean, boolSemanticLabel),
+        realLabel: (real, numericSemanticLabel),
+        doubleLabel: (double, numericSemanticLabel),
+        charLabel: (char, charSemanticLabel),
+        defaultStringLabel: (defaultString, charSemanticLabel)
     }
 
     intRanges = {
@@ -52,7 +60,7 @@ class PascalTypes(object):
         for key in PascalTypes.intRanges.keys():
             min_val, max_val = PascalTypes.intRanges[key]
             if min_val <= number <= max_val:
-                return PascalTypes.strToType[key]
+                return PascalTypes.strToType[key][0]
 
         raise UnsupportedLiteralException()
 

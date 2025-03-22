@@ -12,6 +12,7 @@ entry:
   %"doubleVar" = alloca double
   %"booleanVar" = alloca i1
   %"strVar" = alloca [255 x i8]
+  %"charVar" = alloca i8
   store i16 32767, i16* %"intVar"
   %".3" = load i16, i16* %"intVar"
   %".4" = alloca [6 x i8]
@@ -68,31 +69,55 @@ entry:
   store [5 x i8] c"%f \0a\00", [5 x i8]* %".54"
   %".56" = getelementptr [5 x i8], [5 x i8]* %".54", i8 0, i8 0
   %".57" = call i32 (i8*, ...) @"printf"(i8* %".56", double %".53")
-  %".58" = sub i1 0, 1
-  store i1 %".58", i1* %"booleanVar"
-  %".60" = load i1, i1* %"booleanVar"
-  %".61" = alloca [5 x i8]
-  store [5 x i8] c"%d \0a\00", [5 x i8]* %".61"
-  %".63" = getelementptr [5 x i8], [5 x i8]* %".61", i8 0, i8 0
-  %".64" = call i32 (i8*, ...) @"printf"(i8* %".63", i1 %".60")
+  store i1 1, i1* %"booleanVar"
+  %".59" = load i1, i1* %"booleanVar"
+  %".60" = alloca [5 x i8]
+  store [5 x i8] c"%d \0a\00", [5 x i8]* %".60"
+  %".62" = getelementptr [5 x i8], [5 x i8]* %".60", i8 0, i8 0
+  %".63" = call i32 (i8*, ...) @"printf"(i8* %".62", i1 %".59")
   store i1 0, i1* %"booleanVar"
-  %".66" = load i1, i1* %"booleanVar"
-  %".67" = alloca [5 x i8]
-  store [5 x i8] c"%d \0a\00", [5 x i8]* %".67"
-  %".69" = getelementptr [5 x i8], [5 x i8]* %".67", i8 0, i8 0
-  %".70" = call i32 (i8*, ...) @"printf"(i8* %".69", i1 %".66")
+  %".65" = load i1, i1* %"booleanVar"
+  %".66" = alloca [5 x i8]
+  store [5 x i8] c"%d \0a\00", [5 x i8]* %".66"
+  %".68" = getelementptr [5 x i8], [5 x i8]* %".66", i8 0, i8 0
+  %".69" = call i32 (i8*, ...) @"printf"(i8* %".68", i1 %".65")
+  store [255 x i8] c"B\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %"strVar"
+  %".71" = load [255 x i8], [255 x i8]* %"strVar"
+  %".72" = alloca [255 x i8]
+  store [255 x i8] %".71", [255 x i8]* %".72"
+  %".74" = getelementptr [255 x i8], [255 x i8]* %".72", i8 0, i8 0
+  %".75" = call i32 (i8*, ...) @"printf"(i8* %".74")
   store [255 x i8] c"Hello world\0a\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %"strVar"
-  %".72" = load [255 x i8], [255 x i8]* %"strVar"
-  %".73" = alloca [255 x i8]
-  store [255 x i8] %".72", [255 x i8]* %".73"
-  %".75" = getelementptr [255 x i8], [255 x i8]* %".73", i8 0, i8 0
-  %".76" = call i32 (i8*, ...) @"printf"(i8* %".75")
-  store [255 x i8] c"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\00", [255 x i8]* %"strVar"
-  %".78" = load [255 x i8], [255 x i8]* %"strVar"
-  %".79" = alloca [255 x i8]
-  store [255 x i8] %".78", [255 x i8]* %".79"
-  %".81" = getelementptr [255 x i8], [255 x i8]* %".79", i8 0, i8 0
-  %".82" = call i32 (i8*, ...) @"printf"(i8* %".81")
+  %".77" = load [255 x i8], [255 x i8]* %"strVar"
+  %".78" = alloca [255 x i8]
+  store [255 x i8] %".77", [255 x i8]* %".78"
+  %".80" = getelementptr [255 x i8], [255 x i8]* %".78", i8 0, i8 0
+  %".81" = call i32 (i8*, ...) @"printf"(i8* %".80")
+  store [255 x i8] c"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\0a\00", [255 x i8]* %"strVar"
+  %".83" = load [255 x i8], [255 x i8]* %"strVar"
+  %".84" = alloca [255 x i8]
+  store [255 x i8] %".83", [255 x i8]* %".84"
+  %".86" = getelementptr [255 x i8], [255 x i8]* %".84", i8 0, i8 0
+  %".87" = call i32 (i8*, ...) @"printf"(i8* %".86")
+  store i8 90, i8* %"charVar"
+  %".89" = load i8, i8* %"charVar"
+  %".90" = alloca [4 x i8]
+  store [4 x i8] c"%c\0a\00", [4 x i8]* %".90"
+  %".92" = getelementptr [4 x i8], [4 x i8]* %".90", i8 0, i8 0
+  %".93" = call i32 (i8*, ...) @"printf"(i8* %".92", i8 %".89")
+  store i8 72, i8* %"byteVar"
+  %".95" = load i8, i8* %"byteVar"
+  %".96" = alloca [5 x i8]
+  store [5 x i8] c"%d \0a\00", [5 x i8]* %".96"
+  %".98" = getelementptr [5 x i8], [5 x i8]* %".96", i8 0, i8 0
+  %".99" = call i32 (i8*, ...) @"printf"(i8* %".98", i8 %".95")
+  %".100" = load i8, i8* %"byteVar"
+  store i8 %".100", i8* %"charVar"
+  %".102" = load i8, i8* %"charVar"
+  %".103" = alloca [4 x i8]
+  store [4 x i8] c"%c\0a\00", [4 x i8]* %".103"
+  %".105" = getelementptr [4 x i8], [4 x i8]* %".103", i8 0, i8 0
+  %".106" = call i32 (i8*, ...) @"printf"(i8* %".105", i8 %".102")
   ret void
 }
 

@@ -10,6 +10,8 @@ var
 
     booleanVar: boolean;
     strVar: string;
+
+    charVar: char;
 begin
     intVar := 32767;
     writeln(intVar);
@@ -44,9 +46,18 @@ begin
     booleanVar := false;
     writeln(booleanVar);
 
+    strVar := 'B';
+    writeln(strVar);
+
     strVar := 'Hello world\n';
     writeln(strVar);
 
-    strVar := 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    strVar := 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n';
     writeln(strVar);
+
+    charVar := 'Z';
+    writeln(charVar);
+
+    byteVar := 'H';
+    writeln(byteVar);
 end.
