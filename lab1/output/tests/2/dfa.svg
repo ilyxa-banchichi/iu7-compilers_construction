@@ -23,44 +23,44 @@
 <path fill="none" stroke="black" d="M3.86,-52C7.15,-52 17.69,-52 29.03,-52"/>
 <polygon fill="black" stroke="black" points="28.88,-55.5 38.88,-52 28.88,-48.5 28.88,-55.5"/>
 </g>
-<!-- q1 -->
+<!-- q2 -->
 <g id="node4" class="node">
-<title>q1</title>
+<title>q2</title>
 <ellipse fill="none" stroke="black" cx="154.99" cy="-111" rx="20.13" ry="20.13"/>
 <ellipse fill="none" stroke="black" cx="154.99" cy="-111" rx="24.13" ry="24.13"/>
-<text text-anchor="middle" x="154.99" y="-105.95" font-family="Times,serif" font-size="14.00">q1</text>
-</g>
-<!-- q0&#45;&gt;q1 -->
-<g id="edge2" class="edge">
-<title>q0&#45;&gt;q1</title>
-<path fill="none" stroke="black" d="M85.32,-65.09C96.97,-72.89 111.98,-82.92 124.99,-91.61"/>
-<polygon fill="black" stroke="black" points="122.94,-94.45 133.2,-97.1 126.83,-88.63 122.94,-94.45"/>
-<text text-anchor="middle" x="109.86" y="-86.47" font-family="Times,serif" font-size="14.00">a</text>
-</g>
-<!-- q3 -->
-<g id="node6" class="node">
-<title>q3</title>
-<ellipse fill="none" stroke="black" cx="259.51" cy="-59" rx="20.13" ry="20.13"/>
-<ellipse fill="none" stroke="black" cx="259.51" cy="-59" rx="24.13" ry="24.13"/>
-<text text-anchor="middle" x="259.51" y="-53.95" font-family="Times,serif" font-size="14.00">q3</text>
-</g>
-<!-- q0&#45;&gt;q3 -->
-<g id="edge4" class="edge">
-<title>q0&#45;&gt;q3</title>
-<path fill="none" stroke="black" d="M88.98,-52.84C122.56,-54.06 184.87,-56.33 223.87,-57.74"/>
-<polygon fill="black" stroke="black" points="223.54,-61.23 233.66,-58.1 223.79,-54.24 223.54,-61.23"/>
-<text text-anchor="middle" x="154.99" y="-59.28" font-family="Times,serif" font-size="14.00">b</text>
-</g>
-<!-- q2 -->
-<g id="node7" class="node">
-<title>q2</title>
-<ellipse fill="none" stroke="black" cx="454.28" cy="-85" rx="20.13" ry="20.13"/>
-<ellipse fill="none" stroke="black" cx="454.28" cy="-85" rx="24.13" ry="24.13"/>
-<text text-anchor="middle" x="454.28" y="-79.95" font-family="Times,serif" font-size="14.00">q2</text>
+<text text-anchor="middle" x="154.99" y="-105.95" font-family="Times,serif" font-size="14.00">q2</text>
 </g>
 <!-- q0&#45;&gt;q2 -->
 <g id="edge3" class="edge">
 <title>q0&#45;&gt;q2</title>
+<path fill="none" stroke="black" d="M85.32,-65.09C96.97,-72.89 111.98,-82.92 124.99,-91.61"/>
+<polygon fill="black" stroke="black" points="122.94,-94.45 133.2,-97.1 126.83,-88.63 122.94,-94.45"/>
+<text text-anchor="middle" x="109.86" y="-86.47" font-family="Times,serif" font-size="14.00">a</text>
+</g>
+<!-- q1 -->
+<g id="node6" class="node">
+<title>q1</title>
+<ellipse fill="none" stroke="black" cx="259.51" cy="-59" rx="20.13" ry="20.13"/>
+<ellipse fill="none" stroke="black" cx="259.51" cy="-59" rx="24.13" ry="24.13"/>
+<text text-anchor="middle" x="259.51" y="-53.95" font-family="Times,serif" font-size="14.00">q1</text>
+</g>
+<!-- q0&#45;&gt;q1 -->
+<g id="edge2" class="edge">
+<title>q0&#45;&gt;q1</title>
+<path fill="none" stroke="black" d="M88.98,-52.84C122.56,-54.06 184.87,-56.33 223.87,-57.74"/>
+<polygon fill="black" stroke="black" points="223.54,-61.23 233.66,-58.1 223.79,-54.24 223.54,-61.23"/>
+<text text-anchor="middle" x="154.99" y="-59.28" font-family="Times,serif" font-size="14.00">b</text>
+</g>
+<!-- q3 -->
+<g id="node7" class="node">
+<title>q3</title>
+<ellipse fill="none" stroke="black" cx="454.28" cy="-85" rx="20.13" ry="20.13"/>
+<ellipse fill="none" stroke="black" cx="454.28" cy="-85" rx="24.13" ry="24.13"/>
+<text text-anchor="middle" x="454.28" y="-79.95" font-family="Times,serif" font-size="14.00">q3</text>
+</g>
+<!-- q0&#45;&gt;q3 -->
+<g id="edge4" class="edge">
+<title>q0&#45;&gt;q3</title>
 <path fill="none" stroke="black" d="M82.28,-34.97C98.86,-19.81 125.89,0 153.99,0 153.99,0 153.99,0 350.77,0 386.28,0 416.09,-30.6 434.24,-55.08"/>
 <polygon fill="black" stroke="black" points="431.34,-57.04 439.97,-63.19 437.06,-53 431.34,-57.04"/>
 <text text-anchor="middle" x="259.51" y="-3.2" font-family="Times,serif" font-size="14.00">c</text>
@@ -86,58 +86,58 @@
 <polygon fill="black" stroke="black" points="292.75,-145.29 283.62,-150.66 294.11,-152.15 292.75,-145.29"/>
 <text text-anchor="middle" x="304.64" y="-152.7" font-family="Times,serif" font-size="14.00">c</text>
 </g>
-<!-- q5&#45;&gt;q2 -->
+<!-- q5&#45;&gt;q3 -->
 <g id="edge12" class="edge">
-<title>q5&#45;&gt;q2</title>
+<title>q5&#45;&gt;q3</title>
 <path fill="none" stroke="black" d="M370.42,-157.73C382.75,-149.13 398.8,-137.43 412.15,-126 417.78,-121.18 423.56,-115.75 428.96,-110.45"/>
 <polygon fill="black" stroke="black" points="431.38,-112.98 435.95,-103.42 426.42,-108.04 431.38,-112.98"/>
 <text text-anchor="middle" x="402.02" y="-144.88" font-family="Times,serif" font-size="14.00">a, b</text>
 </g>
-<!-- q1&#45;&gt;q4 -->
-<g id="edge6" class="edge">
-<title>q1&#45;&gt;q4</title>
+<!-- q2&#45;&gt;q4 -->
+<g id="edge8" class="edge">
+<title>q2&#45;&gt;q4</title>
 <path fill="none" stroke="black" d="M177.23,-121.15C191.67,-128.05 211,-137.29 227.19,-145.03"/>
 <polygon fill="black" stroke="black" points="225.39,-148.05 235.93,-149.21 228.41,-141.74 225.39,-148.05"/>
 <text text-anchor="middle" x="207.25" y="-143.09" font-family="Times,serif" font-size="14.00">c</text>
 </g>
-<!-- q1&#45;&gt;q3 -->
-<g id="edge5" class="edge">
-<title>q1&#45;&gt;q3</title>
+<!-- q2&#45;&gt;q1 -->
+<g id="edge7" class="edge">
+<title>q2&#45;&gt;q1</title>
 <path fill="none" stroke="black" d="M176.74,-100.48C191.23,-93.13 210.84,-83.18 227.23,-74.87"/>
 <polygon fill="black" stroke="black" points="228.76,-78.02 236.09,-70.37 225.59,-71.77 228.76,-78.02"/>
 <text text-anchor="middle" x="207.25" y="-92.86" font-family="Times,serif" font-size="14.00">a, b</text>
 </g>
 <!-- q4&#45;&gt;q5 -->
-<g id="edge10" class="edge">
+<g id="edge11" class="edge">
 <title>q4&#45;&gt;q5</title>
 <path fill="none" stroke="black" d="M282.97,-166.39C288.98,-167.85 295.52,-169.2 301.64,-170 305.57,-170.51 309.7,-170.87 313.82,-171.11"/>
 <polygon fill="black" stroke="black" points="313.57,-174.6 323.69,-171.45 313.81,-167.6 313.57,-174.6"/>
 <text text-anchor="middle" x="304.64" y="-173.77" font-family="Times,serif" font-size="14.00">a</text>
 </g>
-<!-- q4&#45;&gt;q2 -->
-<g id="edge11" class="edge">
-<title>q4&#45;&gt;q2</title>
+<!-- q4&#45;&gt;q3 -->
+<g id="edge10" class="edge">
+<title>q4&#45;&gt;q3</title>
 <path fill="none" stroke="black" d="M280.05,-146.66C292.64,-138.52 309.59,-128.4 325.64,-121.5 356.44,-108.25 393.45,-98.27 419.67,-92.13"/>
 <polygon fill="black" stroke="black" points="420.1,-95.62 429.07,-89.99 418.54,-88.8 420.1,-95.62"/>
 <text text-anchor="middle" x="349.77" y="-124.7" font-family="Times,serif" font-size="14.00">b, c</text>
 </g>
-<!-- q3&#45;&gt;q3 -->
-<g id="edge8" class="edge">
-<title>q3&#45;&gt;q3</title>
+<!-- q1&#45;&gt;q1 -->
+<g id="edge5" class="edge">
+<title>q1&#45;&gt;q1</title>
 <path fill="none" stroke="black" d="M251.18,-81.97C250.38,-92.24 253.16,-101.13 259.51,-101.13 263.27,-101.13 265.78,-98 267.03,-93.3"/>
 <polygon fill="black" stroke="black" points="270.52,-93.7 267.73,-83.48 263.53,-93.21 270.52,-93.7"/>
 <text text-anchor="middle" x="259.51" y="-104.33" font-family="Times,serif" font-size="14.00">a, b</text>
 </g>
-<!-- q3&#45;&gt;q2 -->
-<g id="edge9" class="edge">
-<title>q3&#45;&gt;q2</title>
+<!-- q1&#45;&gt;q3 -->
+<g id="edge6" class="edge">
+<title>q1&#45;&gt;q3</title>
 <path fill="none" stroke="black" d="M283.54,-61.83C306.46,-64.68 342.63,-69.24 373.9,-73.5 388.67,-75.51 404.96,-77.85 418.93,-79.9"/>
 <polygon fill="black" stroke="black" points="418.12,-83.31 428.52,-81.31 419.14,-76.39 418.12,-83.31"/>
 <text text-anchor="middle" x="349.77" y="-76.7" font-family="Times,serif" font-size="14.00">c</text>
 </g>
-<!-- q2&#45;&gt;q2 -->
-<g id="edge7" class="edge">
-<title>q2&#45;&gt;q2</title>
+<!-- q3&#45;&gt;q3 -->
+<g id="edge9" class="edge">
+<title>q3&#45;&gt;q3</title>
 <path fill="none" stroke="black" d="M444.68,-107.54C443.63,-118 446.83,-127.13 454.28,-127.13 458.82,-127.13 461.78,-123.74 463.17,-118.72"/>
 <polygon fill="black" stroke="black" points="466.64,-119.25 463.79,-109.05 459.65,-118.81 466.64,-119.25"/>
 <text text-anchor="middle" x="454.28" y="-130.33" font-family="Times,serif" font-size="14.00">a, b, c</text>
