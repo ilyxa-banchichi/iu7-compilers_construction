@@ -29,6 +29,6 @@ def GenerateIR(input_filename, output_filename):
     #     error_listener.print_errors()
     #     return False
 
-inputFile = "tests/types/types.pas"
+inputFile = "tests/aritmhetic/aritmhetic.pas"
 outputFile = inputFile[:-4] + ".ll"
 GenerateIR(inputFile, outputFile)

@@ -2,7 +2,7 @@ import llvmlite.binding as llvm
 from llvmlite import ir
 import ctypes
 
-with open("tests/types/types.ll", "r") as f:
+with open("tests/aritmhetic/aritmhetic.ll", "r") as f:
     ir_code = str(f.read())
 
 llvm.initialize()

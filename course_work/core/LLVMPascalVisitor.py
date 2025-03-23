@@ -6,6 +6,28 @@ from core.PascalTypes import *
 from core.SymbolTable import *
 from core.BuiltinSymbols import *
 
+class LeftPartDefinition:
+    def __init__(self):
+        self.type = []
+        self.semantic = []
+
+    def Enter(self, type, semantic):
+        self.type.append(type)
+        self.semantic.append(semantic)
+
+    def Exit(self):
+        self.type.pop()
+        self.semantic.pop()
+
+    def Type(self):
+        return self.type
+
+    def Semantic(self):
+        return self.semantic
+
+    def Top(self):
+        return self.type, self.semantic
+
 class LLVMPascalVisitor(PascalVisitor):
     def __init__(self):
         self.module = ir.Module('pascal_program')
@@ -13,8 +35,7 @@ class LLVMPascalVisitor(PascalVisitor):
         self.symbolTable = SymbolTable()
         BuiltinSymbols.addBuiltinSymbols(self.symbolTable, self.module)
 
-        self.leftPartType = None
-        self.leftPartSemantic = None
+        self.leftPartDefinition = LeftPartDefinition()
         self.conversionRules = []
 
     def save(self, filename):
@@ -47,9 +68,9 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitAssignmentStatement(self, ctx:PascalParser.AssignmentStatementContext):
         (variable, varSemantic) = self.visit(ctx.variable())
-        self.leftPartType = variable.type.pointee
-        self.leftPartSemantic = varSemantic
+        self.leftPartDefinition.Enter(variable.type.pointee, varSemantic)
         (value, valSemantic) = self.visit(ctx.expression())
+        self.leftPartDefinition.Exit()
 
         if variable.type.pointee == value.type:
             if varSemantic == valSemantic:
@@ -105,19 +126,22 @@ class LLVMPascalVisitor(PascalVisitor):
                 self.builder.call(procedure, [strVarPtr, value])
 
     def visitSimpleExpression(self, ctx:PascalParser.SimpleExpressionContext):
-        term = self.visit(ctx.term())
+        term, lSemantic = self.visit(ctx.term())
+        self.leftPartDefinition.Enter(term.type, lSemantic)
 
         if ctx.additiveoperator():
-            right = self.visit(ctx.simpleExpression())
+            right, rSemantic = self.visit(ctx.simpleExpression())
             operator = self.visit(ctx.additiveoperator())
             if operator.PLUS():
-                return self.builder.add(term, right)
+                return self.builder.add(term, right), lSemantic
             elif operator.MINUS():
-                return self.builder.sub(term, right)
+                return self.builder.sub(term, right), lSemantic
             elif operator.OR():
-                return self.builder.or_(term, right)
+                return self.builder.or_(term, right), lSemantic
 
-        return term
+        self.leftPartDefinition.Exit()
+
+        return term, lSemantic
 
     def visitTerm(self, ctx:PascalParser.TermContext):
         signedFactor = self.visit(ctx.signedFactor())
@@ -174,32 +198,32 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitUnsignedInteger(self, ctx:PascalParser.UnsignedIntegerContext):
         number = ctx.NUM_INT().getText()
         type = PascalTypes.getIntLiteralType(int(number))
-        if isinstance(self.leftPartType, ir.IntType):
-            if type.width > self.leftPartType.width:
+        if isinstance(self.leftPartDefinition.Type(), ir.IntType):
+            if type.width > self.leftPartDefinition.Type().width:
                 raise TypeError(
                     f"Type mismatch in assignment: "
                     f"cannot convert {number} ({type}) "
-                    f"to {self.leftPartType}"
+                    f"to {self.leftPartDefinition.Type()}"
                 )
 
-        if isinstance(self.leftPartType, ir.FloatType) or isinstance(self.leftPartType, ir.DoubleType):
+        if isinstance(self.leftPartDefinition.Type(), ir.FloatType) or isinstance(self.leftPartDefinition.Type(), ir.DoubleType):
             number = float(number)
 
-        return ir.Constant(self.leftPartType, number), PascalTypes.numericSemanticLabel
+        return ir.Constant(self.leftPartDefinition.Type(), number), PascalTypes.numericSemanticLabel
 
     def visitUnsignedReal(self, ctx:PascalParser.UnsignedRealContext):
         number = ctx.NUM_REAL().getText()
         number = float(number)
         type = PascalTypes.getFloatLiteralType(number)
         # Сделать понимание типа литерала
-        # if self.leftPartType != type:
+        # if self.leftPartDefinition.Type() != type:
         #     raise TypeError(
         #         f"Type mismatch in assignment: "
         #         f"cannot convert {type} "
-        #         f"to {self.leftPartType}"
+        #         f"to {self.leftPartDefinition.Type()}"
         #     )
 
-        return ir.Constant(self.leftPartType, number), PascalTypes.numericSemanticLabel
+        return ir.Constant(self.leftPartDefinition.Type(), number), PascalTypes.numericSemanticLabel
 
     def visitBool_(self, ctx:PascalParser.Bool_Context):
         val = None
@@ -208,28 +232,28 @@ class LLVMPascalVisitor(PascalVisitor):
         elif ctx.FALSE():
             val = 0
 
-        if (isinstance(self.leftPartType, ir.IntType)):
-            if self.leftPartType.width == 1:
-                return ir.Constant(self.leftPartType, val), PascalTypes.boolSemanticLabel
+        if (isinstance(self.leftPartDefinition.Type(), ir.IntType)):
+            if self.leftPartDefinition.Type().width == 1:
+                return ir.Constant(self.leftPartDefinition.Type(), val), PascalTypes.boolSemanticLabel
 
     def visitString(self, ctx:PascalParser.StringContext):
         val = ctx.STRING_LITERAL().getText()[1:-1]
         val = val.replace("''", "'")
         val = bytes(val, "utf-8").decode("unicode_escape").encode("utf-8")
 
-        if not isinstance(self.leftPartType, ir.ArrayType):
-            if self.leftPartType == ir.IntType(8):
+        if not isinstance(self.leftPartDefinition.Type(), ir.ArrayType):
+            if self.leftPartDefinition.Type() == ir.IntType(8):
                 if len(val) > 1:
                     raise TypeError("Cannot create char in this context")
 
-                return ir.Constant(self.leftPartType, ord(val)), PascalTypes.charSemanticLabel
+                return ir.Constant(self.leftPartDefinition.Type(), ord(val)), PascalTypes.charSemanticLabel
             else:
                 raise TypeError("Cannot create string in this context")
 
         valLenWithTerm = len(val) + 1 
-        if valLenWithTerm > self.leftPartType.count:
-            raise TypeError(f"Длина строки {valLenWithTerm} привышает размер переменной string {self.leftPartType.count}")
-        elif valLenWithTerm < self.leftPartType.count:
-            val = val.ljust(self.leftPartType.count - 1, b"\x00")
+        if valLenWithTerm > self.leftPartDefinition.Type().count:
+            raise TypeError(f"Длина строки {valLenWithTerm} привышает размер переменной string {self.leftPartDefinition.Type().count}")
+        elif valLenWithTerm < self.leftPartDefinition.Type().count:
+            val = val.ljust(self.leftPartDefinition.Type().count - 1, b"\x00")
 
-        return ir.Constant(self.leftPartType, bytearray(val + b"\x00")), PascalTypes.charSemanticLabel
+        return ir.Constant(self.leftPartDefinition.Type(), bytearray(val + b"\x00")), PascalTypes.charSemanticLabel
