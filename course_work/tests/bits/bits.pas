@@ -25,6 +25,10 @@ begin
     intVar := intVar shr 2;
     writeln(intVar);
 
+    writeln('not intVar\n');
+    intVar := not intVar;
+    writeln(intVar);
+
     writeln('___Byte (unsigned int) tests\n');
     byteVar := 101;
     writeln(byteVar);
@@ -43,5 +47,9 @@ begin
 
     writeln('byteVar shr 2\n');
     byteVar := byteVar shr 1;
+    writeln(byteVar);
+
+    writeln('not byteVar\n');
+    byteVar := not byteVar;
     writeln(byteVar);
 end.

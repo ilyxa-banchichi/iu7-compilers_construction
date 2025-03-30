@@ -14,10 +14,8 @@ class LeftPartDefinition:
     def Enter(self, type, semantic):
         self.type.append(type)
         self.semantic.append(semantic)
-        print(f"Enter {self.Type()}")
 
     def Exit(self):
-        print(f"Exit {self.Type()}")
         self.type.pop()
         self.semantic.pop()
 
@@ -100,6 +98,7 @@ class LLVMPascalVisitor(PascalVisitor):
             value, valSemantic = self.visit(param)
             self.leftPartDefinition.Exit()
 
+            print(value.type)
             if isinstance(value.type, ir.ArrayType):
                 if value.type.element == ir.IntType(8):
                     strVar = self.builder.alloca(value.type)
@@ -108,8 +107,11 @@ class LLVMPascalVisitor(PascalVisitor):
                     self.builder.call(procedure, [strVarPtr])
             else:
                 if isinstance(value.type, ir.IntType):
-                    if value.type.width == 8 and valSemantic == PascalTypes.charSemanticLabel:
-                        formatStr += "%c"
+                    if value.type.width == 8:
+                        if valSemantic == PascalTypes.charSemanticLabel:
+                            formatStr += "%c"
+                        else:
+                            formatStr += "%hhu"
                     elif value.type.width == 16:
                         formatStr += "%hd"
                     else:
@@ -166,7 +168,6 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
         left, lSemantic = self.visit(ctx.simpleExpression())
-        print(f"shit op {ctx.shiftOperator()}")
         if ctx.shiftOperator():
 
             self.leftPartDefinition.Enter(left.type, lSemantic)
@@ -183,16 +184,12 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitTerm(self, ctx:PascalParser.TermContext):
         signedFactor, lSemantic = self.visit(ctx.signedFactor())
-        print(signedFactor)
-        print(f"signedFactor: {signedFactor.type}")
 
         if ctx.multiplicativeoperator():
-            print("Start mul")
             self.leftPartDefinition.Enter(signedFactor.type, lSemantic)
             right, rSemantic = self.visit(ctx.term())
             operator = self.visit(ctx.multiplicativeoperator())
             self.leftPartDefinition.Exit()
-            print(f"right: {right.type}")
 
             if lSemantic != PascalTypes.numericSemanticLabel:
                 raise TypeError(f"Cannot apply operator {operator.getText()} to not numeric type {signedFactor, lSemantic}")
@@ -252,9 +249,13 @@ class LLVMPascalVisitor(PascalVisitor):
         return signedFactor, semantic
 
     def visitFactor(self, ctx:PascalParser.FactorContext):
-        (factor, semantic) = self.visitChildren(ctx)
+        factor, semantic = self.visitChildren(ctx)
         if self.is_pointer(factor):
             factor = self.builder.load(factor)
+
+        if ctx.NOT():
+            if isinstance(factor.type, ir.IntType):
+                factor = self.builder.xor(factor, ir.Constant(factor.type, -1))
 
         return factor, semantic
 
