@@ -267,7 +267,15 @@ variable
     ;
 
 expression
-    : simpleExpression (relationaloperator expression)?
+    : shiftExpression (relationaloperator shiftExpression)?
+    ;
+
+shiftExpression
+    : simpleExpression (shiftOperator shiftExpression)?
+    ;
+
+shiftOperator
+    : SHL | SHR
     ;
 
 relationaloperator
@@ -480,6 +488,9 @@ STRING       : 'STRING';
 IMPLEMENTATION: 'IMPLEMENTATION';
 TRUE         : 'TRUE';
 FALSE        : 'FALSE';
+
+SHL          : 'SHL';
+SHR          : 'SHR';
 
 WS           : [ \t\r\n]+ -> skip;
 COMMENT_1    : '(*' .*? '*)' -> skip;

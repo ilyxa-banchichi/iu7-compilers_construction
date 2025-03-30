@@ -289,6 +289,16 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by PascalParser#shiftExpression.
+    def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by PascalParser#shiftOperator.
+    def visitShiftOperator(self, ctx:PascalParser.ShiftOperatorContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by PascalParser#relationaloperator.
     def visitRelationaloperator(self, ctx:PascalParser.RelationaloperatorContext):
         return self.visitChildren(ctx)

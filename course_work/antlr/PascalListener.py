@@ -512,6 +512,24 @@ class PascalListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by PascalParser#shiftExpression.
+    def enterShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
+        pass
+
+    # Exit a parse tree produced by PascalParser#shiftExpression.
+    def exitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
+        pass
+
+
+    # Enter a parse tree produced by PascalParser#shiftOperator.
+    def enterShiftOperator(self, ctx:PascalParser.ShiftOperatorContext):
+        pass
+
+    # Exit a parse tree produced by PascalParser#shiftOperator.
+    def exitShiftOperator(self, ctx:PascalParser.ShiftOperatorContext):
+        pass
+
+
     # Enter a parse tree produced by PascalParser#relationaloperator.
     def enterRelationaloperator(self, ctx:PascalParser.RelationaloperatorContext):
         pass

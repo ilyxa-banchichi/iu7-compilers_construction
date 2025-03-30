@@ -164,6 +164,23 @@ class LLVMPascalVisitor(PascalVisitor):
 
         return term, lSemantic
 
+    def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
+        left, lSemantic = self.visit(ctx.simpleExpression())
+        print(f"shit op {ctx.shiftOperator()}")
+        if ctx.shiftOperator():
+
+            self.leftPartDefinition.Enter(left.type, lSemantic)
+            right, rSemantic = self.visit(ctx.shiftExpression())
+            operator = self.visit(ctx.shiftOperator())
+            self.leftPartDefinition.Exit()
+
+            if operator.SHL():
+                return self.builder.shl(left, right), lSemantic
+            elif operator.SHR():
+                return self.builder.lshr(left, right), lSemantic
+
+        return left, lSemantic
+
     def visitTerm(self, ctx:PascalParser.TermContext):
         signedFactor, lSemantic = self.visit(ctx.signedFactor())
         print(signedFactor)
@@ -251,6 +268,9 @@ class LLVMPascalVisitor(PascalVisitor):
         return ctx
 
     def visitMultiplicativeoperator(self, ctx:PascalParser.MultiplicativeoperatorContext):
+        return ctx
+
+    def visitShiftOperator(self, ctx:PascalParser.ShiftOperatorContext):
         return ctx
 
     def visitIdentifierList(self, ctx:PascalParser.IdentifierListContext):
