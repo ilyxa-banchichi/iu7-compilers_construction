@@ -6,9 +6,7 @@ define void @"main"()
 {
 entry:
   %"intVar" = alloca i16
-  %"stepVar" = alloca float
   %"floatVar" = alloca float
-  %"etalonVar" = alloca float
   store float 0x40147e7d20000000, float* %"floatVar"
   store i16 5, i16* %"intVar"
   %".4" = alloca [255 x i8]

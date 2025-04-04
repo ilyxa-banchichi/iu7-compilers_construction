@@ -2,7 +2,7 @@ import llvmlite.binding as llvm
 from llvmlite import ir
 import ctypes
 
-with open("tests/ifelse/ifelse.ll", "r") as f:
+with open("tests/cycles/cycles.ll", "r") as f:
     ir_code = str(f.read())
 
 llvm.initialize()

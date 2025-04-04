@@ -12,6 +12,8 @@ from core.functions.MulOperators import *
 from core.functions.AddOperator import *
 from core.functions.RelOperators import *
 from core.functions.IfStatement import *
+from core.functions.ForStatement import *
+from core.functions.WhileStatement import *
 from core.TypeCast import *
 
 class LeftPartDefinition:
@@ -85,6 +87,15 @@ class LLVMPascalVisitor(PascalVisitor):
         value = castStoredValue(self.builder, variable, value)
         self.builder.store(value, variable)
 
+    def visitWhileStatement(self, ctx:PascalParser.WhileStatementContext):
+        return visitWhileStatement(self, ctx)
+
+    def visitForStatement(self, ctx:PascalParser.ForStatementContext):
+        return visitForStatement(self, ctx)
+
+    def visitForList(self, ctx:PascalParser.ForListContext):
+        return visitForList(self, ctx)
+
     def visitIfStatement(self, ctx:PascalParser.IfStatementContext):
         return visitIfStatement(self, ctx)
 
@@ -101,7 +112,6 @@ class LLVMPascalVisitor(PascalVisitor):
             self.leftPartDefinition.Exit()
 
             return addOperator(self, left, lSemantic, right, rSemantic, operator)
-
 
         return left, lSemantic
 

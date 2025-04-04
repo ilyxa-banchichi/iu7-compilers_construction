@@ -1,10 +1,8 @@
-program RelationalTest;
+program IfElseTest;
 
 var
     intVar: integer;
-    stepVar: real;
     floatVar: real;
-    etalonVar: real;
 begin
     floatVar := 5.123524;
     intVar := 5;
