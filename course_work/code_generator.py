@@ -4,7 +4,7 @@ from antlr.PascalLexer import PascalLexer
 from antlr.PascalParser import PascalParser
 from core.LLVMPascalVisitor import LLVMPascalVisitor
 
-def GenerateIR(input_filename, output_filename):
+def generateIR(input_filename, output_filename):
     lexer = PascalLexer(FileStream(input_filename))
     stream = CommonTokenStream(lexer)
     parser = PascalParser(stream)
@@ -29,6 +29,19 @@ def GenerateIR(input_filename, output_filename):
     #     error_listener.print_errors()
     #     return False
 
-inputFile = "tests/logical/logical.pas"
-outputFile = inputFile[:-4] + ".ll"
-GenerateIR(inputFile, outputFile)
+def generateForFile(inputFile):
+    outputFile = inputFile[:-4] + ".ll"
+
+    print("For " + inputFile)
+    generateIR(inputFile, outputFile)
+    print("Created " + outputFile)
+
+allTests = [
+    "tests/types/types.pas",
+    "tests/aritmhetic/aritmhetic.pas",
+    "tests/bits/bits.pas",
+    "tests/logical/logical.pas",
+]
+
+for test in allTests:
+    generateForFile(test)

@@ -5,6 +5,11 @@ from llvmlite import ir
 from core.PascalTypes import *
 from core.SymbolTable import *
 from core.BuiltinSymbols import *
+from core.functions.Literals import *
+from core.functions.Operators import *
+from core.functions.Temp import *
+from core.functions.MulOperators import *
+from core.functions.AddOperator import *
 
 class LeftPartDefinition:
     def __init__(self):
@@ -89,82 +94,21 @@ class LLVMPascalVisitor(PascalVisitor):
             )
 
     def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
-        identifier = self.visit(ctx.identifier())
-        procedure = self.symbolTable[identifier]
-
-        formatStr = ""
-        for param in ctx.parameterList().actualParameter():
-            self.leftPartDefinition.Enter(PascalTypes.defaultString, PascalTypes.charSemanticLabel)
-            value, valSemantic = self.visit(param)
-            self.leftPartDefinition.Exit()
-
-            print(value.type)
-            if isinstance(value.type, ir.ArrayType):
-                if value.type.element == ir.IntType(8):
-                    strVar = self.builder.alloca(value.type)
-                    self.builder.store(value, strVar)
-                    strVarPtr = self.builder.gep(strVar, [ir.Constant(ir.IntType(8), 0), ir.Constant(ir.IntType(8), 0)])
-                    self.builder.call(procedure, [strVarPtr])
-            else:
-                if isinstance(value.type, ir.IntType):
-                    if value.type.width == 8:
-                        if valSemantic == PascalTypes.charSemanticLabel:
-                            formatStr += "%c"
-                        else:
-                            formatStr += "%hhu"
-                    elif value.type.width == 16:
-                        formatStr += "%hd"
-                    else:
-                        formatStr += "%d"
-                elif isinstance(value.type, ir.FloatType):
-                    formatStr += "%f"
-                elif isinstance(value.type, ir.DoubleType):
-                    formatStr += "%f"
-                formatStr += "\n"
-                formatStr = formatStr.encode("utf8")
-                formatStr += b"\0"
-
-                strLen = len(formatStr)
-                inputStr = ir.Constant(ir.ArrayType(ir.IntType(8), strLen), bytearray(formatStr))
-                strVar = self.builder.alloca(ir.ArrayType(ir.IntType(8), strLen))
-                self.builder.store(inputStr, strVar)
-                strVarPtr = self.builder.gep(strVar, [ir.Constant(ir.IntType(8), 0), ir.Constant(ir.IntType(8), 0)])
-
-                self.builder.call(procedure, [strVarPtr, value])
+        return visitProcedureStatement(self, ctx)
 
     def visitSimpleExpression(self, ctx:PascalParser.SimpleExpressionContext):
-        term, lSemantic = self.visit(ctx.term())
+        left, lSemantic = self.visit(ctx.term())
         if ctx.additiveoperator():
 
-            self.leftPartDefinition.Enter(term.type, lSemantic)
+            self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.simpleExpression())
             operator = self.visit(ctx.additiveoperator())
             self.leftPartDefinition.Exit()
 
-            if lSemantic != PascalTypes.numericSemanticLabel:
-                raise TypeError(f"Cannot apply operator {operator.getText()} to not numeric type {term, lSemantic}")
+            return AddOperator(self, left, lSemantic, right, rSemantic, operator)
 
-            if rSemantic != lSemantic or term.type != right.type:
-                raise TypeError(f"Cannot apply operator {operator.getText()} to different types {term.type} and {right.type}")
 
-            if isinstance(term.type, ir.FloatType):
-                if operator.PLUS():
-                    return self.builder.fadd(term, right), lSemantic
-                elif operator.MINUS():
-                    return self.builder.fsub(term, right), lSemantic
-                elif operator.OR():
-                    raise TypeError(f"Cannot apply operator {operator.OR()} to float types")
-            elif isinstance(term.type, ir.IntType):
-                if operator.PLUS():
-                    return self.builder.add(term, right), lSemantic
-                elif operator.MINUS():
-                    return self.builder.sub(term, right), lSemantic
-                elif operator.OR():
-                    return self.builder.or_(term, right), lSemantic
-            else:
-                raise TypeError(f"Cannot apply additive operator to type {term.type}")
-
-        return term, lSemantic
+        return left, lSemantic
 
     def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
         left, lSemantic = self.visit(ctx.simpleExpression())
@@ -207,58 +151,17 @@ class LLVMPascalVisitor(PascalVisitor):
         return left, lSemantic
 
     def visitTerm(self, ctx:PascalParser.TermContext):
-        signedFactor, lSemantic = self.visit(ctx.signedFactor())
+        left, lSemantic = self.visit(ctx.signedFactor())
 
         if ctx.multiplicativeoperator():
-            self.leftPartDefinition.Enter(signedFactor.type, lSemantic)
+            self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.term())
             operator = self.visit(ctx.multiplicativeoperator())
             self.leftPartDefinition.Exit()
 
-            if lSemantic != PascalTypes.numericSemanticLabel:
-                raise TypeError(f"Cannot apply operator {operator.getText()} to not numeric type {signedFactor, lSemantic}")
+            return MulOperator(self, left, lSemantic, right, rSemantic, operator)
 
-            if rSemantic != lSemantic or signedFactor.type != right.type:
-                raise TypeError(f"Cannot apply operator {operator.getText()} to different types {signedFactor.type} and {right.type}")
-
-            if isinstance(signedFactor.type, ir.FloatType):
-                if operator.STAR():
-                    return self.builder.fmul(signedFactor, right), lSemantic
-                elif operator.SLASH():
-                    return self.builder.fdiv(signedFactor, right), lSemantic
-                elif operator.DIV():
-                    raise TypeError(f"Cannot apply operator {operator.DIV()} to float types")
-                elif operator.MOD():
-                    raise TypeError(f"Cannot apply operator {operator.MOD()} to float types")
-                elif operator.AND():
-                    raise TypeError(f"Cannot apply operator {operator.AND()} to float types")
-
-            elif isinstance(signedFactor.type, ir.IntType):
-                if operator.STAR():
-                    return self.builder.mul(signedFactor, right), lSemantic
-                elif operator.AND():
-                    return self.builder.and_(signedFactor, right), lSemantic
-
-                if signedFactor.type.width == 8:
-                    if operator.SLASH():
-                        af = self.builder.uitofp(signedFactor, ir.FloatType())
-                        bf = self.builder.uitofp(right, ir.FloatType())
-                        return self.builder.fdiv(af, bf), lSemantic
-                    elif operator.DIV():
-                        return self.builder.udiv(signedFactor, right), lSemantic
-                    elif operator.MOD():
-                        return self.builder.urem(signedFactor, right), lSemantic
-                else:
-                    if operator.SLASH():
-                        af = self.builder.sitofp(signedFactor, ir.FloatType())
-                        bf = self.builder.sitofp(right, ir.FloatType())
-                        return self.builder.fdiv(af, bf), lSemantic
-                    elif operator.DIV():
-                        return self.builder.sdiv(signedFactor, right), lSemantic
-                    elif operator.MOD():
-                        return self.builder.srem(signedFactor, right), lSemantic
-
-        return signedFactor, lSemantic
+        return left, lSemantic
 
     def visitSignedFactor(self, ctx:PascalParser.SignedFactorContext):
         signedFactor, semantic = self.visitChildren(ctx)
@@ -283,36 +186,9 @@ class LLVMPascalVisitor(PascalVisitor):
 
         return factor, semantic
 
-    # Нужно для описания всех возможных способов обращения к переменным и их элементам,
-    # включая доступ к полям записей, элементам массивов, указателям и другим составным структурам.
     def visitVariable(self, ctx:PascalParser.VariableContext):
         identifier = self.visit(ctx.identifier(0))
         return self.symbolTable[identifier]
-
-    def visitAdditiveoperator(self, ctx:PascalParser.AdditiveoperatorContext):
-        return ctx
-
-    def visitMultiplicativeoperator(self, ctx:PascalParser.MultiplicativeoperatorContext):
-        return ctx
-
-    def visitShiftOperator(self, ctx:PascalParser.ShiftOperatorContext):
-        return ctx
-
-    def visitRelationaloperator(self, ctx:PascalParser.RelationaloperatorContext):
-        if ctx.EQUAL():
-            return '=='
-        elif ctx.NOT_EQUAL():
-            return '!='
-        elif ctx.LT():
-            return '<'
-        elif ctx.LE():
-            return '<='
-        elif ctx.GE():
-            return '>='
-        elif ctx.GT():
-            return '>'
-        elif ctx.IN():
-            raise TypeError("In operator not support")
 
     def visitIdentifierList(self, ctx:PascalParser.IdentifierListContext):
         lst = []
@@ -321,71 +197,29 @@ class LLVMPascalVisitor(PascalVisitor):
 
         return lst
 
+    def visitAdditiveoperator(self, ctx:PascalParser.AdditiveoperatorContext):
+        return visitAdditiveoperator(self, ctx)
+
+    def visitMultiplicativeoperator(self, ctx:PascalParser.MultiplicativeoperatorContext):
+        return visitMultiplicativeoperator(self, ctx)
+
+    def visitShiftOperator(self, ctx:PascalParser.ShiftOperatorContext):
+        return visitShiftOperator(self, ctx)
+
+    def visitRelationaloperator(self, ctx:PascalParser.RelationaloperatorContext):
+        return visitRelationaloperator(self, ctx)
+
     def visitIdentifier(self, ctx:PascalParser.IdentifierContext):
         return ctx.IDENT().getText()
 
     def visitUnsignedInteger(self, ctx:PascalParser.UnsignedIntegerContext):
-        number = ctx.NUM_INT().getText()
-        type = PascalTypes.getIntLiteralType(int(number))
-        if isinstance(self.leftPartDefinition.Type(), ir.IntType):
-            if type.width > self.leftPartDefinition.Type().width:
-                raise TypeError(
-                    f"Type mismatch in assignment: "
-                    f"cannot convert {number} ({type}) "
-                    f"to {self.leftPartDefinition.Type()}"
-                )
-
-        if isinstance(self.leftPartDefinition.Type(), ir.FloatType) or isinstance(self.leftPartDefinition.Type(), ir.DoubleType):
-            number = float(number)
-
-        return ir.Constant(self.leftPartDefinition.Type(), number), PascalTypes.numericSemanticLabel
+        return visitUnsignedInteger(self, ctx)
 
     def visitUnsignedReal(self, ctx:PascalParser.UnsignedRealContext):
-        if isinstance(self.leftPartDefinition.Type(), ir.IntType):
-            raise TypeError(f"Cannot create float in this context. lType: {self.leftPartDefinition.Type()}")
-
-        number = ctx.NUM_REAL().getText()
-        number = float(number)
-        type = PascalTypes.getFloatLiteralType(number)
-        # Сделать понимание типа литерала
-        # if self.leftPartDefinition.Type() != type:
-        #     raise TypeError(
-        #         f"Type mismatch in assignment: "
-        #         f"cannot convert {type} "
-        #         f"to {self.leftPartDefinition.Type()}"
-        #     )
-
-        return ir.Constant(self.leftPartDefinition.Type(), number), PascalTypes.numericSemanticLabel
+        return visitUnsignedReal(self, ctx)
 
     def visitBool_(self, ctx:PascalParser.Bool_Context):
-        val = None
-        if ctx.TRUE():
-            val = 1
-        elif ctx.FALSE():
-            val = 0
-
-        if (isinstance(self.leftPartDefinition.Type(), ir.IntType)):
-            if self.leftPartDefinition.Type().width == 1:
-                return ir.Constant(self.leftPartDefinition.Type(), val), PascalTypes.boolSemanticLabel
+        return visitBool_(self, ctx)
 
     def visitString(self, ctx:PascalParser.StringContext):
-        val = ctx.STRING_LITERAL().getText()[1:-1]
-        val = val.replace("''", "'")
-        val = bytes(val, "utf-8").decode("unicode_escape").encode("utf-8")
-
-        if not isinstance(self.leftPartDefinition.Type(), ir.ArrayType):
-            if self.leftPartDefinition.Type().element == ir.IntType(8):
-                if len(val) > 1:
-                    raise TypeError("Cannot create char in this context")
-
-                return ir.Constant(self.leftPartDefinition.Type(), ord(val)), PascalTypes.charSemanticLabel
-            else:
-                raise TypeError(f"Cannot create string in this context. LType {self.leftPartDefinition.Type()}")
-
-        valLenWithTerm = len(val) + 1
-        if valLenWithTerm > self.leftPartDefinition.Type().count:
-            raise TypeError(f"Длина строки {valLenWithTerm} привышает размер переменной string {self.leftPartDefinition.Type().count}")
-        elif valLenWithTerm < self.leftPartDefinition.Type().count:
-            val = val.ljust(self.leftPartDefinition.Type().count - 1, b"\x00")
-
-        return ir.Constant(self.leftPartDefinition.Type(), bytearray(val + b"\x00")), PascalTypes.charSemanticLabel
+        return visitString(self, ctx)
