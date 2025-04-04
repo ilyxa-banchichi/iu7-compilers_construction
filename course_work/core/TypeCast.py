@@ -10,6 +10,36 @@ type_priority = {
 
 priority_to_type = {v: k for k, v in type_priority.items()}
 
+def castStoredValue(builder, ptr, value):
+    target_type = ptr.type.pointee
+    value_type = value.type
+
+    if target_type == value_type:
+        return value
+
+    target_prio = type_priority.get(target_type)
+    value_prio = type_priority.get(value_type)
+
+    if target_prio is None or value_prio is None:
+        raise TypeError(f"Unsupported type(s): {value_type} -> {target_type}")
+
+    if value_prio > target_prio:
+        raise TypeError(f"Unsafe cast from higher-priority {value_type} to {target_type}")
+
+    # int -> float/double
+    if isinstance(value_type, ir.IntType) and isinstance(target_type, ir.FloatType):
+        return builder.sitofp(value, target_type)
+
+    # float -> double
+    if isinstance(value_type, ir.FloatType) and isinstance(target_type, ir.DoubleType):
+        return builder.fpext(value, target_type)
+
+    # int -> int
+    if isinstance(value_type, ir.IntType) and isinstance(target_type, ir.IntType):
+        return builder.sext(value, target_type)
+
+    raise TypeError(f"Unsupported cast: {value_type} -> {target_type}")
+
 def castValues(builder, left_val, right_val):
     left_ty = left_val.type
     right_ty = right_val.type

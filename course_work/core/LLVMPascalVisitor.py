@@ -11,6 +11,8 @@ from core.functions.Temp import *
 from core.functions.MulOperators import *
 from core.functions.AddOperator import *
 from core.functions.RelOperators import *
+from core.functions.IfStatement import *
+from core.TypeCast import *
 
 class LeftPartDefinition:
     def __init__(self):
@@ -42,7 +44,7 @@ class LLVMPascalVisitor(PascalVisitor):
         BuiltinSymbols.addBuiltinSymbols(self.symbolTable, self.module)
 
         self.leftPartDefinition = LeftPartDefinition()
-        self.conversionRules = []
+        self.currentFunction = ""
 
     def save(self, filename):
         with open(filename, "w") as f:
@@ -52,11 +54,13 @@ class LLVMPascalVisitor(PascalVisitor):
         return isinstance(value.type, ir.PointerType)
 
     def visitProgram(self, ctx):
-        self.builder = ir.IRBuilder(self.symbolTable["main"].append_basic_block('entry'))
+        self.currentFunction = "main"
+        self.builder = ir.IRBuilder(self.symbolTable[self.currentFunction].append_basic_block('entry'))
         self.symbolTable.enter_scope()
 
         self.visit(ctx.block())
         self.builder.ret_void()
+        self.symbolTable.exit_scope()
 
         return str(self.module)
 
@@ -78,21 +82,11 @@ class LLVMPascalVisitor(PascalVisitor):
         (value, valSemantic) = self.visit(ctx.expression())
         self.leftPartDefinition.Exit()
 
-        if variable.type.pointee == value.type:
-            if varSemantic == valSemantic:
-                self.builder.store(value, variable)
-            else:
-                raise TypeError(
-                    f"Type mismatch in assignment: "
-                    f"cannot convert {varSemantic} "
-                    f"to {valSemantic}"
-                )
-        else:
-            raise TypeError(
-                f"Type mismatch in assignment: "
-                f"cannot convert {value.type} "
-                f"to {variable.type.pointee}"
-            )
+        value = castStoredValue(self.builder, variable, value)
+        self.builder.store(value, variable)
+
+    def visitIfStatement(self, ctx:PascalParser.IfStatementContext):
+        return visitIfStatement(self, ctx)
 
     def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
         return visitProcedureStatement(self, ctx)
@@ -138,7 +132,6 @@ class LLVMPascalVisitor(PascalVisitor):
             self.leftPartDefinition.Exit()
 
             return relOperator(self, left, lSemantic, right, rSemantic, operator)
-
 
         return left, lSemantic
 
