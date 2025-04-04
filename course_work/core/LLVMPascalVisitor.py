@@ -71,9 +71,9 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitTypeDefinition(self, ctx:PascalParser.TypeDefinitionContext):
         identifier = self.visit(ctx.identifier())
-        names, irt, semantics = self.visit(ctx.type_())
+        names, types, semantics = self.visit(ctx.type_())
         struct = ir.context.global_context.get_identified_type(identifier)
-        struct.set_body(*irt)
+        struct.set_body(*types)
         self.records[struct] = (names, semantics)
         PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
 
