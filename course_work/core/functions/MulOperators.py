@@ -1,8 +1,7 @@
 from antlr.PascalParser import PascalParser
 from llvmlite import ir
 from core.PascalTypes import *
-from core.SymbolTable import *
-from core.BuiltinSymbols import *
+from core.TypeCast import *
 
 def mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator):
     if operator.STAR():
@@ -54,7 +53,7 @@ def mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator):
             elif operator.MOD():
                 return self.builder.srem(left, right), lSemantic
 
-def MulOperator(self, left, lSemantic, right, rSemantic, operator):
+def mulOperator(self, left, lSemantic, right, rSemantic, operator):
     if lSemantic != rSemantic:
         raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
 
@@ -62,8 +61,8 @@ def MulOperator(self, left, lSemantic, right, rSemantic, operator):
         return mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator)
 
     if lSemantic == PascalTypes.numericSemanticLabel:
-        if rSemantic != lSemantic or left.type != right.type:
-            raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} and {right.type}")
+        if left.type != right.type:
+            left, right = castValues(self.builder, left, right)
         return mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator)
 
     raise TypeError(f"Cannot apply operator {operator.getText()} this context {left, lSemantic}")

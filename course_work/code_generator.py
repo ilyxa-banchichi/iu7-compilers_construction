@@ -42,9 +42,10 @@ allTests = [
     "tests/bits/bits.pas",
     "tests/relational/relational.pas",
     "tests/logical/logical.pas",
+    "tests/ifelse/ifelse.pas",
 ]
 
-generateForFile("tests/logical/logical.pas")
+generateForFile("tests/ifelse/ifelse.pas")
 
 # for test in allTests:
 #     generateForFile(test)

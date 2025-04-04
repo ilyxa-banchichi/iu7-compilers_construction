@@ -1,4 +1,4 @@
-program LogicalTest;
+program RelationalTest;
 
 var
     intVar: integer;

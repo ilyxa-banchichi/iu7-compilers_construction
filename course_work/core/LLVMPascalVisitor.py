@@ -10,6 +10,7 @@ from core.functions.Operators import *
 from core.functions.Temp import *
 from core.functions.MulOperators import *
 from core.functions.AddOperator import *
+from core.functions.RelOperators import *
 
 class LeftPartDefinition:
     def __init__(self):
@@ -105,7 +106,7 @@ class LLVMPascalVisitor(PascalVisitor):
             operator = self.visit(ctx.additiveoperator())
             self.leftPartDefinition.Exit()
 
-            return AddOperator(self, left, lSemantic, right, rSemantic, operator)
+            return addOperator(self, left, lSemantic, right, rSemantic, operator)
 
 
         return left, lSemantic
@@ -113,6 +114,9 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
         left, lSemantic = self.visit(ctx.simpleExpression())
         if ctx.shiftOperator():
+            if lSemantic != PascalTypes.numericSemanticLabel or not isinstance(left.type, ir.IntType):
+                raise TypeError(f"Cannot apply shift operator {operator} to not integer type")
+
             operator = self.visit(ctx.shiftOperator())
             self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.shiftExpression())
@@ -133,19 +137,7 @@ class LLVMPascalVisitor(PascalVisitor):
             right, rSemantic = self.visit(ctx.shiftExpression(1))
             self.leftPartDefinition.Exit()
 
-            if lSemantic != PascalTypes.numericSemanticLabel:
-                raise TypeError(f"Cannot apply operator {operator.getText()} to not numeric type {left, lSemantic}")
-
-            if rSemantic != lSemantic or left.type != right.type:
-                raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} and {right.type}")
-
-            if isinstance(left.type, ir.FloatType):
-                    return self.builder.fcmp_ordered(operator, left, right), PascalTypes.boolSemanticLabel
-            elif isinstance(left.type, ir.IntType):
-                if left.type.width == 8:
-                    return self.builder.icmp_unsigned(operator, left, right), PascalTypes.boolSemanticLabel
-                else:
-                    return self.builder.icmp_signed(operator, left, right), PascalTypes.boolSemanticLabel
+            return relOperator(self, left, lSemantic, right, rSemantic, operator)
 
 
         return left, lSemantic
@@ -159,7 +151,7 @@ class LLVMPascalVisitor(PascalVisitor):
             operator = self.visit(ctx.multiplicativeoperator())
             self.leftPartDefinition.Exit()
 
-            return MulOperator(self, left, lSemantic, right, rSemantic, operator)
+            return mulOperator(self, left, lSemantic, right, rSemantic, operator)
 
         return left, lSemantic
 
