@@ -6,8 +6,7 @@ var
 begin
     n := 10;
     f := 1;
-    writeln('Start for 1 to ');
-    writeln(n);
+    writeln('Start for 1 to ', n);
 
     for i := 1 to n do begin
         if i mod 2 = 0 then
@@ -15,8 +14,7 @@ begin
         else
             f := f / i;
 
-        writeln('f = ');
-        writeln(f);
+        writeln('f = ', f);
     end;
 
     f := 0;
@@ -24,9 +22,7 @@ begin
     while f < 100 do begin
         i := i * 2;
         f := f + i;
-        writeln('i = ');
-        writeln(i);
+        writeln('i = ', i);
     end;
-    writeln('Sum = ');
-    writeln(f);
+    writeln('Sum = ', f);
 end.
