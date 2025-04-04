@@ -194,13 +194,23 @@ class LLVMPascalVisitor(PascalVisitor):
         return signedFactor, semantic
 
     def visitFactor(self, ctx:PascalParser.FactorContext):
-        factor, semantic = self.visitChildren(ctx)
-        if self.is_pointer(factor):
-            factor = self.builder.load(factor)
-
-        if ctx.NOT():
+        if ctx.variable():
+            factor, semantic = self.visit(ctx.variable())
+        elif ctx.LPAREN() or ctx == ctx.RPAREN():
+            factor, semantic = self.visit(ctx.expression())
+        elif ctx.unsignedConstant():
+            factor, semantic = self.visit(ctx.unsignedConstant())
+        elif ctx.set_():
+            raise Exception("Set in not support")
+        elif ctx.NOT():
+            factor, semantic = self.visit(ctx.factor())
             if isinstance(factor.type, ir.IntType):
                 factor = self.builder.xor(factor, ir.Constant(factor.type, -1))
+        elif ctx.bool_():
+            factor, semantic = self.visit(ctx.bool_())
+
+        if self.is_pointer(factor):
+            factor = self.builder.load(factor)
 
         return factor, semantic
 

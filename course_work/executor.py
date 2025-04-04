@@ -1,8 +1,16 @@
+import sys
 import llvmlite.binding as llvm
 from llvmlite import ir
 import ctypes
+from code_generator import generateForFile
 
-with open("tests/structure/structure.ll", "r") as f:
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
+else:
+    filename = "tests/programs/LinePlaneIntersection.pas"
+
+filename = generateForFile(filename)
+with open(filename, "r") as f:
     ir_code = str(f.read())
 
 llvm.initialize()

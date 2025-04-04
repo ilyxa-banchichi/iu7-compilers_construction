@@ -14,7 +14,6 @@ def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
         value, valSemantic = self.visit(param)
         self.leftPartDefinition.Exit()
 
-        print(value.type)
         if isinstance(value.type, ir.ArrayType):
             if value.type.element == ir.IntType(8):
                 strVar = self.builder.alloca(value.type)
