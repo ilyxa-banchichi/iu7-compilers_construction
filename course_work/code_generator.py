@@ -40,8 +40,11 @@ allTests = [
     "tests/types/types.pas",
     "tests/aritmhetic/aritmhetic.pas",
     "tests/bits/bits.pas",
+    "tests/relational/relational.pas",
     "tests/logical/logical.pas",
 ]
 
-for test in allTests:
-    generateForFile(test)
+generateForFile("tests/logical/logical.pas")
+
+# for test in allTests:
+#     generateForFile(test)

@@ -1,101 +1,55 @@
 program LogicalTest;
 
 var
-    intVar: integer;
-    byteVar: byte;
-    floatVar: real;
+    bool1Var: boolean;
+    bool2Var: boolean;
     resVar: boolean;
 begin
-    writeln('___Integer tests\n');
+    writeln('1 == true\n2 == false\n');
+    bool1Var := true;
+    bool2Var := false;
+    resVar := bool1Var and bool2Var;
 
-    intVar := 5;
-    resVar := intVar = intVar;
-    writeln('intVar == intVar\n');
+    writeln('and\n');
     writeln(resVar);
 
-    resVar := intVar = 10;
-    writeln('intVar == 10\n');
+    writeln('1 == true\n2 == true\n');
+    bool1Var := true;
+    bool2Var := true;
+    resVar := bool1Var and bool2Var;
+
+    writeln('and\n');
     writeln(resVar);
 
-    resVar := intVar <> 10;
-    writeln('intVar != 10\n');
+    writeln('1 == false\n2 == false\n');
+    bool1Var := false;
+    bool2Var := false;
+    resVar := bool1Var and bool2Var;
+
+    writeln('and\n');
     writeln(resVar);
 
-    resVar := intVar > intVar;
-    writeln('intVar > intVar\n');
+    writeln('1 == true\n2 == false\n');
+    bool1Var := true;
+    bool2Var := false;
+    resVar := bool1Var or bool2Var;
+
+    writeln('or\n');
     writeln(resVar);
 
-    resVar := intVar < intVar;
-    writeln('intVar < intVar\n');
+    writeln('1 == true\n2 == true\n');
+    bool1Var := true;
+    bool2Var := true;
+    resVar := bool1Var or bool2Var;
+
+    writeln('or\n');
     writeln(resVar);
 
-    resVar := intVar >= intVar;
-    writeln('intVar >= intVar\n');
-    writeln(resVar);
+    writeln('1 == false\n2 == false\n');
+    bool1Var := false;
+    bool2Var := false;
+    resVar := bool1Var or bool2Var;
 
-    resVar := intVar <= intVar;
-    writeln('intVar <= intVar\n');
-    writeln(resVar);
-
-    writeln('___Bytes tests\n');
-
-    byteVar := 200;
-    resVar := byteVar = byteVar;
-    writeln('byteVar == byteVar\n');
-    writeln(resVar);
-
-    resVar := byteVar = 10;
-    writeln('byteVar == 10\n');
-    writeln(resVar);
-
-    resVar := byteVar <> 10;
-    writeln('byteVar != 10\n');
-    writeln(resVar);
-
-    resVar := byteVar > byteVar;
-    writeln('byteVar > byteVar\n');
-    writeln(resVar);
-
-    resVar := byteVar < byteVar;
-    writeln('byteVar < byteVar\n');
-    writeln(resVar);
-
-    resVar := byteVar >= byteVar;
-    writeln('byteVar >= byteVar\n');
-    writeln(resVar);
-
-    resVar := byteVar <= byteVar;
-    writeln('byteVar <= byteVar\n');
-    writeln(resVar);
-
-    writeln('___Float tests\n');
-
-    floatVar := 20.0123;
-    resVar := floatVar = floatVar;
-    writeln('floatVar == floatVar\n');
-    writeln(resVar);
-
-    resVar := floatVar = 10.25;
-    writeln('floatVar == 10.25\n');
-    writeln(resVar);
-
-    resVar := floatVar <> 10.25;
-    writeln('floatVar != 10.25\n');
-    writeln(resVar);
-
-    resVar := floatVar > floatVar;
-    writeln('floatVar > floatVar\n');
-    writeln(resVar);
-
-    resVar := floatVar < floatVar;
-    writeln('floatVar < floatVar\n');
-    writeln(resVar);
-
-    resVar := floatVar >= floatVar;
-    writeln('floatVar >= floatVar\n');
-    writeln(resVar);
-
-    resVar := floatVar <= floatVar;
-    writeln('floatVar <= floatVar\n');
+    writeln('or\n');
     writeln(resVar);
 end.
