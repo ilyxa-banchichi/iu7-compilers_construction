@@ -14,7 +14,7 @@ def generateIR(input_filename, output_filename):
     # parser.addErrorListener(error_listener)
 
     tree = parser.program()
-    print(tree.toStringTree(recog=parser))
+    #print(tree.toStringTree(recog=parser))
 
     # generator = LLVMPascalVisitor(error_listener)
     generator = LLVMPascalVisitor()
@@ -44,9 +44,10 @@ allTests = [
     "tests/logical/logical.pas",
     "tests/ifelse/ifelse.pas",
     "tests/cycles/cycles.pas",
+    "tests/structure/structure.pas",
 ]
 
-generateForFile("tests/cycles/cycles.pas")
+generateForFile("tests/structure/structure.pas")
 
 # for test in allTests:
 #     generateForFile(test)

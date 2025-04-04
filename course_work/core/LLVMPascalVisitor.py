@@ -1,4 +1,5 @@
 from collections import deque
+from antlr4.tree.Tree import TerminalNode
 from antlr.PascalVisitor import PascalVisitor
 from antlr.PascalParser import PascalParser
 from llvmlite import ir
@@ -14,6 +15,7 @@ from core.functions.RelOperators import *
 from core.functions.IfStatement import *
 from core.functions.ForStatement import *
 from core.functions.WhileStatement import *
+from core.functions.Records import *
 from core.TypeCast import *
 
 class LeftPartDefinition:
@@ -47,6 +49,7 @@ class LLVMPascalVisitor(PascalVisitor):
 
         self.leftPartDefinition = LeftPartDefinition()
         self.currentFunction = ""
+        self.records = {}
 
     def save(self, filename):
         with open(filename, "w") as f:
@@ -66,7 +69,27 @@ class LLVMPascalVisitor(PascalVisitor):
 
         return str(self.module)
 
+    def visitTypeDefinition(self, ctx:PascalParser.TypeDefinitionContext):
+        identifier = self.visit(ctx.identifier())
+        names, irt, semantics = self.visit(ctx.type_())
+        struct = ir.context.global_context.get_identified_type(identifier)
+        struct.set_body(*irt)
+        self.records[struct] = (names, semantics)
+        PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
+
+    def visitRecordType(self, ctx:PascalParser.RecordTypeContext):
+        return visitRecordType(self, ctx)
+
+    def visitFixedPart(self, ctx:PascalParser.FixedPartContext):
+        return visitFixedPart(self, ctx)
+
+    def visitRecordSection(self, ctx:PascalParser.RecordSectionContext):
+        return visitRecordSection(self, ctx)
+
     def visitVariableDeclaration(self, ctx:PascalParser.VariableDeclarationContext):
+        if not ctx.type_():
+            return
+
         (varType, semanticLabel) = self.visit(ctx.type_())
         varNames = self.visit(ctx.identifierList())
         for varName in varNames:
@@ -183,7 +206,22 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitVariable(self, ctx:PascalParser.VariableContext):
         identifier = self.visit(ctx.identifier(0))
-        return self.symbolTable[identifier]
+        modifiers = []
+        index = 1
+        for i in range(len(ctx.children)):
+            child = ctx.children[i]
+            if isinstance(child, TerminalNode):
+                if child.symbol.type == PascalParser.DOT:
+                    ind = self.visit(ctx.identifier(index))
+                    modifiers.append(("field", ind))
+                index += 1
+
+        currentNode, currentSemantic = self.symbolTable[identifier]
+        for modType, modValue in modifiers:
+            if modType == "field":
+                currentNode, currentSemantic = recordFieldAccess(self.builder, self.records, currentNode, modValue)
+
+        return currentNode, currentSemantic
 
     def visitIdentifierList(self, ctx:PascalParser.IdentifierListContext):
         lst = []
