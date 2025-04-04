@@ -169,16 +169,40 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
         left, lSemantic = self.visit(ctx.simpleExpression())
         if ctx.shiftOperator():
-
+            operator = self.visit(ctx.shiftOperator())
             self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.shiftExpression())
-            operator = self.visit(ctx.shiftOperator())
             self.leftPartDefinition.Exit()
 
             if operator.SHL():
                 return self.builder.shl(left, right), lSemantic
             elif operator.SHR():
                 return self.builder.lshr(left, right), lSemantic
+
+        return left, lSemantic
+
+    def visitExpression(self, ctx:PascalParser.ExpressionContext):
+        left, lSemantic = self.visit(ctx.shiftExpression(0))
+        if ctx.relationaloperator():
+            operator = self.visit(ctx.relationaloperator())
+            self.leftPartDefinition.Enter(left.type, lSemantic)
+            right, rSemantic = self.visit(ctx.shiftExpression(1))
+            self.leftPartDefinition.Exit()
+
+            if lSemantic != PascalTypes.numericSemanticLabel:
+                raise TypeError(f"Cannot apply operator {operator.getText()} to not numeric type {left, lSemantic}")
+
+            if rSemantic != lSemantic or left.type != right.type:
+                raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} and {right.type}")
+
+            if isinstance(left.type, ir.FloatType):
+                    return self.builder.fcmp_ordered(operator, left, right), PascalTypes.boolSemanticLabel
+            elif isinstance(left.type, ir.IntType):
+                if left.type.width == 8:
+                    return self.builder.icmp_unsigned(operator, left, right), PascalTypes.boolSemanticLabel
+                else:
+                    return self.builder.icmp_signed(operator, left, right), PascalTypes.boolSemanticLabel
+
 
         return left, lSemantic
 
@@ -273,6 +297,22 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitShiftOperator(self, ctx:PascalParser.ShiftOperatorContext):
         return ctx
+
+    def visitRelationaloperator(self, ctx:PascalParser.RelationaloperatorContext):
+        if ctx.EQUAL():
+            return '=='
+        elif ctx.NOT_EQUAL():
+            return '!='
+        elif ctx.LT():
+            return '<'
+        elif ctx.LE():
+            return '<='
+        elif ctx.GE():
+            return '>='
+        elif ctx.GT():
+            return '>'
+        elif ctx.IN():
+            raise TypeError("In operator not support")
 
     def visitIdentifierList(self, ctx:PascalParser.IdentifierListContext):
         lst = []
