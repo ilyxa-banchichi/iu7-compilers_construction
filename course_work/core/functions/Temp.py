@@ -16,10 +16,10 @@ def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
 
         if isinstance(value.type, ir.ArrayType):
             if value.type.element == ir.IntType(8):
-                strVar = self.builder.alloca(value.type)
-                self.builder.store(value, strVar)
-                strVarPtr = self.builder.gep(strVar, [ir.Constant(ir.IntType(8), 0), ir.Constant(ir.IntType(8), 0)])
-                self.builder.call(procedure, [strVarPtr])
+                strVar = self.getBuilder().alloca(value.type)
+                self.getBuilder().store(value, strVar)
+                strVarPtr = self.getBuilder().gep(strVar, [ir.Constant(ir.IntType(8), 0), ir.Constant(ir.IntType(8), 0)])
+                self.getBuilder().call(procedure, [strVarPtr])
         else:
             if isinstance(value.type, ir.IntType):
                 if value.type.width == 8:
@@ -41,8 +41,8 @@ def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
 
             strLen = len(formatStr)
             inputStr = ir.Constant(ir.ArrayType(ir.IntType(8), strLen), bytearray(formatStr))
-            strVar = self.builder.alloca(ir.ArrayType(ir.IntType(8), strLen))
-            self.builder.store(inputStr, strVar)
-            strVarPtr = self.builder.gep(strVar, [ir.Constant(ir.IntType(8), 0), ir.Constant(ir.IntType(8), 0)])
+            strVar = self.getBuilder().alloca(ir.ArrayType(ir.IntType(8), strLen))
+            self.getBuilder().store(inputStr, strVar)
+            strVarPtr = self.getBuilder().gep(strVar, [ir.Constant(ir.IntType(8), 0), ir.Constant(ir.IntType(8), 0)])
 
-            self.builder.call(procedure, [strVarPtr, value])
+            self.getBuilder().call(procedure, [strVarPtr, value])

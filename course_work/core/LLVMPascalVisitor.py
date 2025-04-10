@@ -43,13 +43,16 @@ class LeftPartDefinition:
 class LLVMPascalVisitor(PascalVisitor):
     def __init__(self):
         self.module = ir.Module('pascal_program')
-        self.builder = ir.IRBuilder()
+        self.builder = []
         self.symbolTable = SymbolTable()
         BuiltinSymbols.addBuiltinSymbols(self.symbolTable, self.module)
 
         self.leftPartDefinition = LeftPartDefinition()
         self.currentFunction = ""
         self.records = {}
+
+    def getBuilder(self):
+        return self.builder[-1]
 
     def save(self, filename):
         with open(filename, "w") as f:
@@ -60,12 +63,13 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitProgram(self, ctx):
         self.currentFunction = "main"
-        self.builder = ir.IRBuilder(self.symbolTable[self.currentFunction].append_basic_block('entry'))
+        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction].append_basic_block('entry')))
         self.symbolTable.enter_scope()
 
         self.visit(ctx.block())
-        self.builder.ret_void()
+        self.getBuilder().ret_void()
         self.symbolTable.exit_scope()
+        self.builder.pop()
 
         return str(self.module)
 
@@ -76,6 +80,56 @@ class LLVMPascalVisitor(PascalVisitor):
         struct.set_body(*types)
         self.records[struct] = (names, semantics)
         PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
+
+    def visitFunctionDeclaration(self, ctx:PascalParser.FunctionDeclarationContext):
+        identifier = self.visit(ctx.identifier())
+        resultType, resultSemantic = self.visit(ctx.resultType())
+        names, types, semantics = self.visit(ctx.formalParameterList())
+
+        funcType = ir.FunctionType(resultType, types)
+        function = ir.Function(self.module, funcType, name=identifier)
+
+        self.currentFunction = identifier
+        self.symbolTable[identifier] = function
+
+        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction].append_basic_block('entry')))
+        self.symbolTable.enter_scope()
+
+        resultVar = self.getBuilder().alloca(resultType, name="Result")
+        self.symbolTable["Result"] = resultVar, resultSemantic
+
+        i = 0
+        args = function.args
+        for arg in args:
+            arg.name = names[i]
+            self.symbolTable[arg.name] = arg, semantics[i]
+            i += 1
+
+        self.visit(ctx.block())
+        self.getBuilder().ret(resultVar)
+        self.symbolTable.exit_scope()
+        self.builder.pop()
+
+        return str(self.module)
+
+    def visitFormalParameterList(self, ctx:PascalParser.FormalParameterListContext):
+        names = []
+        types = []
+        semantics = []
+        for g in ctx.formalParameterSection():
+            n, t, s = self.visit(g)
+            names.extend(n)
+            types.extend(t)
+            semantics.extend(s)
+
+        return names, types, semantics
+
+    def visitParameterGroup(self, ctx:PascalParser.ParameterGroupContext):
+        names = self.visit(ctx.identifierList())
+        t, s = self.visit(ctx.typeIdentifier())
+        types = [t for n in names]
+        semantics = [s for n in names]
+        return names, types, semantics
 
     def visitRecordType(self, ctx:PascalParser.RecordTypeContext):
         return visitRecordType(self, ctx)
@@ -93,7 +147,7 @@ class LLVMPascalVisitor(PascalVisitor):
         (varType, semanticLabel) = self.visit(ctx.type_())
         varNames = self.visit(ctx.identifierList())
         for varName in varNames:
-            allocaInstance = self.builder.alloca(varType, name=varName)
+            allocaInstance =self.getBuilder().alloca(varType, name=varName)
             self.symbolTable[varName] = allocaInstance, semanticLabel
 
     def visitTypeIdentifier(self, ctx:PascalParser.TypeIdentifierContext):
@@ -107,8 +161,8 @@ class LLVMPascalVisitor(PascalVisitor):
         (value, valSemantic) = self.visit(ctx.expression())
         self.leftPartDefinition.Exit()
 
-        value = castStoredValue(self.builder, variable, value)
-        self.builder.store(value, variable)
+        value = castStoredValue(self.getBuilder(), variable, value)
+        self.getBuilder().store(value, variable)
 
     def visitWhileStatement(self, ctx:PascalParser.WhileStatementContext):
         return visitWhileStatement(self, ctx)
@@ -150,9 +204,9 @@ class LLVMPascalVisitor(PascalVisitor):
             self.leftPartDefinition.Exit()
 
             if operator.SHL():
-                return self.builder.shl(left, right), lSemantic
+                return self.getBuilder().shl(left, right), lSemantic
             elif operator.SHR():
-                return self.builder.lshr(left, right), lSemantic
+                return self.getBuilder().lshr(left, right), lSemantic
 
         return left, lSemantic
 
@@ -185,9 +239,9 @@ class LLVMPascalVisitor(PascalVisitor):
         signedFactor, semantic = self.visitChildren(ctx)
         if ctx.MINUS():
             if isinstance(signedFactor.type, ir.IntType):
-                signedFactor = self.builder.sub(ir.Constant(signedFactor.type, 0), signedFactor)
+                signedFactor =self.getBuilder().sub(ir.Constant(signedFactor.type, 0), signedFactor)
             elif isinstance(signedFactor.type, (ir.FloatType, ir.DoubleType)):
-                signedFactor = self.builder.fsub(ir.Constant(signedFactor.type, 0), signedFactor)
+                signedFactor =self.getBuilder().fsub(ir.Constant(signedFactor.type, 0), signedFactor)
             else:
                 raise TypeError("Cannot negate non-numeric type")
 
@@ -205,12 +259,12 @@ class LLVMPascalVisitor(PascalVisitor):
         elif ctx.NOT():
             factor, semantic = self.visit(ctx.factor())
             if isinstance(factor.type, ir.IntType):
-                factor = self.builder.xor(factor, ir.Constant(factor.type, -1))
+                factor =self.getBuilder().xor(factor, ir.Constant(factor.type, -1))
         elif ctx.bool_():
             factor, semantic = self.visit(ctx.bool_())
 
         if self.is_pointer(factor):
-            factor = self.builder.load(factor)
+            factor =self.getBuilder().load(factor)
 
         return factor, semantic
 
@@ -229,7 +283,7 @@ class LLVMPascalVisitor(PascalVisitor):
         currentNode, currentSemantic = self.symbolTable[identifier]
         for modType, modValue in modifiers:
             if modType == "field":
-                currentNode, currentSemantic = recordFieldAccess(self.builder, self.records, currentNode, modValue)
+                currentNode, currentSemantic = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
 
         return currentNode, currentSemantic
 

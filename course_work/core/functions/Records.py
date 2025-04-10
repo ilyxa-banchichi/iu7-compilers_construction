@@ -3,9 +3,21 @@ from llvmlite import ir
 from core.PascalTypes import *
 
 def recordFieldAccess(builder, records, variable, field):
-    names, semantics = records[variable.type.pointee]
+    if isinstance(variable.type, ir.PointerType):
+        names, semantics = records[variable.type.pointee]
+    else:
+        names, semantics = records[variable.type]
+
+    print(names)
+    print(field)
+
     idx = names.index(field)
-    ptr = builder.gep(variable, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), idx)])
+    print(variable)
+    if isinstance(variable.type, ir.PointerType):
+        ptr = builder.gep(variable, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), idx)])
+    else:
+        ptr = builder.extract_value(variable, idx)
+    print(ptr)
     return ptr, semantics[idx]
 
 def visitRecordType(self, ctx:PascalParser.RecordTypeContext):

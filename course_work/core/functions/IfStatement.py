@@ -11,15 +11,15 @@ def visitIfStatement(self, ctx:PascalParser.IfStatementContext):
     if semantic != PascalTypes.boolSemanticLabel:
         raise TypeError(f"Cannot use {expression} {semantic} as conditional")
 
-    self.builder.cbranch(expression, thenBlock, elseBlock)
+    self.getBuilder().cbranch(expression, thenBlock, elseBlock)
 
-    self.builder.position_at_start(thenBlock)
+    self.getBuilder().position_at_start(thenBlock)
     self.visit(ctx.statement(0))
-    self.builder.branch(endBlock)
+    self.getBuilder().branch(endBlock)
 
-    self.builder.position_at_start(elseBlock)
+    self.getBuilder().position_at_start(elseBlock)
     if ctx.statement(1):
         self.visit(ctx.statement(1))
-    self.builder.branch(endBlock)
+    self.getBuilder().branch(endBlock)
 
-    self.builder.position_at_start(endBlock)
+    self.getBuilder().position_at_start(endBlock)

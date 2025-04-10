@@ -13,14 +13,14 @@ def mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator):
     elif operator.MOD():
         raise TypeError(f"Cannot apply operator {operator.DIV()} to bool types")
     elif operator.AND():
-        return self.builder.and_(left, right), lSemantic
+        return self.getBuilder().and_(left, right), lSemantic
 
 def mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator):
     if isinstance(left.type, ir.FloatType):
         if operator.STAR():
-            return self.builder.fmul(left, right), lSemantic
+            return self.getBuilder().fmul(left, right), lSemantic
         elif operator.SLASH():
-            return self.builder.fdiv(left, right), lSemantic
+            return self.getBuilder().fdiv(left, right), lSemantic
         elif operator.DIV():
             raise TypeError(f"Cannot apply operator {operator.DIV()} to float types")
         elif operator.MOD():
@@ -30,28 +30,28 @@ def mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator):
 
     elif isinstance(left.type, ir.IntType):
         if operator.AND():
-            return self.builder.and_(left, right), lSemantic
+            return self.getBuilder().and_(left, right), lSemantic
         if operator.STAR():
-                return self.builder.mul(left, right), lSemantic
+                return self.getBuilder().mul(left, right), lSemantic
 
         if left.type.width == 8:
             if operator.SLASH():
-                af = self.builder.uitofp(left, ir.FloatType())
-                bf = self.builder.uitofp(right, ir.FloatType())
-                return self.builder.fdiv(af, bf), lSemantic
+                af = self.getBuilder().uitofp(left, ir.FloatType())
+                bf = self.getBuilder().uitofp(right, ir.FloatType())
+                return self.getBuilder().fdiv(af, bf), lSemantic
             elif operator.DIV():
-                return self.builder.udiv(left, right), lSemantic
+                return self.getBuilder().udiv(left, right), lSemantic
             elif operator.MOD():
-                return self.builder.urem(left, right), lSemantic
+                return self.getBuilder().urem(left, right), lSemantic
         else:
             if operator.SLASH():
-                af = self.builder.sitofp(left, ir.FloatType())
-                bf = self.builder.sitofp(right, ir.FloatType())
-                return self.builder.fdiv(af, bf), lSemantic
+                af = self.getBuilder().sitofp(left, ir.FloatType())
+                bf = self.getBuilder().sitofp(right, ir.FloatType())
+                return self.getBuilder().fdiv(af, bf), lSemantic
             elif operator.DIV():
-                return self.builder.sdiv(left, right), lSemantic
+                return self.getBuilder().sdiv(left, right), lSemantic
             elif operator.MOD():
-                return self.builder.srem(left, right), lSemantic
+                return self.getBuilder().srem(left, right), lSemantic
 
 def mulOperator(self, left, lSemantic, right, rSemantic, operator):
     if lSemantic != rSemantic:
@@ -62,7 +62,7 @@ def mulOperator(self, left, lSemantic, right, rSemantic, operator):
 
     if lSemantic == PascalTypes.numericSemanticLabel:
         if left.type != right.type:
-            left, right = castValues(self.builder, left, right)
+            left, right = castValues(self.getBuilder(), left, right)
         return mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator)
 
     raise TypeError(f"Cannot apply operator {operator.getText()} this context {left, lSemantic}")

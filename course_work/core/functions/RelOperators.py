@@ -12,12 +12,12 @@ def relOperator(self, left, lSemantic, right, rSemantic, operator: str):
 
     if lSemantic == PascalTypes.numericSemanticLabel:
         if left.type != right.type:
-            left, right = castValues(self.builder, left, right)
+            left, right = castValues(self.getBuilder(), left, right)
 
     if isinstance(left.type, ir.FloatType):
-            return self.builder.fcmp_ordered(operator, left, right), PascalTypes.boolSemanticLabel
+            return self.getBuilder().fcmp_ordered(operator, left, right), PascalTypes.boolSemanticLabel
     elif isinstance(left.type, ir.IntType):
         if left.type.width == 8:
-            return self.builder.icmp_unsigned(operator, left, right), PascalTypes.boolSemanticLabel
+            return self.getBuilder().icmp_unsigned(operator, left, right), PascalTypes.boolSemanticLabel
         else:
-            return self.builder.icmp_signed(operator, left, right), PascalTypes.boolSemanticLabel
+            return self.getBuilder().icmp_signed(operator, left, right), PascalTypes.boolSemanticLabel

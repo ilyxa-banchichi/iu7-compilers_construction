@@ -14,30 +14,30 @@ def visitForStatement(self, ctx:PascalParser.ForStatementContext):
     self.leftPartDefinition.Enter(iterPrt.type.pointee, varSemantic)
     initialValue, finalValue, direction = self.visit(ctx.forList())
     self.leftPartDefinition.Exit()
-    self.builder.store(initialValue, iterPrt)
+    self.getBuilder().store(initialValue, iterPrt)
 
-    self.builder.branch(condBlock)
+    self.getBuilder().branch(condBlock)
 
-    self.builder.position_at_start(condBlock)
-    currentVal = self.builder.load(iterPrt)
+    self.getBuilder().position_at_start(condBlock)
+    currentVal = self.getBuilder().load(iterPrt)
     if direction > 0:
-        cond = self.builder.icmp_signed("<=", currentVal, finalValue)
+        cond = self.getBuilder().icmp_signed("<=", currentVal, finalValue)
     else:
-        cond = self.builder.icmp_signed(">=", currentVal, finalValue)
-    self.builder.cbranch(cond, bodyBlock, exitBlock)
+        cond = self.getBuilder().icmp_signed(">=", currentVal, finalValue)
+    self.getBuilder().cbranch(cond, bodyBlock, exitBlock)
 
-    self.builder.position_at_start(bodyBlock)
+    self.getBuilder().position_at_start(bodyBlock)
     self.visit(ctx.statement())
 
     step = ir.Constant(currentVal.type, 1)
     if direction > 0:
-        newVal = self.builder.add(currentVal, step)
+        newVal = self.getBuilder().add(currentVal, step)
     else:
-        newVal = self.builder.sub(currentVal, step)
-    self.builder.store(newVal, iterPrt)
-    self.builder.branch(condBlock)
+        newVal = self.getBuilder().sub(currentVal, step)
+    self.getBuilder().store(newVal, iterPrt)
+    self.getBuilder().branch(condBlock)
 
-    self.builder.position_at_start(exitBlock)
+    self.getBuilder().position_at_start(exitBlock)
 
 def visitForList(self, ctx:PascalParser.ForListContext):
     initialValue, _ = self.visit(ctx.initialValue())
