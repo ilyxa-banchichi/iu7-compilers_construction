@@ -31,7 +31,11 @@ def left_factoring(grammar: Grammar) -> Grammar:
                     new_prod_map[A].append(group[0])
                 else:
                     A_dash = f"{A}'"
+
+                    while A_dash in non_terminals or A_dash in terminals:
+                        A_dash += "'"
                     non_terminals.append(A_dash)
+
                     new_prod_map[A].append(list(prefix) + [A_dash])
 
                     for rhs in group:

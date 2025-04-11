@@ -22,7 +22,7 @@ def eliminate_left_recursion(grammar: Grammar) -> Grammar:
                     new_rhs_list.append(rhs)
             prod_map[Ai] = new_rhs_list
 
-        prod_map, new_non_terminals = _eliminate_immediate_for(prod_map, Ai, new_non_terminals)
+        prod_map, new_non_terminals = _eliminate_immediate_for(prod_map, Ai, new_non_terminals, grammar.terminals)
 
     final_productions = []
     for lhs in new_non_terminals:
@@ -37,7 +37,7 @@ def eliminate_left_recursion(grammar: Grammar) -> Grammar:
     )
 
 
-def _eliminate_immediate_for(prod_map, non_terminal, all_non_terminals):
+def _eliminate_immediate_for(prod_map, non_terminal, all_non_terminals, terminals):
     recursive = []
     non_recursive = []
 
@@ -51,6 +51,8 @@ def _eliminate_immediate_for(prod_map, non_terminal, all_non_terminals):
         return prod_map, all_non_terminals
 
     new_nt = f"{non_terminal}'"
+    while new_nt in all_non_terminals or new_nt in terminals:
+        new_nt += "'"
     all_non_terminals.append(new_nt)
 
     prod_map[non_terminal] = [beta + [new_nt] for beta in non_recursive]
