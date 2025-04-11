@@ -1,21 +1,28 @@
 7
-S A B A' B' X_0 X_1
+S A B A' B' a' b'
 2
 a b
-15
-S -> B a
-S -> A b
-A -> B a a A'
-A -> X_0 A'
-B -> X_0 A' b b B'
-B -> X_1 B'
-A' -> X_1 a A'
-A' -> A b A'
-A' -> ε
-B' -> X_0 b B'
-B' -> X_0 a A' b b B'
-B' -> B a B'
+22
+B -> a A' b' b' B'
+B -> b B'
+A -> a A' b' b' B' a' a' A'
+A -> b B' a' a' A'
+A -> a A'
+B' -> a b' B'
+B' -> a a' A' b' b' B'
+B' -> a A' b' b' B' a' B'
+B' -> b B' a' B'
 B' -> ε
-X_0 -> a
-X_1 -> b
+A' -> b a' A'
+A' -> a A' b' b' B' a' a' A' b' A'
+A' -> b B' a' a' A' b' A'
+A' -> a A' b' A'
+A' -> ε
+S -> a A' b' b' B' a'
+S -> b B' a'
+S -> a A' b' b' B' a' a' A' b'
+S -> b B' a' a' A' b'
+S -> a A' b'
+a' -> a
+b' -> b
 S

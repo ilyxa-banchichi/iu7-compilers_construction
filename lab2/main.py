@@ -26,17 +26,17 @@ def normalize(file_name: str):
 
 
 if __name__ == "__main__":
-    # files = [
-    #     'example4_7.txt',
-    #     'example4_9.txt',
-    #     'example4_11.txt',
-    # ]
-    # for file_name in files:
-    #     estimate_recursion(file_name)
+    files = [
+        'example4_7.txt',
+        'example4_9.txt',
+        'example4_11.txt',
+    ]
+    for file_name in files:
+        estimate_recursion(file_name)
 
     files = [
         'example2_29.txt',
-        # 'example2_4_19.txt',
+        'example2_4_19.txt',
     ]
     for file_name in files:
         normalize(file_name)

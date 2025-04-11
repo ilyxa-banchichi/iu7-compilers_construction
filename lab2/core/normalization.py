@@ -3,13 +3,12 @@ from typing import List
 import copy
 
 from core.grammar import Grammar
-from core.grammar import new_literal_name
+from core.utils import new_literal_name
 
 def to_greibach_normal_form(grammar: Grammar) -> Grammar:
     P = copy.deepcopy(grammar.productions)
     N = copy.deepcopy(grammar.non_terminals)
     N_ordered = compute_non_terminal_order(grammar)
-    N_ordered = ["E'", "E", "T'", 'T', 'F']
     nt_index = {A: i for i, A in enumerate(N_ordered)}
 
     for i in range(len(N_ordered) - 2, -1, -1):

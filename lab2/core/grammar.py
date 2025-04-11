@@ -27,8 +27,3 @@ class Grammar:
         for lhs, rhs in self.productions:
             print(f"\t{lhs} -> {' '.join(rhs)}")
         print("Начальный символ:", self.start_symbol)
-
-def new_literal_name(non_terminals: List[str], terminals: List[str], x: str) -> str:
-    while x in non_terminals or x in terminals:
-        x += "'"
-    return x
