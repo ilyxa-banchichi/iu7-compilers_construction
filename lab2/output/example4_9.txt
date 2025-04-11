@@ -1,0 +1,13 @@
+3
+S A A'
+5
+a b c d ε
+7
+S -> A a
+S -> b
+A -> b d A'
+A -> ε A'
+A' -> c A'
+A' -> a d A'
+A' -> ε
+S
