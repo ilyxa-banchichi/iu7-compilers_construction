@@ -162,3 +162,5 @@ cython_debug/
 *.jar
 
 *.DS_Store
+
+*~$*.docx

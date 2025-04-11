@@ -1,0 +1,14 @@
+3
+S A B
+2
+a b
+8
+S -> Ba
+S -> Ab
+A -> Sa
+A -> AAb
+A -> a
+B -> Sb
+B -> BBa
+B -> b
+S
