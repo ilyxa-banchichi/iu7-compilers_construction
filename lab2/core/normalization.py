@@ -10,7 +10,6 @@ def to_greibach_normal_form(grammar: Grammar) -> Grammar:
     N = copy.deepcopy(grammar.non_terminals)
     N_ordered = compute_non_terminal_order(grammar)
     N_ordered = ["E'", "E", "T'", 'T', 'F']
-    print(N_ordered)
     nt_index = {A: i for i, A in enumerate(N_ordered)}
 
     for i in range(len(N_ordered) - 2, -1, -1):
@@ -40,7 +39,7 @@ def to_greibach_normal_form(grammar: Grammar) -> Grammar:
             new_non_term = new_literal_name(N, grammar.terminals, term)
             N.append(new_non_term)
             for _, right in P:
-                for i in range(len(right)):
+                for i in range(1, len(right)):
                     if term == right[i]:
                         right[i] = new_non_term
 
