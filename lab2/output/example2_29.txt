@@ -1,16 +1,25 @@
-5
-E T F E' T'
+6
+E T F E' T' )'
 5
 a ( ) + *
-10
-E -> T
-E -> T E'
-E' -> + T
-E' -> + T E'
-T -> F
-T -> F T'
+19
+F -> ( E )'
+F -> a
+T -> ( E )'
+T -> a
+T -> ( E )' T'
+T -> a T'
 T' -> * F
 T' -> * F T'
-F -> ( E )
-F -> a
+E -> ( E )'
+E -> a
+E -> ( E )' T'
+E -> a T'
+E -> ( E )' E'
+E -> a E'
+E -> ( E )' T' E'
+E -> a T' E'
+E' -> + T
+E' -> + T E'
+)' -> )
 E

@@ -2,6 +2,7 @@ from core.grammar import Grammar
 from core.grammar_reader import read_grammar
 from core.eliminating_left_recursion import eliminate_left_recursion
 from core.left_factoring import left_factoring
+from core.normalization import to_greibach_normal_form
 
 def estimate_recursion(file_name: str):
     grammar = read_grammar("input/" + file_name)
@@ -16,6 +17,8 @@ def estimate_recursion(file_name: str):
 def normalize(file_name: str):
     grammar = read_grammar("input/" + file_name)
     grammar.print()
+    grammar = eliminate_left_recursion(grammar)
+    grammar = to_greibach_normal_form(grammar)
     grammar.print()
 
     with open("output/" + file_name, 'w', encoding='utf-8') as file:
@@ -23,17 +26,17 @@ def normalize(file_name: str):
 
 
 if __name__ == "__main__":
-    files = [
-        'example4_7.txt',
-        'example4_9.txt',
-        'example4_11.txt',
-    ]
-    for file_name in files:
-        estimate_recursion(file_name)
+    # files = [
+    #     'example4_7.txt',
+    #     'example4_9.txt',
+    #     'example4_11.txt',
+    # ]
+    # for file_name in files:
+    #     estimate_recursion(file_name)
 
     files = [
         'example2_29.txt',
-        'example2_4_19.txt',
+        # 'example2_4_19.txt',
     ]
     for file_name in files:
         normalize(file_name)

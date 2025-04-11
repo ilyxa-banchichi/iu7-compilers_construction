@@ -3,12 +3,12 @@ S A B
 2
 a b
 8
-S -> Ba
-S -> Ab
-A -> Sa
-A -> AAb
+S -> B a
+S -> A b
+A -> S a
+A -> A A b
 A -> a
-B -> Sb
-B -> BBa
+B -> S b
+B -> B B a
 B -> b
 S
