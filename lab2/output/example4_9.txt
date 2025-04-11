@@ -7,7 +7,7 @@ S -> A a
 S -> b
 A -> b d A'
 A -> ε A'
-A' -> c A'
 A' -> a d A'
+A' -> c A'
 A' -> ε
 S

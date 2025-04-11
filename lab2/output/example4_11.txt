@@ -1,0 +1,11 @@
+3
+S E S'
+5
+i t e a b
+5
+S -> a
+S -> i E t S S'
+S' -> e S
+S' -> ε
+E -> b
+S

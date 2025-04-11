@@ -1,0 +1,10 @@
+2
+S E
+5
+i t e a b
+4
+S -> i E t S
+S -> i E t S e S
+S -> a
+E -> b
+S
