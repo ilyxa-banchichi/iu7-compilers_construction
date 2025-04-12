@@ -52,7 +52,6 @@ def compute_non_terminal_order(grammar: Grammar) -> List[str]:
     in_degree = defaultdict(int)
     N = grammar.non_terminals
 
-    # Инициализация степени захода
     for nt in N:
         in_degree[nt] = 0
 
@@ -64,7 +63,6 @@ def compute_non_terminal_order(grammar: Grammar) -> List[str]:
                 graph[A].add(B)
                 in_degree[B] += 1
 
-    # Топологическая сортировка
     queue = deque([nt for nt in N if in_degree[nt] == 0])
     ordered = []
 
