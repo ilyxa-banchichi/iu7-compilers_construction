@@ -7,6 +7,7 @@ def process_file(file_path):
         text = file.read()
 
     lexer = Lexer(text)
+    print(lexer.tokens)
     parser = Parser(lexer)
     parser.program()
     print("Parsing completed successfully!")

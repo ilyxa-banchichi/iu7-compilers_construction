@@ -34,7 +34,6 @@ class Parser:
         self.tree.append(')')
 
     def block(self):
-        print(self.current_token)
         self.tree.append('(block ')
         if self.match_current_token(TokenType.LCURLY):
             self.eat(TokenType.LCURLY)
