@@ -6,10 +6,11 @@ class Parser:
     def __init__(self, lexer: Lexer):
         self.lexer = lexer
         self.current_token = self.lexer.get_next_token()
-        self.tree = []
+        self.errors = []
 
-    def error(self, msg=""):
-        raise Exception(f"Syntax error: {msg}")
+    def error(self, msg: str):
+        token = self.current_token
+        self.errors.append(Exception(f"Syntax error: {msg}. Line {token.line} column {token.column}"))
 
     def match_current_token(self, token_type):
         return self.current_token.type == token_type
@@ -22,95 +23,117 @@ class Parser:
 
     def eat(self, token_type) -> Token:
         if self.current_token.type == token_type:
-            if self.current_token.type != TokenType.LPAREN and self.current_token.type != TokenType.RPAREN:
-                self.tree.append(f"{self.current_token.value} ")
             self.current_token = self.lexer.get_next_token()
         else:
-            self.error(f"Expected {token_type}, got {self.current_token}")
+            self.error(f"Expected {self.lexer.TOKEN_SPECIFICATION[token_type]}, got {self.current_token.value}")
 
     def program(self):
-        self.tree.append('(program ')
-        self.block()
-        self.tree.append(')')
+        if self.match_current_token(TokenType.LCURLY):
+            self.block()
+        else:
+            self.error(f"Expected '{{' to start a program, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def block(self):
-        self.tree.append('(block ')
         if self.match_current_token(TokenType.LCURLY):
             self.eat(TokenType.LCURLY)
             self.operator_list()
             self.eat(TokenType.RCURLY)
         else:
-            self.error("Unexpected block")
-        self.tree.append(')')
+            self.error(f"Expected '{{' to start a block, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.LCURLY, TokenType.SEMI, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def operator_list(self):
-        self.tree.append('(operator_list ')
-        self.operator()
-        self.operator_list_tail()
-        self.tree.append(')')
+        if self.match_list_current_token([TokenType.IDENTIFIER, TokenType.LCURLY]):
+            self.operator()
+            self.operator_list_tail()
+        else:
+            self.error(f"Expected '{{' or identifier to start a operator list, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.RCURLY, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def operator_list_tail(self):
-        self.tree.append('(operator_list_tail ')
         if self.match_current_token(TokenType.SEMI):
             self.eat(TokenType.SEMI)
             self.operator()
             self.operator_list_tail()
-        self.tree.append(')')
+        # else:
+        #     self.error(f"Expected ';' to end a operator list, got '{self.current_token.value}'")
+        #     while self.current_token.type not in {TokenType.RCURLY, TokenType.EOF}:
+        #         self.current_token = self.lexer.get_next_token()
+
 
     def operator(self):
-        self.tree.append('(operator ')
         if self.match_current_token(TokenType.IDENTIFIER):
             self.eat(TokenType.IDENTIFIER)
             self.eat(TokenType.ASSIGN)
             self.expression()
-        else:
+        elif self.match_current_token(TokenType.LCURLY):
             self.block()
-        self.tree.append(')')
+        else:
+            self.error(f"Expected '{{' or identifier to start a operator, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.SEMI, TokenType.RCURLY, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def expression(self):
-        self.tree.append('(expression ')
-        self.arithmetic_expression()
-        self.expression_tail()
-        self.tree.append(')')
+        if self.match_list_current_token([TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT]):
+            self.arithmetic_expression()
+            self.expression_tail()
+        else:
+            self.error(f"Expected constant, identifier or ( to start a expression, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.SEMI, TokenType.RCURLY, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def expression_tail(self):
-        self.tree.append('(expression_tail ')
         if self.match_list_current_token([TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE]):
             self.relation_operator()
             self.arithmetic_expression()
-        self.tree.append(')')
+        # else:
+        #     self.error(f"Expected relation operator to end a expression, got '{self.current_token.value}'")
+        #     while self.current_token.type not in {TokenType.SEMI, TokenType.RCURLY, TokenType.EOF}:
+        #         self.current_token = self.lexer.get_next_token()
 
     def arithmetic_expression(self):
-        self.tree.append('(arithmetic_expression ')
-        self.term()
-        self.arithmetic_expression_tail()
-        self.tree.append(')')
+        if self.match_list_current_token([TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT]):
+            self.term()
+            self.arithmetic_expression_tail()
+        else:
+            self.error(f"Expected constant, identifier or ( to start a arithmetic expression, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def arithmetic_expression_tail(self):
-        self.tree.append('(arithmetic_expression_tail ')
         if self.match_list_current_token([TokenType.PLUS, TokenType.MINUS]):
             self.additive_operator()
             self.term()
             self.arithmetic_expression_tail()
-
-        self.tree.append(')')
+        # else:
+        #     self.error(f"Expected constant, identifier or ( to end a arithmetic expression, got '{self.current_token.value}'")
+        #     while self.current_token.type not in {TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+        #         self.current_token = self.lexer.get_next_token()
 
     def term(self):
-        self.tree.append('(term ')
-        self.factor()
-        self.term_tail()
-        self.tree.append(')')
+        if self.match_list_current_token([TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT]):
+            self.factor()
+            self.term_tail()
+        else:
+            self.error(f"Expected constant, identifier or ( to start a term, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def term_tail(self):
-        self.tree.append('(term_tail ')
         if self.match_list_current_token([TokenType.STAR, TokenType.SLASH]):
             self.multiplicative_operator()
             self.factor()
             self.term_tail()
-        self.tree.append(')')
+        # else:
+        #     self.error(f"Expected constant, identifier or ( to end a term, got '{self.current_token.value}'")
+        #     while self.current_token.type not in {TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+        #         self.current_token = self.lexer.get_next_token()
 
     def factor(self):
-        self.tree.append('(factor ')
         if self.match_current_token(TokenType.IDENTIFIER):
             self.eat(TokenType.IDENTIFIER)
         elif self.match_current_token(TokenType.CONSTANT):
@@ -120,11 +143,11 @@ class Parser:
             self.arithmetic_expression()
             self.eat(TokenType.RPAREN)
         else:
-            self.error("Unexpected factor")
-        self.tree.append(')')
+            self.error(f"Expected constant, identifier or ( to start a factor, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.STAR, TokenType.SLASH, TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def relation_operator(self):
-        self.tree.append('(relation_operator ')
         if self.match_current_token(TokenType.LT):
             self.eat(TokenType.LT)
         elif self.match_current_token(TokenType.LE):
@@ -138,26 +161,26 @@ class Parser:
         elif self.match_current_token(TokenType.GE):
             self.eat(TokenType.GE)
         else:
-            self.error("Unexpected relation operator")
-        self.tree.append(')')
+            self.error(f"Expected relation operator, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def multiplicative_operator(self):
-        self.tree.append('(multiplicative_operator ')
         if self.match_current_token(TokenType.STAR):
             self.eat(TokenType.STAR)
         elif self.match_current_token(TokenType.SLASH):
             self.eat(TokenType.SLASH)
         else:
-            self.error("Unexpected multiplicative operator")
-        self.tree.append(')')
+            self.error(f"Expected multiplicative operator, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()
 
     def additive_operator(self):
-        self.tree.append('(additive_operator ')
         if self.match_current_token(TokenType.PLUS):
             self.eat(TokenType.PLUS)
         elif self.match_current_token(TokenType.MINUS):
             self.eat(TokenType.MINUS)
         else:
-            self.error("Unexpected additive operator")
-        self.tree.append(')')
-
+            self.error(f"Expected additive operator, got '{self.current_token.value}'")
+            while self.current_token.type not in {TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT, TokenType.EOF}:
+                self.current_token = self.lexer.get_next_token()

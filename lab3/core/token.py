@@ -1,7 +1,12 @@
 from collections import namedtuple
 
 
-Token = namedtuple('Token', ['type', 'value'])
+class Token:
+    def __init__(self, type, value, line=0, column=0):
+        self.type = type
+        self.value = value
+        self.line = line
+        self.column = column
 
 class TokenType:
     WHITESPACE  = 'WHITESPACE'
