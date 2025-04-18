@@ -36,14 +36,18 @@ begin
     Result.z := a.z - b.z;
 end;
 
-function AABB(min, max: TVector3): TAABB;
+function AABB(position, size: TVector3): TAABB;
+var
+    extents: TVector3;
 begin
-    Result.min := min;
-    Result.max := max;
+    extents := Mul(size, 0.5);
+    Result.min := Sub(position, extents);
+    Result.max := Add(position, extents);
 end;
 
 var
     Box1, Box2: TAABB;
 begin
-    writeln('jopa');
+    Box1 := AABB(Vector3(-1, -1, -1), Vector3(1, 1, 1));
+    Box2 := AABB(Vector3(0, 0, 0), Vector3(2, 2, 2));
 end.

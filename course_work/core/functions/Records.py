@@ -8,16 +8,11 @@ def recordFieldAccess(builder, records, variable, field):
     else:
         names, semantics = records[variable.type]
 
-    print(names)
-    print(field)
-
     idx = names.index(field)
-    print(variable)
     if isinstance(variable.type, ir.PointerType):
         ptr = builder.gep(variable, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), idx)])
     else:
         ptr = builder.extract_value(variable, idx)
-    print(ptr)
     return ptr, semantics[idx]
 
 def visitRecordType(self, ctx:PascalParser.RecordTypeContext):

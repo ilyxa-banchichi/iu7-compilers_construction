@@ -106,7 +106,8 @@ class LLVMPascalVisitor(PascalVisitor):
             i += 1
 
         self.visit(ctx.block())
-        self.getBuilder().ret(resultVar)
+        retVal = self.getBuilder().load(resultVar)
+        self.getBuilder().ret(retVal)
         self.symbolTable.exit_scope()
         self.builder.pop()
 
@@ -248,9 +249,10 @@ class LLVMPascalVisitor(PascalVisitor):
         return signedFactor, semantic
 
     def visitFactor(self, ctx:PascalParser.FactorContext):
+        print(ctx.getText())
         if ctx.variable():
             factor, semantic = self.visit(ctx.variable())
-        elif ctx.LPAREN() or ctx == ctx.RPAREN():
+        elif ctx.LPAREN():
             factor, semantic = self.visit(ctx.expression())
         elif ctx.unsignedConstant():
             factor, semantic = self.visit(ctx.unsignedConstant())
@@ -262,6 +264,8 @@ class LLVMPascalVisitor(PascalVisitor):
                 factor =self.getBuilder().xor(factor, ir.Constant(factor.type, -1))
         elif ctx.bool_():
             factor, semantic = self.visit(ctx.bool_())
+        elif ctx.functionDesignator():
+            factor, semantic = self.visit(ctx.functionDesignator())
 
         if self.is_pointer(factor):
             factor =self.getBuilder().load(factor)
