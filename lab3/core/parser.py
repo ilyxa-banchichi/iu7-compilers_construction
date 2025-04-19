@@ -42,18 +42,13 @@ class Parser:
             self.eat(TokenType.RCURLY)
         else:
             self.error(f"Expected '{{' to start a block, got '{self.current_token.value}'")
-            while self.current_token.type not in {TokenType.LCURLY, TokenType.SEMI, TokenType.EOF}:
+            while self.current_token.type not in {TokenType.LCURLY, TokenType.RCURLY, TokenType.IDENTIFIER, TokenType.EOF}:
                 self.current_token = self.lexer.get_next_token()
 
     def operator_list(self):
         if self.match_list_current_token([TokenType.IDENTIFIER, TokenType.LCURLY]):
             self.operator()
             self.operator_list()
-        # else:
-        #     self.error(f"Expected '{{' or identifier to start a operator list, got '{self.current_token.value}'")
-        #     while self.current_token.type not in {TokenType.RCURLY, TokenType.EOF}:
-        #         self.current_token = self.lexer.get_next_token()
-
 
     def operator(self):
         if self.match_current_token(TokenType.IDENTIFIER):
@@ -65,7 +60,7 @@ class Parser:
             self.block()
         else:
             self.error(f"Expected '{{' or identifier to start a operator, got '{self.current_token.value}'")
-            while self.current_token.type not in {TokenType.SEMI, TokenType.RCURLY, TokenType.EOF}:
+            while self.current_token.type not in {TokenType.LCURLY, TokenType.RCURLY, TokenType.IDENTIFIER, TokenType.EOF}:
                 self.current_token = self.lexer.get_next_token()
 
     def expression(self):
@@ -74,17 +69,13 @@ class Parser:
             self.expression_tail()
         else:
             self.error(f"Expected constant, identifier or ( to start a expression, got '{self.current_token.value}'")
-            while self.current_token.type not in {TokenType.SEMI, TokenType.RCURLY, TokenType.EOF}:
+            while self.current_token.type not in {TokenType.SEMI, TokenType.EOF}:
                 self.current_token = self.lexer.get_next_token()
 
     def expression_tail(self):
         if self.match_list_current_token([TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE]):
             self.relation_operator()
             self.arithmetic_expression()
-        # else:
-        #     self.error(f"Expected relation operator to end a expression, got '{self.current_token.value}'")
-        #     while self.current_token.type not in {TokenType.SEMI, TokenType.RCURLY, TokenType.EOF}:
-        #         self.current_token = self.lexer.get_next_token()
 
     def arithmetic_expression(self):
         if self.match_list_current_token([TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT]):
@@ -92,7 +83,7 @@ class Parser:
             self.arithmetic_expression_tail()
         else:
             self.error(f"Expected constant, identifier or ( to start a arithmetic expression, got '{self.current_token.value}'")
-            while self.current_token.type not in {TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+            while self.current_token.type not in {TokenType.RPAREN, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
                 self.current_token = self.lexer.get_next_token()
 
     def arithmetic_expression_tail(self):
@@ -100,10 +91,6 @@ class Parser:
             self.additive_operator()
             self.term()
             self.arithmetic_expression_tail()
-        # else:
-        #     self.error(f"Expected constant, identifier or ( to end a arithmetic expression, got '{self.current_token.value}'")
-        #     while self.current_token.type not in {TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
-        #         self.current_token = self.lexer.get_next_token()
 
     def term(self):
         if self.match_list_current_token([TokenType.LPAREN, TokenType.IDENTIFIER, TokenType.CONSTANT]):
@@ -111,7 +98,7 @@ class Parser:
             self.term_tail()
         else:
             self.error(f"Expected constant, identifier or ( to start a term, got '{self.current_token.value}'")
-            while self.current_token.type not in {TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+            while self.current_token.type not in {TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
                 self.current_token = self.lexer.get_next_token()
 
     def term_tail(self):
@@ -119,10 +106,6 @@ class Parser:
             self.multiplicative_operator()
             self.factor()
             self.term_tail()
-        # else:
-        #     self.error(f"Expected constant, identifier or ( to end a term, got '{self.current_token.value}'")
-        #     while self.current_token.type not in {TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
-        #         self.current_token = self.lexer.get_next_token()
 
     def factor(self):
         if self.match_current_token(TokenType.IDENTIFIER):
@@ -135,7 +118,7 @@ class Parser:
             self.eat(TokenType.RPAREN)
         else:
             self.error(f"Expected constant, identifier or ( to start a factor, got '{self.current_token.value}'")
-            while self.current_token.type not in {TokenType.STAR, TokenType.SLASH, TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.RCURLY, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
+            while self.current_token.type not in {TokenType.STAR, TokenType.SLASH, TokenType.PLUS, TokenType.MINUS, TokenType.RPAREN, TokenType.SEMI, TokenType.LT, TokenType.LE, TokenType.EQUAL, TokenType.NOT_EQUAL, TokenType.GT, TokenType.GE, TokenType.EOF}:
                 self.current_token = self.lexer.get_next_token()
 
     def relation_operator(self):
