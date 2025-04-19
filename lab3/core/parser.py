@@ -55,8 +55,7 @@ class Parser:
                 self.current_token = self.lexer.get_next_token()
 
     def operator_list_tail(self):
-        if self.match_current_token(TokenType.SEMI):
-            self.eat(TokenType.SEMI)
+        if self.match_list_current_token([TokenType.IDENTIFIER, TokenType.LCURLY]):
             self.operator()
             self.operator_list_tail()
         # else:
@@ -70,6 +69,7 @@ class Parser:
             self.eat(TokenType.IDENTIFIER)
             self.eat(TokenType.ASSIGN)
             self.expression()
+            self.eat(TokenType.SEMI)
         elif self.match_current_token(TokenType.LCURLY):
             self.block()
         else:
