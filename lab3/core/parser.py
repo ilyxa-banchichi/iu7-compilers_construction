@@ -47,7 +47,7 @@ class Parser:
 
     def operator_list(self):
         if self.match_list_current_token([TokenType.IDENTIFIER, TokenType.LCURLY]):
-            self.operator_semi()
+            self.operator()
             self.operator_list_tail()
         else:
             self.error(f"Expected '{{' or identifier to start a operator list, got '{self.current_token.value}'")
@@ -55,18 +55,14 @@ class Parser:
                 self.current_token = self.lexer.get_next_token()
 
     def operator_list_tail(self):
-        if self.match_list_current_token([TokenType.IDENTIFIER, TokenType.LCURLY]):
-            self.operator_semi()
-            self.operator_list_tail()
-
-    def operator_semi(self):
-        if self.match_list_current_token([TokenType.IDENTIFIER, TokenType.LCURLY]):
-            self.operator()
+        if self.match_current_token(TokenType.SEMI):
             self.eat(TokenType.SEMI)
-        else:
-            self.error(f"Expected '{{' or identifier to start a operator, got '{self.current_token.value}'")
-            while self.current_token.type not in {TokenType.SEMI, TokenType.RCURLY, TokenType.EOF}:
-                self.current_token = self.lexer.get_next_token()
+            self.operator()
+            self.operator_list_tail()
+        # else:
+        #     self.error(f"Expected ';' to end a operator list, got '{self.current_token.value}'")
+        #     while self.current_token.type not in {TokenType.RCURLY, TokenType.EOF}:
+        #         self.current_token = self.lexer.get_next_token()
 
 
     def operator(self):
