@@ -54,6 +54,9 @@ def mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator):
                 return self.getBuilder().srem(left, right), lSemantic
 
 def mulOperator(self, left, lSemantic, right, rSemantic, operator):
+    left = self.load_if_pointer(left)
+    right = self.load_if_pointer(right)
+
     if lSemantic != rSemantic:
         raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
 

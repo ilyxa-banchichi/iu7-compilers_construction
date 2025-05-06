@@ -63,6 +63,12 @@ class LLVMPascalVisitor(PascalVisitor):
     def is_pointer(self, value):
         return isinstance(value.type, ir.PointerType)
 
+    def load_if_pointer(self, value):
+        if self.is_pointer(value):
+            return self.getBuilder().load(value)
+        else:
+            return value
+
     def visitProgram(self, ctx):
         self.currentFunction = "main"
         self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction][0].append_basic_block('entry')))
@@ -77,11 +83,17 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitTypeDefinition(self, ctx:PascalParser.TypeDefinitionContext):
         identifier = self.visit(ctx.identifier())
-        names, types, semantics = self.visit(ctx.type_())
-        struct = ir.context.global_context.get_identified_type(identifier)
-        struct.set_body(*types)
-        self.records[struct] = (names, semantics)
-        PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
+        if ctx.type_():
+            if ctx.type_().structuredType():
+                names, types, semantics = self.visit(ctx.type_().structuredType())
+                struct = ir.context.global_context.get_identified_type(identifier)
+                struct.set_body(*types)
+                self.records[struct] = (names, semantics)
+                PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
+        elif ctx.functionType():
+            raise TypeError(f"Unsupported")
+        else:
+            raise TypeError(f"Incorrect type definition")
 
     def visitFunctionDeclaration(self, ctx:PascalParser.FunctionDeclarationContext):
         identifier = self.visit(ctx.identifier())
@@ -112,6 +124,8 @@ class LLVMPascalVisitor(PascalVisitor):
                 argVar = self.getBuilder().alloca(arg.type, name=arg.name)
                 self.getBuilder().store(arg, argVar)
             elif modifiers[i] == "VAR":
+                argVar = arg
+            elif modifiers[i] == "FUNCTION":
                 argVar = arg
 
             self.symbolTable[arg.name] = argVar, semantics[i]
@@ -165,7 +179,6 @@ class LLVMPascalVisitor(PascalVisitor):
         return names, types, semantics
 
     def visitFunctionDesignator(self, ctx:PascalParser.FunctionDesignatorContext):
-        print("func")
         identifier = self.visit(ctx.identifier())
         if identifier == "writeln":
             return writeln(self, ctx)
@@ -202,6 +215,7 @@ class LLVMPascalVisitor(PascalVisitor):
         (value, valSemantic) = self.visit(ctx.expression())
         self.leftPartDefinition.Exit()
 
+        value = self.load_if_pointer(value)
         value = castStoredValue(self.getBuilder(), variable, value)
         self.getBuilder().store(value, variable)
 
@@ -233,6 +247,7 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
         left, lSemantic = self.visit(ctx.simpleExpression())
         if ctx.shiftOperator():
+            left = self.load_if_pointer(left)
             if lSemantic != PascalTypes.numericSemanticLabel or not isinstance(left.type, ir.IntType):
                 raise TypeError(f"Cannot apply shift operator {operator} to not integer type")
 
@@ -240,6 +255,8 @@ class LLVMPascalVisitor(PascalVisitor):
             self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.shiftExpression())
             self.leftPartDefinition.Exit()
+
+            right = self.load_if_pointer(right)
 
             if operator.SHL():
                 return self.getBuilder().shl(left, right), lSemantic
@@ -266,7 +283,9 @@ class LLVMPascalVisitor(PascalVisitor):
         if ctx.multiplicativeoperator():
             self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.term())
+            print(f"right {right}")
             operator = self.visit(ctx.multiplicativeoperator())
+            print(operator.getText())
             self.leftPartDefinition.Exit()
 
             return mulOperator(self, left, lSemantic, right, rSemantic, operator)
@@ -303,9 +322,6 @@ class LLVMPascalVisitor(PascalVisitor):
         elif ctx.functionDesignator():
             factor, semantic = self.visit(ctx.functionDesignator())
 
-        if self.is_pointer(factor):
-            factor = self.getBuilder().load(factor)
-
         return factor, semantic
 
     def visitVariable(self, ctx:PascalParser.VariableContext):
@@ -321,8 +337,6 @@ class LLVMPascalVisitor(PascalVisitor):
                 index += 1
 
         currentNode, currentSemantic = self.symbolTable[identifier]
-        print(currentNode)
-        print(currentSemantic)
         for modType, modValue in modifiers:
             if modType == "field":
                 currentNode, currentSemantic = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)

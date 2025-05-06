@@ -10,6 +10,7 @@ class PascalTypes(object):
     charSemanticLabel = "charSemanticLabel"
     boolSemanticLabel = "boolSemanticLabel"
     structSemanticLabel = "structSemanticLabel"
+    funcSemanticLabel = "funcSemanticLabel"
 
     intLabel = "integer"
     int = ir.IntType(16)

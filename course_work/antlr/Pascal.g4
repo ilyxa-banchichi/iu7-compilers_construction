@@ -23,7 +23,7 @@ block
         constantDefinitionPart
         | typeDefinitionPart
         | variableDeclarationPart
-        | procedureAndFunctionDeclarationPart
+        | functionDeclarationPart
         | usesUnitsPart
         | IMPLEMENTATION
     )* compoundStatement
@@ -88,15 +88,11 @@ typeDefinitionPart
     ;
 
 typeDefinition
-    : identifier EQUAL (type_ | functionType | procedureType)
+    : identifier EQUAL (type_ | functionType)
     ;
 
 functionType
-    : FUNCTION (formalParameterList)? COLON resultType
-    ;
-
-procedureType
-    : PROCEDURE (formalParameterList)?
+    : FUNCTION (formalParameterList)? (COLON resultType)?
     ;
 
 type_
@@ -198,17 +194,8 @@ variableDeclaration
     : identifierList COLON type_
     ;
 
-procedureAndFunctionDeclarationPart
-    : procedureOrFunctionDeclaration SEMI
-    ;
-
-procedureOrFunctionDeclaration
-    : procedureDeclaration
-    | functionDeclaration
-    ;
-
-procedureDeclaration
-    : PROCEDURE identifier (formalParameterList)? SEMI block
+functionDeclarationPart
+    : functionDeclaration SEMI
     ;
 
 formalParameterList
@@ -219,7 +206,6 @@ formalParameterSection
     : parameterGroup
     | VAR parameterGroup
     | FUNCTION parameterGroup
-    | PROCEDURE parameterGroup
     ;
 
 parameterGroup
@@ -235,7 +221,7 @@ constList
     ;
 
 functionDeclaration
-    : FUNCTION identifier (formalParameterList)? COLON resultType SEMI block
+    : FUNCTION identifier (formalParameterList)? (COLON resultType)? SEMI block
     ;
 
 resultType
@@ -249,7 +235,7 @@ statement
 
 simpleStatement
     : assignmentStatement
-    | procedureStatement
+    | functionDesignator
     | emptyStatement_
     ;
 
@@ -353,10 +339,6 @@ element
     : expression (DOTDOT expression)?
     ;
 
-procedureStatement
-    : identifier (LPAREN parameterList RPAREN)?
-    ;
-
 actualParameter
     : expression parameterwidth*
     ;
@@ -442,7 +424,6 @@ NOT          : 'NOT';
 OF           : 'OF';
 OR           : 'OR';
 PACKED       : 'PACKED';
-PROCEDURE    : 'PROCEDURE';
 PROGRAM      : 'PROGRAM';
 REAL         : 'REAL';
 RECORD       : 'RECORD';

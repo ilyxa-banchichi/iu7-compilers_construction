@@ -49,7 +49,7 @@ if __name__ == "__main__":
         "tests/programs/AABBCollision.pas",
     ]
 
-    generateForFile("tests/function/function.pas")
+    # generateForFile("tests/function/function.pas")
 
-    # for test in allTests:
-    #     generateForFile(test)
+    for test in allTests:
+        generateForFile(test)

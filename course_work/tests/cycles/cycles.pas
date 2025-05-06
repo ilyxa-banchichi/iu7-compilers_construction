@@ -25,4 +25,5 @@ begin
         writeln('i = ', i);
     end;
     writeln('Sum = ', f);
+    writeln('Expect = 126\n');
 end.

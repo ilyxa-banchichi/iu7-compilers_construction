@@ -2,6 +2,8 @@
 target triple = "unknown-unknown-unknown"
 target datalayout = ""
 
+%"TUniversity" = type {[255 x i8], i1}
+%"TPerson" = type {[255 x i8], i16, float, float, i1, %"TUniversity"}
 %"TVector3" = type {float, float, float}
 define void @"main"()
 {
@@ -33,36 +35,36 @@ entry:
   store float 0x3ff0000000000000, float* %".15"
   %".17" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
   store float 0x3ff0000000000000, float* %".17"
-  %".19" = load float, float* %"A"
-  %".20" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
-  %".21" = load float, float* %".20"
-  %".22" = fmul float %".19", %".21"
-  %".23" = load float, float* %"B"
-  %".24" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
-  %".25" = load float, float* %".24"
-  %".26" = fmul float %".23", %".25"
-  %".27" = load float, float* %"C"
-  %".28" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
-  %".29" = load float, float* %".28"
-  %".30" = fmul float %".27", %".29"
+  %".19" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
+  %".20" = load float, float* %"A"
+  %".21" = load float, float* %".19"
+  %".22" = fmul float %".20", %".21"
+  %".23" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
+  %".24" = load float, float* %"B"
+  %".25" = load float, float* %".23"
+  %".26" = fmul float %".24", %".25"
+  %".27" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
+  %".28" = load float, float* %"C"
+  %".29" = load float, float* %".27"
+  %".30" = fmul float %".28", %".29"
   %".31" = load float, float* %"D"
   %".32" = fadd float %".30", %".31"
   %".33" = fadd float %".26", %".32"
   %".34" = fadd float %".22", %".33"
   %".35" = fsub float              0x0, %".34"
   store float %".35", float* %"numerator"
-  %".37" = load float, float* %"A"
-  %".38" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
-  %".39" = load float, float* %".38"
-  %".40" = fmul float %".37", %".39"
-  %".41" = load float, float* %"B"
-  %".42" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
-  %".43" = load float, float* %".42"
-  %".44" = fmul float %".41", %".43"
-  %".45" = load float, float* %"C"
-  %".46" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
-  %".47" = load float, float* %".46"
-  %".48" = fmul float %".45", %".47"
+  %".37" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
+  %".38" = load float, float* %"A"
+  %".39" = load float, float* %".37"
+  %".40" = fmul float %".38", %".39"
+  %".41" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
+  %".42" = load float, float* %"B"
+  %".43" = load float, float* %".41"
+  %".44" = fmul float %".42", %".43"
+  %".45" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
+  %".46" = load float, float* %"C"
+  %".47" = load float, float* %".45"
+  %".48" = fmul float %".46", %".47"
   %".49" = fadd float %".44", %".48"
   %".50" = fadd float %".40", %".49"
   store float %".50", float* %"denominator"
@@ -80,30 +82,30 @@ else:
   store float %".71", float* %"t"
   %".73" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 0
   %".74" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
-  %".75" = load float, float* %".74"
+  %".75" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
   %".76" = load float, float* %"t"
-  %".77" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
-  %".78" = load float, float* %".77"
-  %".79" = fmul float %".76", %".78"
-  %".80" = fadd float %".75", %".79"
+  %".77" = load float, float* %".75"
+  %".78" = fmul float %".76", %".77"
+  %".79" = load float, float* %".74"
+  %".80" = fadd float %".79", %".78"
   store float %".80", float* %".73"
   %".82" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 1
   %".83" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
-  %".84" = load float, float* %".83"
+  %".84" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
   %".85" = load float, float* %"t"
-  %".86" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
-  %".87" = load float, float* %".86"
-  %".88" = fmul float %".85", %".87"
-  %".89" = fadd float %".84", %".88"
+  %".86" = load float, float* %".84"
+  %".87" = fmul float %".85", %".86"
+  %".88" = load float, float* %".83"
+  %".89" = fadd float %".88", %".87"
   store float %".89", float* %".82"
   %".91" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 2
   %".92" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
-  %".93" = load float, float* %".92"
+  %".93" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
   %".94" = load float, float* %"t"
-  %".95" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
-  %".96" = load float, float* %".95"
-  %".97" = fmul float %".94", %".96"
-  %".98" = fadd float %".93", %".97"
+  %".95" = load float, float* %".93"
+  %".96" = fmul float %".94", %".95"
+  %".97" = load float, float* %".92"
+  %".98" = fadd float %".97", %".96"
   store float %".98", float* %".91"
   %".100" = alloca [255 x i8]
   store [255 x i8] c"Intersection point:\0a\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".100"

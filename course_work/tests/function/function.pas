@@ -5,7 +5,12 @@ var temp: real;
 begin
     temp := x;
     x := y;
-    y := x;
+    y := temp;
+end;
+
+function add(x, y: real): real;
+begin
+    Result := x + y;
 end;
 
 var
@@ -15,5 +20,11 @@ var
 begin
     x := 10;
     y := 5;
+    writeln(x);
+    writeln(y);
     swap(x, y);
+    writeln(x);
+    writeln(y);
+    writeln(add(x, y));
+    writeln(add(x, 100));
 end.

@@ -50,4 +50,12 @@ var
 begin
     Box1 := AABB(Vector3(-1, -1, -1), Vector3(1, 1, 1));
     Box2 := AABB(Vector3(0, 0, 0), Vector3(2, 2, 2));
+
+    writeln('Box2\n');
+    writeln(Box2.min.x);
+    writeln(Box2.min.y);
+    writeln(Box2.min.z);
+    writeln(Box2.max.x);
+    writeln(Box2.max.y);
+    writeln(Box2.max.z);
 end.

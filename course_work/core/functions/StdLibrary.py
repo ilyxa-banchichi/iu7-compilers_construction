@@ -20,6 +20,7 @@ def writeln(self, ctx:PascalParser.FunctionDesignatorContext):
                 strVarPtr = self.getBuilder().gep(strVar, [ir.Constant(ir.IntType(8), 0), ir.Constant(ir.IntType(8), 0)])
                 self.getBuilder().call(procedure, [strVarPtr])
         else:
+            value = self.load_if_pointer(value)
             if isinstance(value.type, ir.IntType):
                 if value.type.width == 8:
                     if valSemantic == PascalTypes.charSemanticLabel:
