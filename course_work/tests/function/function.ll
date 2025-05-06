@@ -10,59 +10,72 @@ entry:
   %"i" = alloca i16
   %"c" = alloca i8
   store float 0x4024000000000000, float* %"x"
-  store i16 5, i16* %"i"
+  store float 0x4014000000000000, float* %"y"
   %".4" = load float, float* %"x"
-  %".5" = call float @"f"(float %".4")
-  store float %".5", float* %"y"
+  %".5" = load float, float* %"y"
+  call void @"swap"(float %".4", float %".5")
   %".7" = load float, float* %"x"
-  %".8" = load i16, i16* %"i"
-  %".9" = sitofp i16 %".8" to float
-  %".10" = call float @"g"(float %".7", float %".9")
-  store float %".10", float* %"y"
-  %".12" = load i16, i16* %"i"
-  %".13" = sitofp i16 %".12" to float
-  %".14" = load float, float* %"x"
-  %".15" = call float @"g"(float %".13", float %".14")
-  call void @"p"(float %".15")
-  %".17" = load float, float* %"y"
-  %".18" = alloca [4 x i8]
-  store [4 x i8] c"%f\0a\00", [4 x i8]* %".18"
-  %".20" = getelementptr [4 x i8], [4 x i8]* %".18", i8 0, i8 0
-  %".21" = call i32 (i8*, ...) @"printf"(i8* %".20", float %".17")
+  %".8" = alloca [4 x i8]
+  store [4 x i8] c"%f\0a\00", [4 x i8]* %".8"
+  %".10" = getelementptr [4 x i8], [4 x i8]* %".8", i8 0, i8 0
+  %".11" = call i32 (i8*, ...) @"printf"(i8* %".10", float %".7")
+  %".12" = load float, float* %"y"
+  %".13" = alloca [4 x i8]
+  store [4 x i8] c"%f\0a\00", [4 x i8]* %".13"
+  %".15" = getelementptr [4 x i8], [4 x i8]* %".13", i8 0, i8 0
+  %".16" = call i32 (i8*, ...) @"printf"(i8* %".15", float %".12")
   ret void
 }
 
 declare i32 @"printf"(i8* %".1", ...)
 
-define void @"p"(float %"x")
-{
-entry:
-  %".3" = alloca [4 x i8]
-  store [4 x i8] c"%f\0a\00", [4 x i8]* %".3"
-  %".5" = getelementptr [4 x i8], [4 x i8]* %".3", i8 0, i8 0
-  %".6" = call i32 (i8*, ...) @"printf"(i8* %".5", float %"x")
-  ret void
-}
-
 define float @"f"(float %"x")
 {
 entry:
   %"Result" = alloca float
-  %".3" = fmul float %"x", %"x"
-  %".4" = fadd float %".3", 0x3ff0000000000000
-  store float %".4", float* %"Result"
-  %".6" = load float, float* %"Result"
-  ret float %".6"
+  %"x.1" = alloca float
+  store float %"x", float* %"x.1"
+  %".4" = load float, float* %"x.1"
+  %".5" = load float, float* %"x.1"
+  %".6" = fmul float %".4", %".5"
+  %".7" = fadd float %".6", 0x3ff0000000000000
+  store float %".7", float* %"Result"
+  %".9" = load float, float* %"Result"
+  ret float %".9"
 }
 
 define float @"g"(float %"x", float %"z")
 {
 entry:
   %"Result" = alloca float
-  %".4" = fmul float %"x", %"x"
-  %".5" = fmul float 0x4000000000000000, %"z"
-  %".6" = fadd float %".4", %".5"
-  store float %".6", float* %"Result"
-  %".8" = load float, float* %"Result"
-  ret float %".8"
+  %"x.1" = alloca float
+  store float %"x", float* %"x.1"
+  %"z.1" = alloca float
+  store float %"z", float* %"z.1"
+  %".6" = load float, float* %"x.1"
+  %".7" = load float, float* %"x.1"
+  %".8" = fmul float %".6", %".7"
+  %".9" = load float, float* %"z.1"
+  %".10" = fmul float 0x4000000000000000, %".9"
+  %".11" = fadd float %".8", %".10"
+  store float %".11", float* %"Result"
+  %".13" = load float, float* %"Result"
+  ret float %".13"
+}
+
+define void @"swap"(float %"x", float %"y")
+{
+entry:
+  %"x.1" = alloca float
+  store float %"x", float* %"x.1"
+  %"y.1" = alloca float
+  store float %"y", float* %"y.1"
+  %"temp" = alloca float
+  %".6" = load float, float* %"x.1"
+  store float %".6", float* %"temp"
+  %".8" = load float, float* %"y.1"
+  store float %".8", float* %"x.1"
+  %".10" = load float, float* %"x.1"
+  store float %".10", float* %"y.1"
+  ret void
 }

@@ -99,11 +99,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#procedureType.
-    def visitProcedureType(self, ctx:PascalParser.ProcedureTypeContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#type_.
     def visitType_(self, ctx:PascalParser.Type_Context):
         return self.visitChildren(ctx)
@@ -214,13 +209,8 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#procedureAndFunctionDeclarationPart.
-    def visitProcedureAndFunctionDeclarationPart(self, ctx:PascalParser.ProcedureAndFunctionDeclarationPartContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#procedureOrFunctionDeclaration.
-    def visitProcedureOrFunctionDeclaration(self, ctx:PascalParser.ProcedureOrFunctionDeclarationContext):
+    # Visit a parse tree produced by PascalParser#functionDeclarationPart.
+    def visitFunctionDeclarationPart(self, ctx:PascalParser.FunctionDeclarationPartContext):
         return self.visitChildren(ctx)
 
 
@@ -356,11 +346,6 @@ class PascalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by PascalParser#element.
     def visitElement(self, ctx:PascalParser.ElementContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#procedureStatement.
-    def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
         return self.visitChildren(ctx)
 
 

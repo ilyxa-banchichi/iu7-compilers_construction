@@ -4,7 +4,7 @@ from core.PascalTypes import *
 from core.SymbolTable import *
 from core.BuiltinSymbols import *
 
-def writeln(self, ctx:PascalParser.ProcedureStatementContext):
+def writeln(self, ctx:PascalParser.FunctionDesignatorContext):
     procedure = self.symbolTable["writeln"][0]
 
     formatStr = ""

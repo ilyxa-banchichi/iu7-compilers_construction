@@ -5,7 +5,7 @@ from core.TypeCast import *
 from core.SymbolTable import *
 from core.BuiltinSymbols import *
 
-def callFunction(identifier, self, ctx:PascalParser.ProcedureStatementContext):
+def callFunction(identifier, self, ctx:PascalParser.FunctionDesignatorContext):
     function, resultSemantic, semantics = self.symbolTable[identifier]
     params_count = len(function.args)
     print(function.name)
@@ -18,16 +18,25 @@ def callFunction(identifier, self, ctx:PascalParser.ProcedureStatementContext):
 
         self.leftPartDefinition.Enter(PascalTypes.defaultString, PascalTypes.charSemanticLabel)
         value, valSemantic = self.visit(param)
+        print(value)
         self.leftPartDefinition.Exit()
 
+        arg_type = function.args[i].type
+        is_pointer = False
+        if self.is_pointer(function.args[i]):
+            arg_type = arg_type.pointee
+            is_pointer = True
+
         if semantics[i] != valSemantic:
-            raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {function.args[i].type}, ({semantics[i]})")
+            raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {arg_type}, ({semantics[i]})")
 
         if valSemantic == PascalTypes.numericSemanticLabel:
-            value = castValue(self.getBuilder(), value, function.args[i].type)
+            value = castValue(self.getBuilder(), value, arg_type)
 
-        if function.args[i].type != value.type:
-            raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {function.args[i].type}, ({semantics[i]})")
+        if arg_type != value.type:
+            raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {arg_type}, ({semantics[i]})")
+
+        # if is_pointer:
 
         args.append(value)
 

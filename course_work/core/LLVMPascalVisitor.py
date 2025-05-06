@@ -89,7 +89,7 @@ class LLVMPascalVisitor(PascalVisitor):
         if ctx.resultType():
             resultType, resultSemantic = self.visit(ctx.resultType())
 
-        names, types, semantics = self.visit(ctx.formalParameterList())
+        names, types, semantics, modifiers = self.visit(ctx.formalParameterList())
 
         funcType = ir.FunctionType(resultType, types)
         function = ir.Function(self.module, funcType, name=identifier)
@@ -108,7 +108,13 @@ class LLVMPascalVisitor(PascalVisitor):
         args = function.args
         for arg in args:
             arg.name = names[i]
-            self.symbolTable[arg.name] = arg, semantics[i]
+            if modifiers[i] == "NONE":
+                argVar = self.getBuilder().alloca(arg.type, name=arg.name)
+                self.getBuilder().store(arg, argVar)
+            elif modifiers[i] == "VAR":
+                argVar = arg
+
+            self.symbolTable[arg.name] = argVar, semantics[i]
             i += 1
 
         self.visit(ctx.block())
@@ -127,13 +133,29 @@ class LLVMPascalVisitor(PascalVisitor):
         names = []
         types = []
         semantics = []
+        modifiers = []
         for g in ctx.formalParameterSection():
-            n, t, s = self.visit(g)
+            n, t, s, m = self.visit(g)
+
             names.extend(n)
             types.extend(t)
             semantics.extend(s)
+            modifiers.extend(m)
 
-        return names, types, semantics
+        return names, types, semantics, modifiers
+
+    def visitFormalParameterSection(self, ctx:PascalParser.FormalParameterSectionContext):
+        names, types, semantics = self.visit(ctx.parameterGroup())
+        modifiers = []
+        if ctx.VAR():
+            modifiers = ["VAR" for _ in names]
+            types = [t.as_pointer() for t in types]
+        elif ctx.FUNCTION():
+            modifiers = ["FUNCTION" for _ in names]
+        else:
+            modifiers = ["NONE" for _ in names]
+
+        return names, types, semantics, modifiers
 
     def visitParameterGroup(self, ctx:PascalParser.ParameterGroupContext):
         names = self.visit(ctx.identifierList())
@@ -143,10 +165,7 @@ class LLVMPascalVisitor(PascalVisitor):
         return names, types, semantics
 
     def visitFunctionDesignator(self, ctx:PascalParser.FunctionDesignatorContext):
-        identifier = self.visit(ctx.identifier())
-        return callFunction(identifier, self, ctx)
-
-    def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
+        print("func")
         identifier = self.visit(ctx.identifier())
         if identifier == "writeln":
             return writeln(self, ctx)
@@ -285,7 +304,7 @@ class LLVMPascalVisitor(PascalVisitor):
             factor, semantic = self.visit(ctx.functionDesignator())
 
         if self.is_pointer(factor):
-            factor =self.getBuilder().load(factor)
+            factor = self.getBuilder().load(factor)
 
         return factor, semantic
 
@@ -302,6 +321,8 @@ class LLVMPascalVisitor(PascalVisitor):
                 index += 1
 
         currentNode, currentSemantic = self.symbolTable[identifier]
+        print(currentNode)
+        print(currentSemantic)
         for modType, modValue in modifiers:
             if modType == "field":
                 currentNode, currentSemantic = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)

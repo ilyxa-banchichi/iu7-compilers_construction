@@ -170,15 +170,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#procedureType.
-    def enterProcedureType(self, ctx:PascalParser.ProcedureTypeContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#procedureType.
-    def exitProcedureType(self, ctx:PascalParser.ProcedureTypeContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#type_.
     def enterType_(self, ctx:PascalParser.Type_Context):
         pass
@@ -377,21 +368,12 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#procedureAndFunctionDeclarationPart.
-    def enterProcedureAndFunctionDeclarationPart(self, ctx:PascalParser.ProcedureAndFunctionDeclarationPartContext):
+    # Enter a parse tree produced by PascalParser#functionDeclarationPart.
+    def enterFunctionDeclarationPart(self, ctx:PascalParser.FunctionDeclarationPartContext):
         pass
 
-    # Exit a parse tree produced by PascalParser#procedureAndFunctionDeclarationPart.
-    def exitProcedureAndFunctionDeclarationPart(self, ctx:PascalParser.ProcedureAndFunctionDeclarationPartContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#procedureOrFunctionDeclaration.
-    def enterProcedureOrFunctionDeclaration(self, ctx:PascalParser.ProcedureOrFunctionDeclarationContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#procedureOrFunctionDeclaration.
-    def exitProcedureOrFunctionDeclaration(self, ctx:PascalParser.ProcedureOrFunctionDeclarationContext):
+    # Exit a parse tree produced by PascalParser#functionDeclarationPart.
+    def exitFunctionDeclarationPart(self, ctx:PascalParser.FunctionDeclarationPartContext):
         pass
 
 
@@ -635,15 +617,6 @@ class PascalListener(ParseTreeListener):
 
     # Exit a parse tree produced by PascalParser#element.
     def exitElement(self, ctx:PascalParser.ElementContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#procedureStatement.
-    def enterProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#procedureStatement.
-    def exitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
         pass
 
 
