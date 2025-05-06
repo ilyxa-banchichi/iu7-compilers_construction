@@ -6,6 +6,7 @@ from llvmlite import ir
 from core.PascalTypes import *
 from core.SymbolTable import *
 from core.BuiltinSymbols import *
+from core.TypeCast import *
 from core.functions.Literals import *
 from core.functions.Operators import *
 from core.functions.Temp import *
@@ -63,7 +64,7 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitProgram(self, ctx):
         self.currentFunction = "main"
-        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction].append_basic_block('entry')))
+        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction][0].append_basic_block('entry')))
         self.symbolTable.enter_scope()
 
         self.visit(ctx.block())
@@ -90,9 +91,9 @@ class LLVMPascalVisitor(PascalVisitor):
         function = ir.Function(self.module, funcType, name=identifier)
 
         self.currentFunction = identifier
-        self.symbolTable[identifier] = function
+        self.symbolTable[identifier] = (function, resultSemantic, semantics)
 
-        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction].append_basic_block('entry')))
+        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction][0].append_basic_block('entry')))
         self.symbolTable.enter_scope()
 
         resultVar = self.getBuilder().alloca(resultType, name="Result")
@@ -131,6 +132,43 @@ class LLVMPascalVisitor(PascalVisitor):
         types = [t for n in names]
         semantics = [s for n in names]
         return names, types, semantics
+
+    def visitFunctionDesignator(self, ctx:PascalParser.FunctionDesignatorContext):
+        identifier = self.visit(ctx.identifier())
+        function, resultSemantic, semantics = self.symbolTable[identifier]
+        params_count = len(function.args)
+        print(function)
+        print(resultSemantic)
+        print(semantics)
+
+        args = []
+        i = 0
+        for param in ctx.parameterList().actualParameter():
+            if i >= params_count:
+                raise TypeError(f"Ожидалось {params_count} параметров, обнаружен параметр N {i + 1}")
+
+            self.leftPartDefinition.Enter(PascalTypes.defaultString, PascalTypes.charSemanticLabel)
+            value, valSemantic = self.visit(param)
+            self.leftPartDefinition.Exit()
+
+            if semantics[i] != valSemantic:
+                raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {function.args[i].type}, ({semantics[i]})")
+
+            if valSemantic == PascalTypes.numericSemanticLabel:
+                value = castValue(self.getBuilder(), value, function.args[i].type)
+
+            if function.args[i].type != value.type:
+                raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {function.args[i].type}, ({semantics[i]})")
+
+            args.append(value)
+
+            i += 1
+
+        if len(args) != params_count:
+            raise TypeError(f"Ожидалось {params_count} параметров, обнаружено {len(args)}")
+
+        call = self.getBuilder().call(function, args)
+        return call, resultSemantic
 
     def visitRecordType(self, ctx:PascalParser.RecordTypeContext):
         return visitRecordType(self, ctx)
@@ -249,7 +287,6 @@ class LLVMPascalVisitor(PascalVisitor):
         return signedFactor, semantic
 
     def visitFactor(self, ctx:PascalParser.FactorContext):
-        print(ctx.getText())
         if ctx.variable():
             factor, semantic = self.visit(ctx.variable())
         elif ctx.LPAREN():

@@ -40,6 +40,43 @@ def castStoredValue(builder, ptr, value):
 
     raise TypeError(f"Unsupported cast: {value_type} -> {target_type}")
 
+def castValue(builder, val, target_type):
+    val_ty = val.type
+
+    left_priority = type_priority.get(target_type)
+    right_priority = type_priority.get(val_ty)
+
+    if left_priority is None or right_priority is None:
+        raise TypeError(f"Unsupported types: {target_type}, {val_ty}")
+
+    def cast(value, from_ty):
+        if from_ty == target_type:
+            return value
+
+        # Приведение int -> float
+        if isinstance(from_ty, ir.IntType) and isinstance(target_type, ir.FloatType):
+            return builder.sitofp(value, target_type)
+
+        # Приведение int -> double
+        if isinstance(from_ty, ir.IntType) and isinstance(target_type, ir.DoubleType):
+            return builder.sitofp(value, target_type)
+
+        # float -> double
+        if isinstance(from_ty, ir.FloatType) and isinstance(target_type, ir.DoubleType):
+            return builder.fpext(value, target_type)
+
+        # int -> int (например, i8 -> i32)
+        if isinstance(from_ty, ir.IntType) and isinstance(target_type, ir.IntType):
+            return builder.sext(value, target_type)
+
+        # float -> float (например, float -> float — уже не нужно)
+        # double -> float (недопустимо по приоритету вниз)
+        raise TypeError(f"Unsupported cast: {from_ty} -> {target_type}")
+
+    new_val = cast(val, val_ty)
+
+    return new_val
+
 def castValues(builder, left_val, right_val):
     left_ty = left_val.type
     right_ty = right_val.type

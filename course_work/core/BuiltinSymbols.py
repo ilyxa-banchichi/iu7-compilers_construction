@@ -7,6 +7,6 @@ class BuiltinSymbols(object):
 
     @classmethod
     def addBuiltinSymbols(cls, symbolTable, module):
-        symbolTable["main"] = ir.Function(module, BuiltinSymbols.mainFunctionType, name="main")
-        symbolTable["writeln"] = ir.Function(module, BuiltinSymbols.writelnFunctionType, name="printf")
+        symbolTable["main"] = (ir.Function(module, BuiltinSymbols.mainFunctionType, name="main"), None, [])
+        symbolTable["writeln"] = (ir.Function(module, BuiltinSymbols.writelnFunctionType, name="printf"), None, [])
 

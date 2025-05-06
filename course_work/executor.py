@@ -7,7 +7,7 @@ from code_generator import generateForFile
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 else:
-    filename = "tests/programs/AABBCollision.pas"
+    filename = "tests/function/function.pas"
 
 filename = generateForFile(filename)
 with open(filename, "r") as f:
