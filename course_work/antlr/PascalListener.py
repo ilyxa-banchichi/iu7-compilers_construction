@@ -395,15 +395,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#procedureDeclaration.
-    def enterProcedureDeclaration(self, ctx:PascalParser.ProcedureDeclarationContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#procedureDeclaration.
-    def exitProcedureDeclaration(self, ctx:PascalParser.ProcedureDeclarationContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#formalParameterList.
     def enterFormalParameterList(self, ctx:PascalParser.FormalParameterListContext):
         pass

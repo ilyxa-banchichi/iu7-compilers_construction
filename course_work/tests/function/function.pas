@@ -1,6 +1,6 @@
 program FunctionTest;
 
-procedure p(x: real);
+function p(x: real);
 begin
     writeln(x);
 end;
@@ -24,6 +24,6 @@ begin
     i := 5;
     y := f(x);
     y := g(x, i);
-    y := p(y);
+    p(g(i, x));
     writeln(y);
 end.

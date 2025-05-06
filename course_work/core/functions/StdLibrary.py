@@ -4,9 +4,8 @@ from core.PascalTypes import *
 from core.SymbolTable import *
 from core.BuiltinSymbols import *
 
-def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
-    identifier = self.visit(ctx.identifier())
-    procedure = self.symbolTable[identifier]
+def writeln(self, ctx:PascalParser.ProcedureStatementContext):
+    procedure = self.symbolTable["writeln"][0]
 
     formatStr = ""
     for param in ctx.parameterList().actualParameter():

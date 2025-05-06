@@ -224,11 +224,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#procedureDeclaration.
-    def visitProcedureDeclaration(self, ctx:PascalParser.ProcedureDeclarationContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#formalParameterList.
     def visitFormalParameterList(self, ctx:PascalParser.FormalParameterListContext):
         return self.visitChildren(ctx)

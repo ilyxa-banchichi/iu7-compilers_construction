@@ -19,15 +19,30 @@ entry:
   %".9" = sitofp i16 %".8" to float
   %".10" = call float @"g"(float %".7", float %".9")
   store float %".10", float* %"y"
-  %".12" = load float, float* %"y"
-  %".13" = alloca [4 x i8]
-  store [4 x i8] c"%f\0a\00", [4 x i8]* %".13"
-  %".15" = getelementptr [4 x i8], [4 x i8]* %".13", i8 0, i8 0
-  %".16" = call i32 (i8*, ...) @"printf"(i8* %".15", float %".12")
+  %".12" = load i16, i16* %"i"
+  %".13" = sitofp i16 %".12" to float
+  %".14" = load float, float* %"x"
+  %".15" = call float @"g"(float %".13", float %".14")
+  call void @"p"(float %".15")
+  %".17" = load float, float* %"y"
+  %".18" = alloca [4 x i8]
+  store [4 x i8] c"%f\0a\00", [4 x i8]* %".18"
+  %".20" = getelementptr [4 x i8], [4 x i8]* %".18", i8 0, i8 0
+  %".21" = call i32 (i8*, ...) @"printf"(i8* %".20", float %".17")
   ret void
 }
 
 declare i32 @"printf"(i8* %".1", ...)
+
+define void @"p"(float %"x")
+{
+entry:
+  %".3" = alloca [4 x i8]
+  store [4 x i8] c"%f\0a\00", [4 x i8]* %".3"
+  %".5" = getelementptr [4 x i8], [4 x i8]* %".3", i8 0, i8 0
+  %".6" = call i32 (i8*, ...) @"printf"(i8* %".5", float %"x")
+  ret void
+}
 
 define float @"f"(float %"x")
 {

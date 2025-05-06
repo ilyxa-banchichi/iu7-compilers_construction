@@ -9,7 +9,7 @@ from core.BuiltinSymbols import *
 from core.TypeCast import *
 from core.functions.Literals import *
 from core.functions.Operators import *
-from core.functions.Temp import *
+from core.functions.StdLibrary import *
 from core.functions.MulOperators import *
 from core.functions.AddOperator import *
 from core.functions.RelOperators import *
@@ -17,6 +17,7 @@ from core.functions.IfStatement import *
 from core.functions.ForStatement import *
 from core.functions.WhileStatement import *
 from core.functions.Records import *
+from core.functions.Functions import *
 from core.TypeCast import *
 
 class LeftPartDefinition:
@@ -84,7 +85,10 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitFunctionDeclaration(self, ctx:PascalParser.FunctionDeclarationContext):
         identifier = self.visit(ctx.identifier())
-        resultType, resultSemantic = self.visit(ctx.resultType())
+        resultType, resultSemantic = ir.VoidType(), None
+        if ctx.resultType():
+            resultType, resultSemantic = self.visit(ctx.resultType())
+
         names, types, semantics = self.visit(ctx.formalParameterList())
 
         funcType = ir.FunctionType(resultType, types)
@@ -96,8 +100,9 @@ class LLVMPascalVisitor(PascalVisitor):
         self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction][0].append_basic_block('entry')))
         self.symbolTable.enter_scope()
 
-        resultVar = self.getBuilder().alloca(resultType, name="Result")
-        self.symbolTable["Result"] = resultVar, resultSemantic
+        if resultSemantic != None:
+            resultVar = self.getBuilder().alloca(resultType, name="Result")
+            self.symbolTable["Result"] = resultVar, resultSemantic
 
         i = 0
         args = function.args
@@ -107,8 +112,12 @@ class LLVMPascalVisitor(PascalVisitor):
             i += 1
 
         self.visit(ctx.block())
-        retVal = self.getBuilder().load(resultVar)
-        self.getBuilder().ret(retVal)
+        if resultSemantic != None:
+            retVal = self.getBuilder().load(resultVar)
+            self.getBuilder().ret(retVal)
+        else:
+            self.getBuilder().ret_void()
+
         self.symbolTable.exit_scope()
         self.builder.pop()
 
@@ -135,40 +144,14 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitFunctionDesignator(self, ctx:PascalParser.FunctionDesignatorContext):
         identifier = self.visit(ctx.identifier())
-        function, resultSemantic, semantics = self.symbolTable[identifier]
-        params_count = len(function.args)
-        print(function)
-        print(resultSemantic)
-        print(semantics)
+        return callFunction(identifier, self, ctx)
 
-        args = []
-        i = 0
-        for param in ctx.parameterList().actualParameter():
-            if i >= params_count:
-                raise TypeError(f"Ожидалось {params_count} параметров, обнаружен параметр N {i + 1}")
-
-            self.leftPartDefinition.Enter(PascalTypes.defaultString, PascalTypes.charSemanticLabel)
-            value, valSemantic = self.visit(param)
-            self.leftPartDefinition.Exit()
-
-            if semantics[i] != valSemantic:
-                raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {function.args[i].type}, ({semantics[i]})")
-
-            if valSemantic == PascalTypes.numericSemanticLabel:
-                value = castValue(self.getBuilder(), value, function.args[i].type)
-
-            if function.args[i].type != value.type:
-                raise TypeError(f"Неверный тип параметра {value.type} ({valSemantic}). Ожидалось {function.args[i].type}, ({semantics[i]})")
-
-            args.append(value)
-
-            i += 1
-
-        if len(args) != params_count:
-            raise TypeError(f"Ожидалось {params_count} параметров, обнаружено {len(args)}")
-
-        call = self.getBuilder().call(function, args)
-        return call, resultSemantic
+    def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
+        identifier = self.visit(ctx.identifier())
+        if identifier == "writeln":
+            return writeln(self, ctx)
+        else:
+            return callFunction(identifier, self, ctx)
 
     def visitRecordType(self, ctx:PascalParser.RecordTypeContext):
         return visitRecordType(self, ctx)
@@ -214,9 +197,6 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitIfStatement(self, ctx:PascalParser.IfStatementContext):
         return visitIfStatement(self, ctx)
-
-    def visitProcedureStatement(self, ctx:PascalParser.ProcedureStatementContext):
-        return visitProcedureStatement(self, ctx)
 
     def visitSimpleExpression(self, ctx:PascalParser.SimpleExpressionContext):
         left, lSemantic = self.visit(ctx.term())
