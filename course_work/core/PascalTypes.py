@@ -59,10 +59,10 @@ class PascalTypes(object):
 
     @classmethod
     def getArrayType(cls, ty, sizes):
-        size = sizes[0]
-        for s in sizes[1:]:
-            size *= s
-        return ir.ArrayType(ty, size)
+        sizes.reverse()
+        for s in sizes:
+            ty = ir.ArrayType(ty, s)
+        return ty
 
     @classmethod
     def getIntLiteralType(cls, number):
