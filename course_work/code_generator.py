@@ -43,13 +43,14 @@ if __name__ == "__main__":
         "tests/logical/logical.pas",
         "tests/ifelse/ifelse.pas",
         "tests/cycles/cycles.pas",
+        "tests/array/array.pas",
         "tests/structure/structure.pas",
         "tests/function/function.pas",
         "tests/programs/LinePlaneIntersection.pas",
         "tests/programs/AABBCollision.pas",
     ]
 
-    # generateForFile("tests/function/function.pas")
+    generateForFile("tests/array/array.pas")
 
-    for test in allTests:
-        generateForFile(test)
+    # for test in allTests:
+    #     generateForFile(test)

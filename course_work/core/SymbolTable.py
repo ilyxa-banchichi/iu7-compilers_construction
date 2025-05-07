@@ -37,3 +37,8 @@ class SymbolTable:
             return
         self.__tables.pop(-1)
         self.__level -= 1
+
+    def print(self):
+        print("Таблица символов")
+        for t in self.__tables:
+            print(t)

@@ -64,6 +64,10 @@ def visitBool_(self, ctx:PascalParser.Bool_Context):
 
 def visitString(self, ctx:PascalParser.StringContext):
     ltype = self.leftPartDefinition.Type()
+    lsemantic = self.leftPartDefinition.Semantic()
+    if lsemantic != PascalTypes.charSemanticLabel:
+        raise TypeError("Cannot create char or string in this context")
+
     if isinstance(ltype, ir.PointerType):
         ltype = ltype.pointee
 
@@ -77,6 +81,8 @@ def visitString(self, ctx:PascalParser.StringContext):
                 raise TypeError("Cannot create char in this context")
 
             return ir.Constant(ltype, ord(val)), PascalTypes.charSemanticLabel
+        else:
+            raise TypeError("Cannot create char in this context")
     else:
         if ltype.element != ir.IntType(8):
             raise TypeError(f"Cannot create string in this context. LType {ltype}")

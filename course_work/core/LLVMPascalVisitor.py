@@ -17,6 +17,7 @@ from core.functions.IfStatement import *
 from core.functions.ForStatement import *
 from core.functions.WhileStatement import *
 from core.functions.Records import *
+from core.functions.Arrays import *
 from core.functions.Functions import *
 from core.TypeCast import *
 
@@ -52,6 +53,7 @@ class LLVMPascalVisitor(PascalVisitor):
         self.leftPartDefinition = LeftPartDefinition()
         self.currentFunction = ""
         self.records = {}
+        self.arrays = {}
 
     def getBuilder(self):
         return self.builder[-1]
@@ -76,6 +78,7 @@ class LLVMPascalVisitor(PascalVisitor):
 
         self.visit(ctx.block())
         self.getBuilder().ret_void()
+        self.symbolTable.print()
         self.symbolTable.exit_scope()
         self.builder.pop()
 
@@ -194,15 +197,54 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitRecordSection(self, ctx:PascalParser.RecordSectionContext):
         return visitRecordSection(self, ctx)
 
+    def visitArrayType(self, ctx:PascalParser.ArrayTypeContext):
+        componentType, semantic = self.visit(ctx.componentType())
+        typeList = self.visit(ctx.typeList())
+        sizes = []
+        description = []
+        for t in typeList:
+            min = int(t[0].constant)
+            max = int(t[1].constant)
+            description.append((min, max))
+            val = max - min + 1
+            sizes.append(val)
+        return PascalTypes.getArrayType(componentType, sizes), semantic, description
+
+    def visitTypeList(self, ctx:PascalParser.TypeListContext):
+        tl = []
+        for it in ctx.indexType():
+            t = self.visit(it)
+            tl.append(t)
+        return tl
+
+    def visitScalarType(self, ctx:PascalParser.ScalarTypeContext):
+        raise TypeError("Not supported")
+
+    def visitSubrangeType(self, ctx:PascalParser.SubrangeTypeContext):
+        self.leftPartDefinition.Enter(PascalTypes.int, PascalTypes.numericSemanticLabel)
+        first, _ = self.visit(ctx.constant(0))
+        second, _ = self.visit(ctx.constant(1))
+        self.leftPartDefinition.Exit()
+        return [first, second]
+
+    def visitStringtype(self, ctx:PascalParser.StringtypeContext):
+        return self.visitChildren(ctx)
+
     def visitVariableDeclaration(self, ctx:PascalParser.VariableDeclarationContext):
         if not ctx.type_():
             return
 
-        (varType, semanticLabel) = self.visit(ctx.type_())
+        t = self.visit(ctx.type_())
+        varType = t[0]
+        semanticLabel = t[1]
         varNames = self.visit(ctx.identifierList())
         for varName in varNames:
             allocaInstance =self.getBuilder().alloca(varType, name=varName)
-            self.symbolTable[varName] = allocaInstance, semanticLabel
+            if isinstance(varType, ir.ArrayType):
+                self.symbolTable[varName] = allocaInstance, semanticLabel, t[2]
+                print(self.symbolTable[varName])
+            else:
+                self.symbolTable[varName] = allocaInstance, semanticLabel
 
     def visitTypeIdentifier(self, ctx:PascalParser.TypeIdentifierContext):
         text = ctx.getText()
@@ -327,19 +369,44 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitVariable(self, ctx:PascalParser.VariableContext):
         identifier = self.visit(ctx.identifier(0))
         modifiers = []
-        index = 1
+        ident_index = 1
+        expr_index = 0
         for i in range(len(ctx.children)):
             child = ctx.children[i]
             if isinstance(child, TerminalNode):
                 if child.symbol.type == PascalParser.DOT:
-                    ind = self.visit(ctx.identifier(index))
+                    ind = self.visit(ctx.identifier(ident_index))
+                    ident_index += 1
                     modifiers.append(("field", ind))
-                index += 1
+                elif child.symbol.type == PascalParser.LBRACK:
+                    self.leftPartDefinition.Enter(ir.IntType(32), PascalTypes.numericSemanticLabel)
+                    ind, _ = self.visit(ctx.expression(expr_index))
+                    self.leftPartDefinition.Exit()
+                    i_val = self.load_if_pointer(ind)
+                    indices = [i_val]
+                    expr_index += 1
+                    while ctx.children[i + 2].symbol.type == PascalParser.COMMA:
+                        i += 2
+                        self.leftPartDefinition.Enter(ir.IntType(32), PascalTypes.numericSemanticLabel)
+                        ind, _ = self.visit(ctx.expression(expr_index))
+                        self.leftPartDefinition.Exit()
+                        i_val = self.load_if_pointer(ind)
+                        expr_index += 1
+                        indices.append(i_val)
 
-        currentNode, currentSemantic = self.symbolTable[identifier]
+                    modifiers.append(("array_access", indices))
+
+        v = self.symbolTable[identifier]
+        currentNode, currentSemantic = v[0], v[1]
+        array_desc = None
+        if isinstance(currentNode.type.pointee, ir.ArrayType):
+            array_desc = v[2]
+
         for modType, modValue in modifiers:
             if modType == "field":
                 currentNode, currentSemantic = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
+            elif modType == "array_access":
+                currentNode = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue)
 
         return currentNode, currentSemantic
 

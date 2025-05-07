@@ -45,17 +45,29 @@ begin
     Result.max := Add(position, extents);
 end;
 
+function swap(var x, y: real);
+var temp: real;
+begin
+    temp := x;
+    x := y;
+    y := temp;
+end;
+
+function add_real(x, y: real): real;
+begin
+    Result := x + y;
+end;
+
 var
     Box1, Box2: TAABB;
 begin
-    Box1 := AABB(Vector3(-1, -1, -1), Vector3(1, 1, 1));
+    Box1 := AABB(Vector3(10, 5, 10), Vector3(1, 1, 1));
     Box2 := AABB(Vector3(0, 0, 0), Vector3(2, 2, 2));
 
-    writeln('Box2\n');
-    writeln(Box2.min.x);
-    writeln(Box2.min.y);
-    writeln(Box2.min.z);
-    writeln(Box2.max.x);
-    writeln(Box2.max.y);
-    writeln(Box2.max.z);
+    writeln('Box1.min.x = ', Box1.min.x);
+    writeln('Box1.min.y = ',Box1.min.y);
+    swap(Box1.min.x, Box1.min.y);
+    writeln('Box1.min.x = ', Box1.min.x);
+    writeln('Box1.min.y = ', Box1.min.y);
+    writeln(add_real(Box1.min.x, Box1.min.y));
 end.

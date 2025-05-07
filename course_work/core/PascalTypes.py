@@ -58,6 +58,13 @@ class PascalTypes(object):
         return ir.ArrayType(ir.IntType(8), length)
 
     @classmethod
+    def getArrayType(cls, ty, sizes):
+        size = sizes[0]
+        for s in sizes[1:]:
+            size *= s
+        return ir.ArrayType(ty, size)
+
+    @classmethod
     def getIntLiteralType(cls, number):
         for key in PascalTypes.intRanges.keys():
             min_val, max_val = PascalTypes.intRanges[key]
