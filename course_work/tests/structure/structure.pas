@@ -1,5 +1,14 @@
 program StructureTest;
 
+function FillPhoneNumber(var number: array[1..11] of integer, startNumber: integer);
+var i: integer;
+begin
+    for i := 1 to 11 do begin
+        number[i] := (startNumber mod 10);
+        startNumber += 1;
+    end;
+end;
+
 type TUniversity = record
     Name: string;
     IsTechnical: boolean
@@ -10,7 +19,8 @@ type TPerson = record
     Age: integer;
     Height, Weight: real;
     IsStudent: boolean;
-    University: TUniversity
+    University: TUniversity;
+    PhoneNumber: array[1..11] of integer
 end;
 
 var
@@ -21,6 +31,7 @@ begin
     person.Height := 1.75;
     person.Weight := 55.7;
     person.IsStudent := false;
+    FillPhoneNumber(person.PhoneNumber, 7);
 
     person2.Name := 'Bob';
     person2.Age := 22;
@@ -29,6 +40,7 @@ begin
     person2.IsStudent := true;
     person2.University.Name := 'BMSTU';
     person2.University.IsTechnical := true;
+    FillPhoneNumber(person2.PhoneNumber, 4);
 
     writeln('Name: ', person.Name, '\n');
     writeln('Age: ', person.Age);

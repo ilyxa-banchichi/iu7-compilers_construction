@@ -406,7 +406,7 @@ class LLVMPascalVisitor(PascalVisitor):
             if modType == "field":
                 currentNode, currentSemantic = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
             elif modType == "array_access":
-                currentNode = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue)
+                currentNode = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue, self.module)
 
         return currentNode, currentSemantic
 
