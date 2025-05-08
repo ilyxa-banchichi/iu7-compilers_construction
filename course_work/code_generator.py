@@ -52,5 +52,5 @@ if __name__ == "__main__":
 
     generateForFile("tests/structure/structure.pas")
 
-    # for test in allTests:
-    #     generateForFile(test)
+    for test in allTests:
+        generateForFile(test)

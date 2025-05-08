@@ -44,7 +44,7 @@ class PascalTypes(object):
         realLabel: (real, numericSemanticLabel),
         doubleLabel: (double, numericSemanticLabel),
         charLabel: (char, charSemanticLabel),
-        defaultStringLabel: (defaultString, charSemanticLabel)
+        defaultStringLabel: (defaultString, charSemanticLabel, [(1, 255)])
     }
 
     intRanges = {

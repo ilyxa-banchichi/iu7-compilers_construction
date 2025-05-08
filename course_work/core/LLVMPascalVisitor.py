@@ -90,6 +90,8 @@ class LLVMPascalVisitor(PascalVisitor):
         self.symbolTable.exit_scope()
         self.builder.pop()
 
+        print(self.records)
+
         return str(self.module)
 
     def visitTypeDefinition(self, ctx:PascalParser.TypeDefinitionContext):
@@ -203,6 +205,8 @@ class LLVMPascalVisitor(PascalVisitor):
         identifier = self.visit(ctx.identifier())
         if identifier == "writeln":
             return writeln(self, ctx)
+        elif identifier == "write":
+            return write(self, ctx)
         else:
             return callFunction(identifier, self, ctx)
 
