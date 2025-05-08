@@ -88,10 +88,10 @@ class LLVMPascalVisitor(PascalVisitor):
         identifier = self.visit(ctx.identifier())
         if ctx.type_():
             if ctx.type_().structuredType():
-                names, types, semantics = self.visit(ctx.type_().structuredType())
+                names, types, semantics, array_descriptions = self.visit(ctx.type_().structuredType())
                 struct = ir.context.global_context.get_identified_type(identifier)
                 struct.set_body(*types)
-                self.records[struct] = (names, semantics)
+                self.records[struct] = (names, semantics, array_descriptions)
                 PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
         elif ctx.functionType():
             raise TypeError(f"Unsupported")
@@ -404,7 +404,7 @@ class LLVMPascalVisitor(PascalVisitor):
 
         for modType, modValue in modifiers:
             if modType == "field":
-                currentNode, currentSemantic = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
+                currentNode, currentSemantic, array_desc = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
             elif modType == "array_access":
                 currentNode = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue, self.module)
 
