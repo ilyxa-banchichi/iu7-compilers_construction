@@ -37,8 +37,12 @@ def handle_out_of_bounds(builder, module):
     builder.call(trap, [])
 
 def arrayElementAccess(builder, array_info, array_ptr, indices, module):
-    if len(indices) != len(array_info):
+    new_array_info = None
+    if len(indices) > len(array_info):
         raise TypeError(f"Размерность массива неверна. Необходимо указать {len(array_info)} индексов, а не {len(indices)}")
+    elif len(indices) < len(array_info):
+        new_array_info = array_info[len(indices):]
+        array_info = array_info[:len(indices)]
 
     cond = build_bounds_check_condition(builder, indices, array_info)
 
@@ -64,4 +68,4 @@ def arrayElementAccess(builder, array_info, array_ptr, indices, module):
     phi.add_incoming(elem_ptr, then_block_end)
     phi.add_incoming(null_ptr, else_block_end)
 
-    return phi
+    return phi, new_array_info

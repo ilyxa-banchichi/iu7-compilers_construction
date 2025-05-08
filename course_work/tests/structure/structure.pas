@@ -25,7 +25,6 @@ end;
 function PrintAddress(var address: TAddress);
 var i: integer;
 begin
-    write(address[1][1]);
     write(address[1]);
     write(', ');
     write(address[2]);
@@ -41,7 +40,9 @@ type TPerson = record
     Height, Weight: real;
     IsStudent: boolean;
     Phone: TPhoneNumber;
-    Address: array[1..3] of string[50]
+    Address: array[1..3] of string[50];
+    Jopa: array[1..3] of array[1..5] of integer;
+    Her: array[1..5] of integer
 end;
 
 var
@@ -57,6 +58,16 @@ begin
     person.Address[1] := 'Moscow';
     person.Address[2] := 'Bauman Street';
     person.Address[3] := 'House 50';
+
+    person.Her[1] := -99;
+    person.Her[5] := 99;
+    person.Jopa[1] := person.Her;
+    writeln(person.Jopa[1][1]);
+    writeln(person.Jopa[1][5]);
+    person.Her[1] := 1;
+    person.Her[5] := 2;
+    writeln(person.Jopa[1][1]);
+    writeln(person.Jopa[1][5]);
 
     person2.Name := 'Bob';
     person2.Sex := 'M';

@@ -78,7 +78,7 @@ begin
         end
         else begin
             writeln('else\n');
-            if intVar > -15000 begin
+            if intVar > -15000 then begin
                 writeln('then\n');
                 intVar := 1;
             end

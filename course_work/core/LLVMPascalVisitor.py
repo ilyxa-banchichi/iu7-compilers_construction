@@ -53,7 +53,8 @@ class LeftPartDefinition:
 
 class LLVMPascalVisitor(PascalVisitor):
     def __init__(self):
-        self.module = ir.Module('pascal_program')
+        self.context = ir.Context()
+        self.module = ir.Module('pascal_program', context=self.context)
         self.builder = []
         self.symbolTable = SymbolTable()
         BuiltinSymbols.addBuiltinSymbols(self.symbolTable, self.module)
@@ -86,11 +87,8 @@ class LLVMPascalVisitor(PascalVisitor):
 
         self.visit(ctx.block())
         self.getBuilder().ret_void()
-        self.symbolTable.print()
         self.symbolTable.exit_scope()
         self.builder.pop()
-
-        print(self.records)
 
         return str(self.module)
 
@@ -99,7 +97,7 @@ class LLVMPascalVisitor(PascalVisitor):
         if ctx.type_():
             if ctx.type_().structuredType().unpackedStructuredType().recordType():
                 names, types, semantics, array_descriptions = self.visit(ctx.type_().structuredType())
-                struct = ir.context.global_context.get_identified_type(identifier)
+                struct = self.context.get_identified_type(identifier)
                 struct.set_body(*types)
                 self.records[struct] = (names, semantics, array_descriptions)
                 PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
@@ -222,15 +220,9 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitArrayType(self, ctx:PascalParser.ArrayTypeContext):
         c = self.visit(ctx.componentType())
         componentType, semantic = c[0], c[1]
-        if isinstance(componentType, ir.ArrayType):
-            description = c[2]
-            sizes = []
-            for (min, max) in description:
-                sizes.append(max - min + 1)
-        else:
-            sizes = []
-            description = []
 
+        sizes = []
+        description = []
         typeList = self.visit(ctx.typeList())
         for t in typeList:
             min = int(t[0].constant)
@@ -238,6 +230,10 @@ class LLVMPascalVisitor(PascalVisitor):
             description.append((min, max))
             val = max - min + 1
             sizes.append(val)
+
+        if isinstance(componentType, ir.ArrayType):
+            description.extend(c[2])
+
         return PascalTypes.getArrayType(componentType, sizes), semantic, description
 
     def visitTypeList(self, ctx:PascalParser.TypeListContext):
@@ -245,8 +241,6 @@ class LLVMPascalVisitor(PascalVisitor):
         for it in ctx.indexType():
             t = self.visit(it)
             tl.append(t)
-            print("ARRRR")
-            print(t)
         return tl
 
     def visitScalarType(self, ctx:PascalParser.ScalarTypeContext):
@@ -447,7 +441,7 @@ class LLVMPascalVisitor(PascalVisitor):
             if modType == "field":
                 currentNode, currentSemantic, array_desc = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
             elif modType == "array_access":
-                currentNode = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue, self.module)
+                currentNode, array_desc = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue, self.module)
 
         if self.leftPartDefinition.ArrayDescription() != None:
             if self.leftPartDefinition.ArrayDescription() != array_desc:
