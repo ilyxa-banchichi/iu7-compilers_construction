@@ -25,20 +25,28 @@ class LeftPartDefinition:
     def __init__(self):
         self.type = []
         self.semantic = []
+        self.array_description = []
 
-    def Enter(self, type, semantic):
+    def Enter(self, type, semantic, array_description = None):
         self.type.append(type)
         self.semantic.append(semantic)
+        self.array_description.append(array_description)
 
     def Exit(self):
         self.type.pop()
         self.semantic.pop()
+        self.array_description.pop()
 
     def Type(self):
         return self.type[-1]
 
     def Semantic(self):
         return self.semantic[-1]
+
+    def ArrayDescription(self):
+        if len(self.array_description) == 0:
+            return None
+        return self.array_description[-1]
 
     def Top(self):
         return self.type[-1], self.semantic[-1]
@@ -87,12 +95,15 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitTypeDefinition(self, ctx:PascalParser.TypeDefinitionContext):
         identifier = self.visit(ctx.identifier())
         if ctx.type_():
-            if ctx.type_().structuredType():
+            if ctx.type_().structuredType().unpackedStructuredType().recordType():
                 names, types, semantics, array_descriptions = self.visit(ctx.type_().structuredType())
                 struct = ir.context.global_context.get_identified_type(identifier)
                 struct.set_body(*types)
                 self.records[struct] = (names, semantics, array_descriptions)
                 PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
+            if ctx.type_().structuredType().unpackedStructuredType().arrayType():
+                type, semantic, array_description = self.visit(ctx.type_().structuredType())
+                PascalTypes.strToType[identifier] = (type, semantic, array_description)
         elif ctx.functionType():
             raise TypeError(f"Unsupported")
         else:
@@ -104,13 +115,13 @@ class LLVMPascalVisitor(PascalVisitor):
         if ctx.resultType():
             resultType, resultSemantic = self.visit(ctx.resultType())
 
-        names, types, semantics, modifiers = self.visit(ctx.formalParameterList())
+        names, types, semantics, modifiers, arr_descs = self.visit(ctx.formalParameterList())
 
         funcType = ir.FunctionType(resultType, types)
         function = ir.Function(self.module, funcType, name=identifier)
 
         self.currentFunction = identifier
-        self.symbolTable[identifier] = (function, resultSemantic, semantics)
+        self.symbolTable[identifier] = (function, resultSemantic, semantics, arr_descs)
 
         self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction][0].append_basic_block('entry')))
         self.symbolTable.enter_scope()
@@ -131,7 +142,7 @@ class LLVMPascalVisitor(PascalVisitor):
             elif modifiers[i] == "FUNCTION":
                 argVar = arg
 
-            self.symbolTable[arg.name] = argVar, semantics[i]
+            self.symbolTable[arg.name] = argVar, semantics[i], arr_descs[i]
             i += 1
 
         self.visit(ctx.block())
@@ -151,18 +162,20 @@ class LLVMPascalVisitor(PascalVisitor):
         types = []
         semantics = []
         modifiers = []
+        arr_descs = []
         for g in ctx.formalParameterSection():
-            n, t, s, m = self.visit(g)
+            n, t, s, m, d = self.visit(g)
 
             names.extend(n)
             types.extend(t)
             semantics.extend(s)
             modifiers.extend(m)
+            arr_descs.extend(d)
 
-        return names, types, semantics, modifiers
+        return names, types, semantics, modifiers, arr_descs
 
     def visitFormalParameterSection(self, ctx:PascalParser.FormalParameterSectionContext):
-        names, types, semantics = self.visit(ctx.parameterGroup())
+        names, types, semantics, arr_descs = self.visit(ctx.parameterGroup())
         modifiers = []
         if ctx.VAR():
             modifiers = ["VAR" for _ in names]
@@ -172,14 +185,19 @@ class LLVMPascalVisitor(PascalVisitor):
         else:
             modifiers = ["NONE" for _ in names]
 
-        return names, types, semantics, modifiers
+        return names, types, semantics, modifiers, arr_descs
 
     def visitParameterGroup(self, ctx:PascalParser.ParameterGroupContext):
         names = self.visit(ctx.identifierList())
-        t, s = self.visit(ctx.typeIdentifier())
-        types = [t for n in names]
-        semantics = [s for n in names]
-        return names, types, semantics
+        t = self.visit(ctx.typeIdentifier())
+        var_type, sem, arr_desc = t[0], t[1], None
+        if isinstance(var_type, ir.ArrayType):
+            arr_desc = t[2]
+
+        types = [var_type for n in names]
+        semantics = [sem for n in names]
+        arr_descs = [arr_desc for n in names]
+        return names, types, semantics, arr_descs
 
     def visitFunctionDesignator(self, ctx:PascalParser.FunctionDesignatorContext):
         identifier = self.visit(ctx.identifier())
@@ -242,7 +260,6 @@ class LLVMPascalVisitor(PascalVisitor):
             allocaInstance =self.getBuilder().alloca(varType, name=varName)
             if isinstance(varType, ir.ArrayType):
                 self.symbolTable[varName] = allocaInstance, semanticLabel, t[2]
-                print(self.symbolTable[varName])
             else:
                 self.symbolTable[varName] = allocaInstance, semanticLabel
 
@@ -325,9 +342,7 @@ class LLVMPascalVisitor(PascalVisitor):
         if ctx.multiplicativeoperator():
             self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.term())
-            print(f"right {right}")
             operator = self.visit(ctx.multiplicativeoperator())
-            print(operator.getText())
             self.leftPartDefinition.Exit()
 
             return mulOperator(self, left, lSemantic, right, rSemantic, operator)
@@ -407,6 +422,10 @@ class LLVMPascalVisitor(PascalVisitor):
                 currentNode, currentSemantic, array_desc = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
             elif modType == "array_access":
                 currentNode = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue, self.module)
+
+        if self.leftPartDefinition.ArrayDescription() != None:
+            if self.leftPartDefinition.ArrayDescription() != array_desc:
+                raise TypeError(f"Ожидался массив размерности {self.leftPartDefinition.ArrayDescription()}, получен {array_desc}")
 
         return currentNode, currentSemantic
 

@@ -1,14 +1,13 @@
 program StructureTest;
 
-type TPhoneNumber = record
-    Number: array[1..11] of integer
-end;
+
+type TPhoneNumber = array[1..11] of integer;
 
 function FillPhoneNumber(var phone: TPhoneNumber; startNumber: integer);
 var i: integer;
 begin
     for i := 1 to 11 do begin
-        phone.Number[i] := (startNumber mod 10);
+        phone[i] := (startNumber mod 10);
         startNumber := startNumber + 1;
     end;
 end;
@@ -17,7 +16,7 @@ function PrintPhoneNumber(phone: TPhoneNumber);
 var i: integer;
 begin
     for i := 1 to 11 do begin
-        writeln(phone.Number[i]);
+        writeln(phone[i]);
     end;
 end;
 

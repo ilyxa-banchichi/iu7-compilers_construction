@@ -43,8 +43,6 @@ def visitUnsignedReal(self, ctx:PascalParser.UnsignedRealContext):
     #         f"to {ltype}"
     #     )
 
-    print(ltype)
-    print(number)
     return ir.Constant(ltype, number), PascalTypes.numericSemanticLabel
 
 def visitBool_(self, ctx:PascalParser.Bool_Context):
