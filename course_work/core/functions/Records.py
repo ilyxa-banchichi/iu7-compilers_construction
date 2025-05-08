@@ -36,8 +36,8 @@ def visitFixedPart(self, ctx:PascalParser.FixedPartContext):
 def visitRecordSection(self, ctx:PascalParser.RecordSectionContext):
     names = self.visit(ctx.identifierList())
     t = self.visit(ctx.type_())
+    print(t)
     var_type, sem, array_description = t[0], t[1], None
-    print(var_type)
     if isinstance(var_type, ir.ArrayType):
         array_description = t[2]
 

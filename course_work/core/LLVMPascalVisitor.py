@@ -220,10 +220,18 @@ class LLVMPascalVisitor(PascalVisitor):
         return visitRecordSection(self, ctx)
 
     def visitArrayType(self, ctx:PascalParser.ArrayTypeContext):
-        componentType, semantic = self.visit(ctx.componentType())
+        c = self.visit(ctx.componentType())
+        componentType, semantic = c[0], c[1]
+        if isinstance(componentType, ir.ArrayType):
+            description = c[2]
+            sizes = []
+            for (min, max) in description:
+                sizes.append(max - min + 1)
+        else:
+            sizes = []
+            description = []
+
         typeList = self.visit(ctx.typeList())
-        sizes = []
-        description = []
         for t in typeList:
             min = int(t[0].constant)
             max = int(t[1].constant)
@@ -237,6 +245,8 @@ class LLVMPascalVisitor(PascalVisitor):
         for it in ctx.indexType():
             t = self.visit(it)
             tl.append(t)
+            print("ARRRR")
+            print(t)
         return tl
 
     def visitScalarType(self, ctx:PascalParser.ScalarTypeContext):
@@ -250,7 +260,19 @@ class LLVMPascalVisitor(PascalVisitor):
         return [first, second]
 
     def visitStringtype(self, ctx:PascalParser.StringtypeContext):
-        return self.visitChildren(ctx)
+        if ctx.unsignedNumber():
+            self.leftPartDefinition.Enter(PascalTypes.int, PascalTypes.numericSemanticLabel)
+            second, _ = self.visit(ctx.unsignedNumber())
+            self.leftPartDefinition.Exit()
+
+        t = [ir.Constant(PascalTypes.int, 1), second]
+        componentType, semantic = PascalTypes.char, PascalTypes.charSemanticLabel
+        min = int(t[0].constant)
+        max = int(t[1].constant)
+        description = [(min, max)]
+        val = max - min + 1
+        sizes = [val]
+        return PascalTypes.getArrayType(componentType, sizes), semantic, description
 
     def visitVariableDeclaration(self, ctx:PascalParser.VariableDeclarationContext):
         if not ctx.type_():
