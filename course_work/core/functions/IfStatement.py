@@ -11,6 +11,8 @@ def visitIfStatement(self, ctx:PascalParser.IfStatementContext):
     if semantic != PascalTypes.boolSemanticLabel:
         raise TypeError(f"Cannot use {expression} {semantic} as conditional")
 
+    expression = self.load_if_pointer(expression)
+
     self.getBuilder().cbranch(expression, thenBlock, elseBlock)
 
     self.getBuilder().position_at_start(thenBlock)

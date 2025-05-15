@@ -33,24 +33,24 @@ def exec(filename):
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 else:
-    filename = "tests/structure/structure.pas"
+    filename = "tests/programs/AABBCollision.pas"
 
-allTests = [
-    "tests/types/types.pas",
-    "tests/aritmhetic/aritmhetic.pas",
-    "tests/bits/bits.pas",
-    "tests/relational/relational.pas",
-    "tests/logical/logical.pas",
-    "tests/ifelse/ifelse.pas",
-    "tests/cycles/cycles.pas",
-    "tests/array/array.pas",
-    "tests/function/function.pas",
-    "tests/structure/structure.pas",
-    "tests/programs/LinePlaneIntersection.pas",
-    "tests/programs/AABBCollision.pas",
-]
+# allTests = [
+#     "tests/types/types.pas",
+#     "tests/aritmhetic/aritmhetic.pas",
+#     "tests/bits/bits.pas",
+#     "tests/relational/relational.pas",
+#     "tests/logical/logical.pas",
+#     "tests/ifelse/ifelse.pas",
+#     "tests/cycles/cycles.pas",
+#     "tests/array/array.pas",
+#     "tests/function/function.pas",
+#     "tests/structure/structure.pas",
+#     "tests/programs/LinePlaneIntersection.pas",
+#     "tests/programs/AABBCollision.pas",
+# ]
 
-for test in allTests:
-    exec(test)
+# for test in allTests:
+#     exec(test)
 
-# exec(filename)
+exec(filename)

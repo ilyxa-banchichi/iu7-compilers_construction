@@ -4,15 +4,22 @@ type TVector3 = record
     x, y, z: real
 end;
 
-type TAABB = record
-    min, max: TVector3
-end;
-
 function Vector3(x, y, z: real): TVector3;
 begin
     Result.x := x;
     Result.y := y;
     Result.z := z;
+end;
+
+function PrintVector3(a: TVector3);
+begin
+    write('(');
+    write(a.x);
+    write(', ');
+    write(a.y);
+    write(', ');
+    write(a.z);
+    write(')');
 end;
 
 function Mul(a: TVector3; b: real): TVector3;
@@ -36,6 +43,17 @@ begin
     Result.z := a.z - b.z;
 end;
 
+type TAABB = record
+    min, max: TVector3
+end;
+
+function PrintAABB(a: TAABB);
+begin
+    PrintVector3(a.min);
+    write(', ');
+    PrintVector3(a.max);
+end;
+
 function AABB(position, size: TVector3): TAABB;
 var
     extents: TVector3;
@@ -45,29 +63,52 @@ begin
     Result.max := Add(position, extents);
 end;
 
-function swap(var x, y: real);
-var temp: real;
+function IntersectAABB(a, b: TAABB): integer;
+var
+    temp: boolean;
 begin
-    temp := x;
-    x := y;
-    y := temp;
+    temp := a.min.x <= b.max.x;
+    if temp then
+        Result := 1
+    else
+        Result := 0;
 end;
 
-function add_real(x, y: real): real;
+type TCollisionMatrix = array[1..10, 1..10] of integer;
+type TBoxes = array[1..10] of TAABB;
+
+function FillCollisionMatrix(var m: TCollisionMatrix; var boxes: TBoxes);
+var
+    i, j: integer;
 begin
-    Result := x + y;
+    for i := 1 to 10 do begin
+        for j := 1 to 10 do begin
+            m[i, j] := IntersectAABB(boxes[i], boxes[j]);
+        end;
+    end;
 end;
 
 var
-    Box1, Box2: TAABB;
+    i, j: integer;
+    boxes: array[1..10] of TAABB;
+    collisionMatrix: array[1..10, 1..10] of integer;
 begin
-    Box1 := AABB(Vector3(10, 5, 10), Vector3(1, 1, 1));
-    Box2 := AABB(Vector3(0, 0, 0), Vector3(2, 2, 2));
+    boxes[1] := AABB(Vector3(10, 5, 10), Vector3(1, 1, 1));
+    boxes[2] := AABB(Vector3(0, 0, 0), Vector3(2, 2, 2));
+    boxes[3] := AABB(Vector3(1, 0, 1), Vector3(2, 2, 2));
 
-    writeln('Box1.min.x = ', Box1.min.x);
-    writeln('Box1.min.y = ',Box1.min.y);
-    swap(Box1.min.x, Box1.min.y);
-    writeln('Box1.min.x = ', Box1.min.x);
-    writeln('Box1.min.y = ', Box1.min.y);
-    writeln(add_real(Box1.min.x, Box1.min.y));
+    PrintAABB(boxes[1]);
+    writeln('');
+    PrintAABB(boxes[2]);
+    writeln('');
+    PrintAABB(boxes[3]);
+    writeln('');
+
+    FillCollisionMatrix(collisionMatrix, boxes);
+
+    for i := 1 to 10 do begin
+        for j := 1 to 10 do begin
+            writeln('Intersect AABB', i, ' vs ', j, ': ', collisionMatrix[i, j]);
+        end;
+    end;
 end.
