@@ -42,7 +42,6 @@ class Lexer:
             value = match.group()
             start = match.start()
 
-            # Вычисляем текущую строку и колонку
             line_breaks = self.code[line_start:start].count('\n')
             if line_breaks > 0:
                 line += line_breaks
