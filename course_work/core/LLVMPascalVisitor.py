@@ -265,6 +265,10 @@ class LLVMPascalVisitor(PascalVisitor):
         sizes = [val]
         return PascalTypes.getArrayType(componentType, sizes), semantic, description
 
+    def visitPointerType(self, ctx:PascalParser.PointerTypeContext):
+        ty = self.visit(ctx.typeIdentifier())
+        return ir.PointerType.as_pointer(ty[0]), ty[1]
+
     def visitVariableDeclaration(self, ctx:PascalParser.VariableDeclarationContext):
         if not ctx.type_():
             return
@@ -332,7 +336,7 @@ class LLVMPascalVisitor(PascalVisitor):
             self.add_error(ctx, "Нельзя присвоить значение константе")
         value = self.load_if_pointer(value)
 
-        if not isinstance(self.pointee_type(variable), ir.ArrayType):
+        if not isinstance(self.pointee_type(variable), ir.ArrayType) and not isinstance(self.pointee_type(variable), ir.PointerType):
             value = castStoredValue(ctx, self, variable, value)
         else:
             if varSemantic == PascalTypes.charSemanticLabel:
@@ -403,7 +407,7 @@ class LLVMPascalVisitor(PascalVisitor):
             operator = self.visit(ctx.relationaloperator())
             right, rSemantic = self.visit(ctx.shiftExpression(1))
 
-            return relOperator(self, left, lSemantic, right, rSemantic, operator)
+            return relOperator(ctx, self, left, lSemantic, right, rSemantic, operator)
 
         return left, lSemantic
 
@@ -414,7 +418,7 @@ class LLVMPascalVisitor(PascalVisitor):
             right, rSemantic = self.visit(ctx.term())
             operator = self.visit(ctx.multiplicativeoperator())
 
-            return mulOperator(self, left, lSemantic, right, rSemantic, operator)
+            return mulOperator(ctx, self, left, lSemantic, right, rSemantic, operator)
 
         return left, lSemantic
 
@@ -474,6 +478,7 @@ class LLVMPascalVisitor(PascalVisitor):
                     ind = self.visit(ctx.identifier(ident_index))
                     ident_index += 1
                     modifiers.append(("field", ind))
+
                 elif child.symbol.type == PascalParser.LBRACK:
                     ind, _ = self.visit(ctx.expression(expr_index))
                     i_val = self.load_if_pointer(ind)
@@ -485,8 +490,11 @@ class LLVMPascalVisitor(PascalVisitor):
                         i_val = self.load_if_pointer(ind)
                         expr_index += 1
                         indices.append(i_val)
-
                     modifiers.append(("array_access", indices))
+
+                elif child.symbol.type == PascalParser.POINTER:
+                    modifiers.append(("pointer", None))
+
         try:
             v = self.symbolTable[identifier]
         except Exception as e:
@@ -507,10 +515,18 @@ class LLVMPascalVisitor(PascalVisitor):
                 currentNode, currentSemantic, array_desc = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
             elif modType == "array_access":
                 currentNode, array_desc = arrayElementAccess(ctx, self, array_desc, currentNode, modValue, self.module)
-
-        # if self.leftPartDefinition.ArrayDescription() != None:
-        #     if self.leftPartDefinition.ArrayDescription() != array_desc:
-        #         self.add_error(ctx, f"Ожидался массив размерности {self.leftPartDefinition.ArrayDescription()}, получен {array_desc}")
+            elif modType == "pointer":
+                if self.is_pointer(currentNode):
+                    currentNode = self.getBuilder().load(currentNode)
+                else:
+                    self.add_error(ctx, "Невозможно разыменовать не указатель")
+            elif modType == "at":
+                currentNode = ir.PointerType.as_pointer(currentNode)
+        if ctx.AT():
+            tptr = ir.PointerType.as_pointer(self.pointee_type(currentNode))
+            ptr = self.getBuilder().alloca(tptr)
+            currentNode = self.getBuilder().store(currentNode, ptr)
+            currentNode = ptr
 
         return currentNode, currentSemantic
 

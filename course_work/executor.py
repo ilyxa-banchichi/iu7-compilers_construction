@@ -6,6 +6,9 @@ from code_generator import generateForFile
 
 def exec(filename):
     filename = generateForFile(filename)
+    if filename == None:
+        return
+
     with open(filename, "r") as f:
         ir_code = str(f.read())
 
@@ -31,11 +34,12 @@ if len(sys.argv) > 1:
 else:
     filename = "/Users/ilapetrov/Documents/GitHub/iu7-compilers_construction/course_work/tests/programs/AABBCollision.pas"
     filename = "tests/programs/AABBCollision.pas"
-    filename = "tests/constants/constants.pas"
+    filename = "tests/pointer/pointer.pas"
 
 allTests = [
     "tests/types/types.pas",
     "tests/constants/constants.pas",
+    "tests/pointer/pointer.pas",
     "tests/aritmhetic/aritmhetic.pas",
     "tests/bits/bits.pas",
     "tests/relational/relational.pas",

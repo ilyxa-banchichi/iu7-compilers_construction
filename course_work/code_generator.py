@@ -19,7 +19,7 @@ def generateIR(input_filename, output_filename):
     tree = parser.program()
     if len(error_listener.errors) != 0:
         error_listener.print_errors()
-        return
+        return False
 
     # print(tree.toStringTree(recog=parser))
 
@@ -33,20 +33,26 @@ def generateIR(input_filename, output_filename):
         else:
             print("Unhandeled error", e)
             traceback.print_exc()
-        return
+        return False
 
     print("Created " + output_filename)
     generator.save(output_filename)
+    return True
 
 def generateForFile(inputFile) -> str:
     outputFile = inputFile[:-4] + ".ll"
-    generateIR(inputFile, outputFile)
-    return outputFile;
+    status = generateIR(inputFile, outputFile)
+
+    if status:
+        return outputFile
+    else:
+        return None
 
 if __name__ == "__main__":
     allTests = [
         "tests/types/types.pas",
         "tests/constants/constants.pas",
+        "tests/pointer/pointer.pas",
         "tests/aritmhetic/aritmhetic.pas",
         "tests/bits/bits.pas",
         "tests/relational/relational.pas",
@@ -60,7 +66,7 @@ if __name__ == "__main__":
         "tests/programs/AABBCollision.pas",
     ]
 
-    generateForFile("tests/programs/AABBCollision.pas")
+    generateForFile("tests/pointer/pointer.pas")
 
     # for test in allTests:
     #     generateForFile(test)

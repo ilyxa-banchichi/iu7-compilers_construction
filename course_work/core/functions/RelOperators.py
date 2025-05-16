@@ -3,7 +3,7 @@ from llvmlite import ir
 from core.PascalTypes import *
 from core.TypeCast import *
 
-def relOperator(self, left, lSemantic, right, rSemantic, operator: str):
+def relOperator(ctx, self, left, lSemantic, right, rSemantic, operator: str):
     left = self.load_if_pointer(left)
     right = self.load_if_pointer(right)
 
@@ -15,7 +15,7 @@ def relOperator(self, left, lSemantic, right, rSemantic, operator: str):
 
     if lSemantic == PascalTypes.numericSemanticLabel:
         if left.type != right.type:
-            left, right = castValues(self.getBuilder(), left, right)
+            left, right = castValues(ctx, self, left, right)
 
     if isinstance(left.type, ir.FloatType):
             return self.getBuilder().fcmp_ordered(operator, left, right), PascalTypes.boolSemanticLabel

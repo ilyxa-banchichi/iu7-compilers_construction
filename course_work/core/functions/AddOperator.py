@@ -18,7 +18,7 @@ def addOperator(ctx, self, left, lSemantic, right, rSemantic, operator):
 
     if lSemantic == PascalTypes.numericSemanticLabel:
         if left.type != right.type:
-            left, right = castValues(self.getBuilder(), left, right)
+            left, right = castValues(ctx, self, left, right)
 
         if isinstance(left.type, ir.FloatType):
             if operator.PLUS():

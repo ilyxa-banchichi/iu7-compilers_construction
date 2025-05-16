@@ -9,6 +9,7 @@ define void @"main"()
 entry:
   %"i" = alloca i16
   %"j" = alloca i16
+  %"p" = alloca i16
   %"boxes" = alloca [3 x %"TAABB"]
   %"collisionMatrix" = alloca [3 x [3 x i16]]
   %".2" = icmp uge i8 1, 1

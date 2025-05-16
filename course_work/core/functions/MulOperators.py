@@ -3,7 +3,7 @@ from llvmlite import ir
 from core.PascalTypes import *
 from core.TypeCast import *
 
-def mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator):
+def mulOperatorForLogical(ctx, self, left, lSemantic, right, rSemantic, operator):
     if operator.STAR():
         self.add_error(ctx, f"Cannot apply operator {operator.DIV()} to bool types")
     elif operator.SLASH():
@@ -15,7 +15,7 @@ def mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator):
     elif operator.AND():
         return self.getBuilder().and_(left, right), lSemantic
 
-def mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator):
+def mulOperatorForNumeric(ctx, self, left, lSemantic, right, rSemantic, operator):
     if isinstance(left.type, ir.FloatType):
         if operator.STAR():
             return self.getBuilder().fmul(left, right), lSemantic
@@ -53,7 +53,7 @@ def mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator):
             elif operator.MOD():
                 return self.getBuilder().srem(left, right), lSemantic
 
-def mulOperator(self, left, lSemantic, right, rSemantic, operator):
+def mulOperator(ctx, self, left, lSemantic, right, rSemantic, operator):
     left = self.load_if_pointer(left)
     right = self.load_if_pointer(right)
 
@@ -61,11 +61,11 @@ def mulOperator(self, left, lSemantic, right, rSemantic, operator):
         self.add_error(ctx, f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
 
     if lSemantic == PascalTypes.boolSemanticLabel:
-        return mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator)
+        return mulOperatorForLogical(ctx, self, left, lSemantic, right, rSemantic, operator)
 
     if lSemantic == PascalTypes.numericSemanticLabel:
         if left.type != right.type:
-            left, right = castValues(self.getBuilder(), left, right)
-        return mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator)
+            left, right = castValues(ctx, self, left, right)
+        return mulOperatorForNumeric(ctx, self, left, lSemantic, right, rSemantic, operator)
 
     self.add_error(ctx, f"Cannot apply operator {operator.getText()} this context {left, lSemantic}")
