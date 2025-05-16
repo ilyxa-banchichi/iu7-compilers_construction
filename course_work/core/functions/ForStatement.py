@@ -12,9 +12,7 @@ def visitForStatement(self, ctx:PascalParser.ForStatementContext):
     if varSemantic != PascalTypes.numericSemanticLabel or not isinstance(iterPrt.type.pointee, ir.IntType):
         raise TypeError('Cannot use not integer variable as iterator')
 
-    self.leftPartDefinition.Enter(iterPrt.type.pointee, varSemantic)
     initialValue, finalValue, direction = self.visit(ctx.forList())
-    self.leftPartDefinition.Exit()
     initialValue = castStoredValue(self.getBuilder(), iterPrt, initialValue)
     self.getBuilder().store(initialValue, iterPrt)
 

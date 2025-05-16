@@ -1,5 +1,6 @@
 from llvmlite import ir
 from core.functions.Utils import *
+from core.PascalTypes import *
 
 def declare_puts(module):
     puts_ty = ir.FunctionType(ir.IntType(32), [ir.PointerType(ir.IntType(8))], var_arg=False)

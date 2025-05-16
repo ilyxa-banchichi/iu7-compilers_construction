@@ -5,12 +5,14 @@ const
     NegIntC = -3;
     FloatC = 10.15;
     NegFloatC = -10.15;
+    StrConst = 'asdgadg';
+    ChrConst = 'a';
 
 begin
-    IntC := 5;
-
     writeln(IntC);
     writeln(NegIntC);
     writeln(FloatC);
     writeln(NegFloatC);
+    writeln(StrConst);
+    writeln(ChrConst);
 end.

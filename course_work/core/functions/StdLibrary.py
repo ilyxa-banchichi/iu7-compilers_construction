@@ -48,9 +48,7 @@ def write_value(self, value, valSemantic):
 
 def write(self, ctx:PascalParser.FunctionDesignatorContext):
     for param in ctx.parameterList().actualParameter():
-        self.leftPartDefinition.Enter(PascalTypes.defaultString, PascalTypes.charSemanticLabel)
         value, valSemantic = self.visit(param)
-        self.leftPartDefinition.Exit()
         write_value(self, value, valSemantic)
 
 def writeln(self, ctx:PascalParser.FunctionDesignatorContext):

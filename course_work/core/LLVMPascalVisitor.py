@@ -21,36 +21,6 @@ from core.functions.Arrays import *
 from core.functions.Functions import *
 from core.TypeCast import *
 
-class LeftPartDefinition:
-    def __init__(self):
-        self.type = []
-        self.semantic = []
-        self.array_description = []
-
-    def Enter(self, type, semantic, array_description = None):
-        self.type.append(type)
-        self.semantic.append(semantic)
-        self.array_description.append(array_description)
-
-    def Exit(self):
-        self.type.pop()
-        self.semantic.pop()
-        self.array_description.pop()
-
-    def Type(self):
-        return self.type[-1]
-
-    def Semantic(self):
-        return self.semantic[-1]
-
-    def ArrayDescription(self):
-        if len(self.array_description) == 0:
-            return None
-        return self.array_description[-1]
-
-    def Top(self):
-        return self.type[-1], self.semantic[-1]
-
 class LLVMPascalVisitor(PascalVisitor):
     def __init__(self):
         self.context = ir.Context()
@@ -59,7 +29,6 @@ class LLVMPascalVisitor(PascalVisitor):
         self.symbolTable = SymbolTable()
         BuiltinSymbols.addBuiltinSymbols(self.symbolTable, self.module)
 
-        self.leftPartDefinition = LeftPartDefinition()
         self.currentFunction = []
         self.records = {}
         self.arrays = {}
@@ -262,17 +231,13 @@ class LLVMPascalVisitor(PascalVisitor):
         raise TypeError("Not supported")
 
     def visitSubrangeType(self, ctx:PascalParser.SubrangeTypeContext):
-        self.leftPartDefinition.Enter(PascalTypes.int, PascalTypes.numericSemanticLabel)
         first, _ = self.visit(ctx.constant(0))
         second, _ = self.visit(ctx.constant(1))
-        self.leftPartDefinition.Exit()
         return [first, second]
 
     def visitStringtype(self, ctx:PascalParser.StringtypeContext):
         if ctx.unsignedNumber():
-            self.leftPartDefinition.Enter(PascalTypes.int, PascalTypes.numericSemanticLabel)
             second, _ = self.visit(ctx.unsignedNumber())
-            self.leftPartDefinition.Exit()
 
         t = [ir.Constant(PascalTypes.int, 1), second]
         componentType, semantic = PascalTypes.char, PascalTypes.charSemanticLabel
@@ -315,7 +280,11 @@ class LLVMPascalVisitor(PascalVisitor):
             num, semantic = self.visit(ctx.unsignedNumber())
         if ctx.sign() and ctx.sign().MINUS():
             if isinstance(num.type, ir.IntType):
-                num = ir.Constant(num.type, -int(num.constant))
+                ty = num.type.width
+                if num.type.width == 8:
+                    ty = PascalTypes.int
+
+                num = ir.Constant(ty, -int(num.constant))
             elif isinstance(num.type, (ir.FloatType, ir.DoubleType)):
                 num = ir.Constant(num.type, -float(num.constant))
             else:
@@ -329,12 +298,31 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitAssignmentStatement(self, ctx:PascalParser.AssignmentStatementContext):
         (variable, varSemantic) = self.visit(ctx.variable())
-        self.leftPartDefinition.Enter(variable.type.pointee, varSemantic)
         (value, valSemantic) = self.visit(ctx.expression())
-        self.leftPartDefinition.Exit()
-
+        if not isinstance(variable.type, ir.PointerType):
+            raise TypeError("Нельзя присвоить значение константе")
         value = self.load_if_pointer(value)
-        value = castStoredValue(self.getBuilder(), variable, value)
+
+        if not isinstance(self.pointee_type(variable), ir.ArrayType):
+            value = castStoredValue(self.getBuilder(), variable, value)
+        else:
+            if varSemantic == PascalTypes.charSemanticLabel:
+                arr_ty = self.pointee_type(variable)
+                if isinstance(value.type, ir.IntType) and value.type.width == 8:
+                    val = bytes(f'{chr(value.constant)}', "utf-8").decode("unicode_escape").encode("utf-8")
+                    val = val.ljust(arr_ty.count, b"\x00")
+                    value = ir.Constant(arr_ty, bytearray(val))
+                elif isinstance(self.pointee_type(value), ir.ArrayType):
+                    if value.type.count < arr_ty.count:
+                        data = value.constant
+                        target_size = arr_ty.count
+                        pad_size = target_size - len(data)
+                        if pad_size > 0:
+                            data += b'\x00' * pad_size
+                        value = ir.Constant(arr_ty, data)
+                    elif value.type.count > arr_ty.count:
+                        raise TypeError("Нельзя присвоить строку большего размера в переменную меньшего размера")
+
         self.getBuilder().store(value, variable)
 
     def visitWhileStatement(self, ctx:PascalParser.WhileStatementContext):
@@ -353,10 +341,8 @@ class LLVMPascalVisitor(PascalVisitor):
         left, lSemantic = self.visit(ctx.term())
         if ctx.additiveoperator():
 
-            self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.simpleExpression())
             operator = self.visit(ctx.additiveoperator())
-            self.leftPartDefinition.Exit()
 
             return addOperator(self, left, lSemantic, right, rSemantic, operator)
 
@@ -370,9 +356,7 @@ class LLVMPascalVisitor(PascalVisitor):
                 raise TypeError(f"Cannot apply shift operator {operator} to not integer type")
 
             operator = self.visit(ctx.shiftOperator())
-            self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.shiftExpression())
-            self.leftPartDefinition.Exit()
 
             right = self.load_if_pointer(right)
             left, right = castValues(self.getBuilder(), left, right)
@@ -388,9 +372,7 @@ class LLVMPascalVisitor(PascalVisitor):
         left, lSemantic = self.visit(ctx.shiftExpression(0))
         if ctx.relationaloperator():
             operator = self.visit(ctx.relationaloperator())
-            self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.shiftExpression(1))
-            self.leftPartDefinition.Exit()
 
             return relOperator(self, left, lSemantic, right, rSemantic, operator)
 
@@ -400,10 +382,8 @@ class LLVMPascalVisitor(PascalVisitor):
         left, lSemantic = self.visit(ctx.signedFactor())
 
         if ctx.multiplicativeoperator():
-            self.leftPartDefinition.Enter(left.type, lSemantic)
             right, rSemantic = self.visit(ctx.term())
             operator = self.visit(ctx.multiplicativeoperator())
-            self.leftPartDefinition.Exit()
 
             return mulOperator(self, left, lSemantic, right, rSemantic, operator)
 
@@ -454,17 +434,13 @@ class LLVMPascalVisitor(PascalVisitor):
                     ident_index += 1
                     modifiers.append(("field", ind))
                 elif child.symbol.type == PascalParser.LBRACK:
-                    self.leftPartDefinition.Enter(ir.IntType(32), PascalTypes.numericSemanticLabel)
                     ind, _ = self.visit(ctx.expression(expr_index))
-                    self.leftPartDefinition.Exit()
                     i_val = self.load_if_pointer(ind)
                     indices = [i_val]
                     expr_index += 1
                     while ctx.children[i + 2].symbol.type == PascalParser.COMMA:
                         i += 2
-                        self.leftPartDefinition.Enter(ir.IntType(32), PascalTypes.numericSemanticLabel)
                         ind, _ = self.visit(ctx.expression(expr_index))
-                        self.leftPartDefinition.Exit()
                         i_val = self.load_if_pointer(ind)
                         expr_index += 1
                         indices.append(i_val)
@@ -475,7 +451,13 @@ class LLVMPascalVisitor(PascalVisitor):
         currentNode, currentSemantic = v[0], v[1]
         array_desc = None
         if isinstance(self.pointee_type(currentNode), ir.ArrayType):
-            array_desc = v[2]
+            if currentSemantic != PascalTypes.charSemanticLabel:
+                array_desc = v[2]
+            else:
+                if len(v) < 3:
+                    array_desc = [(1, self.pointee_type(currentNode).count)]
+                else:
+                    array_desc = v[2]
 
         for modType, modValue in modifiers:
             if modType == "field":
@@ -483,9 +465,9 @@ class LLVMPascalVisitor(PascalVisitor):
             elif modType == "array_access":
                 currentNode, array_desc = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue, self.module)
 
-        if self.leftPartDefinition.ArrayDescription() != None:
-            if self.leftPartDefinition.ArrayDescription() != array_desc:
-                raise TypeError(f"Ожидался массив размерности {self.leftPartDefinition.ArrayDescription()}, получен {array_desc}")
+        # if self.leftPartDefinition.ArrayDescription() != None:
+        #     if self.leftPartDefinition.ArrayDescription() != array_desc:
+        #         raise TypeError(f"Ожидался массив размерности {self.leftPartDefinition.ArrayDescription()}, получен {array_desc}")
 
         return currentNode, currentSemantic
 

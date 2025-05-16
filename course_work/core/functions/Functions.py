@@ -21,9 +21,7 @@ def callFunction(identifier, self, ctx:PascalParser.FunctionDesignatorContext):
             arg_type = arg_type.pointee
             is_pointer = True
 
-        self.leftPartDefinition.Enter(arg_type, semantics[i], arr_descs[i])
         value, valSemantic = self.visit(param)
-        self.leftPartDefinition.Exit()
 
         if not is_pointer:
             value = self.load_if_pointer(value)

@@ -81,62 +81,63 @@ entry:
   %".60" = call i32 (i8*, ...) @"printf"(i8* %".59", float %".56")
   %"end_line_str_ptr.7" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".61" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.7")
-  store double 0x406ea3f35ba6e72c, double* %"doubleVar"
-  %".63" = load double, double* %"doubleVar"
-  %".64" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".64"
-  %".66" = getelementptr [3 x i8], [3 x i8]* %".64", i8 0, i8 0
-  %".67" = call i32 (i8*, ...) @"printf"(i8* %".66", double %".63")
+  %".62" = fpext float 0x406ea3f360000000 to double
+  store double %".62", double* %"doubleVar"
+  %".64" = load double, double* %"doubleVar"
+  %".65" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".65"
+  %".67" = getelementptr [3 x i8], [3 x i8]* %".65", i8 0, i8 0
+  %".68" = call i32 (i8*, ...) @"printf"(i8* %".67", double %".64")
   %"end_line_str_ptr.8" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".68" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.8")
+  %".69" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.8")
   store i1 1, i1* %"booleanVar"
-  %".70" = load i1, i1* %"booleanVar"
+  %".71" = load i1, i1* %"booleanVar"
   %"true_value_str_ptr" = getelementptr inbounds [5 x i8], [5 x i8]* @"true_value_str", i32 0, i32 0
   %"false_value_str_ptr" = getelementptr inbounds [6 x i8], [6 x i8]* @"false_value_str", i32 0, i32 0
-  %".71" = select  i1 %".70", i8* %"true_value_str_ptr", i8* %"false_value_str_ptr"
-  %".72" = call i32 (i8*, ...) @"printf"(i8* %".71")
+  %".72" = select  i1 %".71", i8* %"true_value_str_ptr", i8* %"false_value_str_ptr"
+  %".73" = call i32 (i8*, ...) @"printf"(i8* %".72")
   %"end_line_str_ptr.9" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".73" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.9")
+  %".74" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.9")
   store i1 0, i1* %"booleanVar"
-  %".75" = load i1, i1* %"booleanVar"
+  %".76" = load i1, i1* %"booleanVar"
   %"true_value_str_ptr.1" = getelementptr inbounds [5 x i8], [5 x i8]* @"true_value_str", i32 0, i32 0
   %"false_value_str_ptr.1" = getelementptr inbounds [6 x i8], [6 x i8]* @"false_value_str", i32 0, i32 0
-  %".76" = select  i1 %".75", i8* %"true_value_str_ptr.1", i8* %"false_value_str_ptr.1"
-  %".77" = call i32 (i8*, ...) @"printf"(i8* %".76")
+  %".77" = select  i1 %".76", i8* %"true_value_str_ptr.1", i8* %"false_value_str_ptr.1"
+  %".78" = call i32 (i8*, ...) @"printf"(i8* %".77")
   %"end_line_str_ptr.10" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".78" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.10")
+  %".79" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.10")
   store [255 x i8] c"B\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %"strVar"
-  %".80" = load [255 x i8], [255 x i8]* %"strVar"
-  %".81" = alloca [255 x i8]
-  store [255 x i8] %".80", [255 x i8]* %".81"
-  %".83" = getelementptr [255 x i8], [255 x i8]* %".81", i8 0, i8 0
-  %".84" = call i32 (i8*, ...) @"printf"(i8* %".83")
+  %".81" = load [255 x i8], [255 x i8]* %"strVar"
+  %".82" = alloca [255 x i8]
+  store [255 x i8] %".81", [255 x i8]* %".82"
+  %".84" = getelementptr [255 x i8], [255 x i8]* %".82", i8 0, i8 0
+  %".85" = call i32 (i8*, ...) @"printf"(i8* %".84")
   %"end_line_str_ptr.11" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".85" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.11")
-  store [255 x i8] c"Hello world\0a\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %"strVar"
-  %".87" = load [255 x i8], [255 x i8]* %"strVar"
-  %".88" = alloca [255 x i8]
-  store [255 x i8] %".87", [255 x i8]* %".88"
-  %".90" = getelementptr [255 x i8], [255 x i8]* %".88", i8 0, i8 0
-  %".91" = call i32 (i8*, ...) @"printf"(i8* %".90")
+  %".86" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.11")
+  store [255 x i8] c"Hello world\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %"strVar"
+  %".88" = load [255 x i8], [255 x i8]* %"strVar"
+  %".89" = alloca [255 x i8]
+  store [255 x i8] %".88", [255 x i8]* %".89"
+  %".91" = getelementptr [255 x i8], [255 x i8]* %".89", i8 0, i8 0
+  %".92" = call i32 (i8*, ...) @"printf"(i8* %".91")
   %"end_line_str_ptr.12" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".92" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.12")
-  store [255 x i8] c"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\0a\00", [255 x i8]* %"strVar"
-  %".94" = load [255 x i8], [255 x i8]* %"strVar"
-  %".95" = alloca [255 x i8]
-  store [255 x i8] %".94", [255 x i8]* %".95"
-  %".97" = getelementptr [255 x i8], [255 x i8]* %".95", i8 0, i8 0
-  %".98" = call i32 (i8*, ...) @"printf"(i8* %".97")
+  %".93" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.12")
+  store [255 x i8] c"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\00", [255 x i8]* %"strVar"
+  %".95" = load [255 x i8], [255 x i8]* %"strVar"
+  %".96" = alloca [255 x i8]
+  store [255 x i8] %".95", [255 x i8]* %".96"
+  %".98" = getelementptr [255 x i8], [255 x i8]* %".96", i8 0, i8 0
+  %".99" = call i32 (i8*, ...) @"printf"(i8* %".98")
   %"end_line_str_ptr.13" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".99" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.13")
+  %".100" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.13")
   store i8 90, i8* %"charVar"
-  %".101" = load i8, i8* %"charVar"
-  %".102" = alloca [3 x i8]
-  store [3 x i8] c"%c\00", [3 x i8]* %".102"
-  %".104" = getelementptr [3 x i8], [3 x i8]* %".102", i8 0, i8 0
-  %".105" = call i32 (i8*, ...) @"printf"(i8* %".104", i8 %".101")
+  %".102" = load i8, i8* %"charVar"
+  %".103" = alloca [3 x i8]
+  store [3 x i8] c"%c\00", [3 x i8]* %".103"
+  %".105" = getelementptr [3 x i8], [3 x i8]* %".103", i8 0, i8 0
+  %".106" = call i32 (i8*, ...) @"printf"(i8* %".105", i8 %".102")
   %"end_line_str_ptr.14" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".106" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.14")
+  %".107" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.14")
   ret void
 }
 
