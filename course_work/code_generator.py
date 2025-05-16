@@ -37,6 +37,7 @@ def generateForFile(inputFile) -> str:
 if __name__ == "__main__":
     allTests = [
         "tests/types/types.pas",
+        "tests/constants/constants.pas",
         "tests/aritmhetic/aritmhetic.pas",
         "tests/bits/bits.pas",
         "tests/relational/relational.pas",
@@ -50,7 +51,7 @@ if __name__ == "__main__":
         "tests/programs/AABBCollision.pas",
     ]
 
-    generateForFile("tests/structure/structure.pas")
+    generateForFile("tests/constants/constants.pas")
 
     for test in allTests:
         generateForFile(test)

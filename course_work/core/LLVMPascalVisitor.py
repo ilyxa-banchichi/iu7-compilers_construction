@@ -83,6 +83,12 @@ class LLVMPascalVisitor(PascalVisitor):
         else:
             return value
 
+    def pointee_type(self, value):
+        if self.is_pointer(value):
+            return value.type.pointee
+        else:
+            return value.type
+
     def visitProgram(self, ctx):
         self.currentFunction.append("main")
         self.builder.append(ir.IRBuilder(self.symbolTable[self.getCurrentFunction()][0].append_basic_block('entry')))
@@ -232,6 +238,10 @@ class LLVMPascalVisitor(PascalVisitor):
         for t in typeList:
             min = int(t[0].constant)
             max = int(t[1].constant)
+
+            if min < 0 or max < 0:
+                raise TypeError("Нельзя создать массив отрицательной размерности")
+
             description.append((min, max))
             val = max - min + 1
             sizes.append(val)
@@ -288,6 +298,30 @@ class LLVMPascalVisitor(PascalVisitor):
             else:
                 self.symbolTable[varName] = allocaInstance, semanticLabel
 
+    def visitConstantDefinition(self, ctx:PascalParser.ConstantDefinitionContext):
+        ident = self.visit(ctx.identifier())
+        val = self.visit(ctx.constant())
+        self.symbolTable[ident] = val
+
+    def visitConstant(self, ctx:PascalParser.ConstantContext):
+        if ctx.string():
+            return self.visit(ctx.string())
+        if ctx.constantChr():
+            return self.visit(ctx.constantChr())
+        if ctx.identifier():
+            ident = self.visit(ctx.identifier())
+            num, semantic = self.symbolTable[ident]
+        if ctx.unsignedNumber():
+            num, semantic = self.visit(ctx.unsignedNumber())
+        if ctx.sign() and ctx.sign().MINUS():
+            if isinstance(num.type, ir.IntType):
+                num = ir.Constant(num.type, -int(num.constant))
+            elif isinstance(num.type, (ir.FloatType, ir.DoubleType)):
+                num = ir.Constant(num.type, -float(num.constant))
+            else:
+                raise TypeError("Cannot negate non-numeric type")
+        return num, semantic
+
     def visitTypeIdentifier(self, ctx:PascalParser.TypeIdentifierContext):
         text = ctx.getText()
         type = PascalTypes.strToType[text]
@@ -341,6 +375,7 @@ class LLVMPascalVisitor(PascalVisitor):
             self.leftPartDefinition.Exit()
 
             right = self.load_if_pointer(right)
+            left, right = castValues(self.getBuilder(), left, right)
 
             if operator.SHL():
                 return self.getBuilder().shl(left, right), lSemantic
@@ -439,7 +474,7 @@ class LLVMPascalVisitor(PascalVisitor):
         v = self.symbolTable[identifier]
         currentNode, currentSemantic = v[0], v[1]
         array_desc = None
-        if isinstance(currentNode.type.pointee, ir.ArrayType):
+        if isinstance(self.pointee_type(currentNode), ir.ArrayType):
             array_desc = v[2]
 
         for modType, modValue in modifiers:

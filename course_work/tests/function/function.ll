@@ -9,54 +9,57 @@ entry:
   %"y" = alloca float
   %"i" = alloca i16
   %"c" = alloca i8
-  store float 0x4024000000000000, float* %"x"
-  store float 0x4014000000000000, float* %"y"
-  %".4" = load float, float* %"x"
-  %".5" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".5"
-  %".7" = getelementptr [3 x i8], [3 x i8]* %".5", i8 0, i8 0
-  %".8" = call i32 (i8*, ...) @"printf"(i8* %".7", float %".4")
+  %".2" = sitofp i8 10 to float
+  store float %".2", float* %"x"
+  %".4" = sitofp i8 5 to float
+  store float %".4", float* %"y"
+  %".6" = load float, float* %"x"
+  %".7" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".7"
+  %".9" = getelementptr [3 x i8], [3 x i8]* %".7", i8 0, i8 0
+  %".10" = call i32 (i8*, ...) @"printf"(i8* %".9", float %".6")
   %"end_line_str_ptr" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".9" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
-  %".10" = load float, float* %"y"
-  %".11" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".11"
-  %".13" = getelementptr [3 x i8], [3 x i8]* %".11", i8 0, i8 0
-  %".14" = call i32 (i8*, ...) @"printf"(i8* %".13", float %".10")
+  %".11" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
+  %".12" = load float, float* %"y"
+  %".13" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".13"
+  %".15" = getelementptr [3 x i8], [3 x i8]* %".13", i8 0, i8 0
+  %".16" = call i32 (i8*, ...) @"printf"(i8* %".15", float %".12")
   %"end_line_str_ptr.1" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".15" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
+  %".17" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
   call void @"swap"(float* %"x", float* %"y")
-  %".17" = load float, float* %"x"
-  %".18" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".18"
-  %".20" = getelementptr [3 x i8], [3 x i8]* %".18", i8 0, i8 0
-  %".21" = call i32 (i8*, ...) @"printf"(i8* %".20", float %".17")
+  %".19" = load float, float* %"x"
+  %".20" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".20"
+  %".22" = getelementptr [3 x i8], [3 x i8]* %".20", i8 0, i8 0
+  %".23" = call i32 (i8*, ...) @"printf"(i8* %".22", float %".19")
   %"end_line_str_ptr.2" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".22" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
-  %".23" = load float, float* %"y"
-  %".24" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".24"
-  %".26" = getelementptr [3 x i8], [3 x i8]* %".24", i8 0, i8 0
-  %".27" = call i32 (i8*, ...) @"printf"(i8* %".26", float %".23")
+  %".24" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
+  %".25" = load float, float* %"y"
+  %".26" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".26"
+  %".28" = getelementptr [3 x i8], [3 x i8]* %".26", i8 0, i8 0
+  %".29" = call i32 (i8*, ...) @"printf"(i8* %".28", float %".25")
   %"end_line_str_ptr.3" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".28" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
-  %".29" = load float, float* %"x"
-  %".30" = load float, float* %"y"
-  %".31" = call float @"add"(float %".29", float %".30")
-  %".32" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".32"
-  %".34" = getelementptr [3 x i8], [3 x i8]* %".32", i8 0, i8 0
-  %".35" = call i32 (i8*, ...) @"printf"(i8* %".34", float %".31")
+  %".30" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
+  %".31" = load float, float* %"x"
+  %".32" = load float, float* %"y"
+  %".33" = call float @"add"(float %".31", float %".32")
+  %".34" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".34"
+  %".36" = getelementptr [3 x i8], [3 x i8]* %".34", i8 0, i8 0
+  %".37" = call i32 (i8*, ...) @"printf"(i8* %".36", float %".33")
   %"end_line_str_ptr.4" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".36" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.4")
-  %".37" = load float, float* %"x"
-  %".38" = call float @"add"(float %".37", float 0x4059000000000000)
-  %".39" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".39"
-  %".41" = getelementptr [3 x i8], [3 x i8]* %".39", i8 0, i8 0
-  %".42" = call i32 (i8*, ...) @"printf"(i8* %".41", float %".38")
+  %".38" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.4")
+  %".39" = load float, float* %"x"
+  %".40" = sitofp i8 100 to float
+  %".41" = call float @"add"(float %".39", float %".40")
+  %".42" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".42"
+  %".44" = getelementptr [3 x i8], [3 x i8]* %".42", i8 0, i8 0
+  %".45" = call i32 (i8*, ...) @"printf"(i8* %".44", float %".41")
   %"end_line_str_ptr.5" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".43" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.5")
+  %".46" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.5")
   ret void
 }
 

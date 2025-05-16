@@ -5,45 +5,17 @@ from core.SymbolTable import *
 from core.BuiltinSymbols import *
 
 def visitUnsignedInteger(self, ctx:PascalParser.UnsignedIntegerContext):
-    ltype = self.leftPartDefinition.Type()
-    if isinstance(ltype, ir.PointerType):
-        ltype = ltype.pointee
-
     number = ctx.NUM_INT().getText()
     type = PascalTypes.getIntLiteralType(int(number))
-    if isinstance(ltype, ir.IntType):
-        if type.width > ltype.width:
-            raise TypeError(
-                f"Type mismatch in assignment: "
-                f"cannot convert {number} ({type}) "
-                f"to {ltype}"
-            )
 
-    if isinstance(ltype, ir.FloatType) or isinstance(ltype, ir.DoubleType):
-        number = float(number)
-
-    return ir.Constant(ltype, number), PascalTypes.numericSemanticLabel
+    return ir.Constant(type, number), PascalTypes.numericSemanticLabel
 
 def visitUnsignedReal(self, ctx:PascalParser.UnsignedRealContext):
-    ltype = self.leftPartDefinition.Type()
-    if isinstance(ltype, ir.PointerType):
-        ltype = ltype.pointee
-
-    if isinstance(ltype, ir.IntType):
-        raise TypeError(f"Cannot create float in this context. lType: {ltype}")
-
     number = ctx.NUM_REAL().getText()
     number = float(number)
     type = PascalTypes.getFloatLiteralType(number)
-    # Сделать понимание типа литерала
-    # if ltype != type:
-    #     raise TypeError(
-    #         f"Type mismatch in assignment: "
-    #         f"cannot convert {type} "
-    #         f"to {ltype}"
-    #     )
 
-    return ir.Constant(ltype, number), PascalTypes.numericSemanticLabel
+    return ir.Constant(type, number), PascalTypes.numericSemanticLabel
 
 def visitBool_(self, ctx:PascalParser.Bool_Context):
     ltype = self.leftPartDefinition.Type()

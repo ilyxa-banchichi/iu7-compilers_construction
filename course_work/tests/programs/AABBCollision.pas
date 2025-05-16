@@ -1,5 +1,8 @@
 program AABBCollision;
 
+const
+  CollidersCount = 3;
+
 type TVector3 = record
     x, y, z: real
 end;
@@ -74,15 +77,15 @@ begin
         Result := 0;
 end;
 
-type TCollisionMatrix = array[1..10, 1..10] of integer;
-type TBoxes = array[1..10] of TAABB;
+type TCollisionMatrix = array[1..CollidersCount, 1..CollidersCount] of integer;
+type TBoxes = array[1..CollidersCount] of TAABB;
 
 function FillCollisionMatrix(var m: TCollisionMatrix; var boxes: TBoxes);
 var
     i, j: integer;
 begin
-    for i := 1 to 10 do begin
-        for j := 1 to 10 do begin
+    for i := 1 to CollidersCount do begin
+        for j := 1 to CollidersCount do begin
             m[i, j] := IntersectAABB(boxes[i], boxes[j]);
         end;
     end;
@@ -90,8 +93,8 @@ end;
 
 var
     i, j: integer;
-    boxes: array[1..10] of TAABB;
-    collisionMatrix: array[1..10, 1..10] of integer;
+    boxes: array[1..CollidersCount] of TAABB;
+    collisionMatrix: array[1..CollidersCount, 1..CollidersCount] of integer;
 begin
     boxes[1] := AABB(Vector3(10, 5, 10), Vector3(1, 1, 1));
     boxes[2] := AABB(Vector3(0, 0, 0), Vector3(2, 2, 2));
@@ -106,8 +109,8 @@ begin
 
     FillCollisionMatrix(collisionMatrix, boxes);
 
-    for i := 1 to 10 do begin
-        for j := 1 to 10 do begin
+    for i := 1 to CollidersCount do begin
+        for j := 1 to CollidersCount do begin
             writeln('Intersect AABB ', i, ' vs ', j, ': ', collisionMatrix[i, j]);
         end;
     end;

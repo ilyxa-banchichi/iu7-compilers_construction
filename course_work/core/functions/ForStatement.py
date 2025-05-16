@@ -1,6 +1,7 @@
 from antlr.PascalParser import PascalParser
 from llvmlite import ir
 from core.PascalTypes import *
+from core.TypeCast import *
 
 def visitForStatement(self, ctx:PascalParser.ForStatementContext):
     condBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block("for_cond")
@@ -14,6 +15,7 @@ def visitForStatement(self, ctx:PascalParser.ForStatementContext):
     self.leftPartDefinition.Enter(iterPrt.type.pointee, varSemantic)
     initialValue, finalValue, direction = self.visit(ctx.forList())
     self.leftPartDefinition.Exit()
+    initialValue = castStoredValue(self.getBuilder(), iterPrt, initialValue)
     self.getBuilder().store(initialValue, iterPrt)
 
     self.getBuilder().branch(condBlock)

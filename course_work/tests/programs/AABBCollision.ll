@@ -9,15 +9,15 @@ define void @"main"()
 entry:
   %"i" = alloca i16
   %"j" = alloca i16
-  %"boxes" = alloca [10 x %"TAABB"]
-  %"collisionMatrix" = alloca [10 x [10 x i16]]
-  %".2" = icmp uge i32 1, 1
-  %".3" = icmp ule i32 1, 10
+  %"boxes" = alloca [3 x %"TAABB"]
+  %"collisionMatrix" = alloca [3 x [3 x i16]]
+  %".2" = icmp uge i8 1, 1
+  %".3" = icmp ule i8 1, 3
   %".4" = and i1 %".2", %".3"
   br i1 %".4", label %"access_ok", label %"access_fail"
 access_ok:
-  %".6" = sub i32 1, 1
-  %"elem_ptr" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i32 %".6"
+  %".6" = sub i8 1, 1
+  %"elem_ptr" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i8 %".6"
   br label %"access_continue"
 access_fail:
   %"out_of_bounds_err_str_ptr" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
@@ -26,191 +26,211 @@ access_fail:
   br label %"access_continue"
 access_continue:
   %"final_elem_ptr" = phi  %"TAABB"* [%"elem_ptr", %"access_ok"], [null, %"access_fail"]
-  %".11" = call %"TVector3" @"Vector3"(float 0x4024000000000000, float 0x4014000000000000, float 0x4024000000000000)
-  %".12" = call %"TVector3" @"Vector3"(float 0x3ff0000000000000, float 0x3ff0000000000000, float 0x3ff0000000000000)
-  %".13" = call %"TAABB" @"AABB"(%"TVector3" %".11", %"TVector3" %".12")
-  store %"TAABB" %".13", %"TAABB"* %"final_elem_ptr"
-  %".15" = icmp uge i32 2, 1
-  %".16" = icmp ule i32 2, 10
-  %".17" = and i1 %".15", %".16"
-  br i1 %".17", label %"access_ok.1", label %"access_fail.1"
+  %".11" = sitofp i8 10 to float
+  %".12" = sitofp i8 5 to float
+  %".13" = sitofp i8 10 to float
+  %".14" = call %"TVector3" @"Vector3"(float %".11", float %".12", float %".13")
+  %".15" = sitofp i8 1 to float
+  %".16" = sitofp i8 1 to float
+  %".17" = sitofp i8 1 to float
+  %".18" = call %"TVector3" @"Vector3"(float %".15", float %".16", float %".17")
+  %".19" = call %"TAABB" @"AABB"(%"TVector3" %".14", %"TVector3" %".18")
+  store %"TAABB" %".19", %"TAABB"* %"final_elem_ptr"
+  %".21" = icmp uge i8 2, 1
+  %".22" = icmp ule i8 2, 3
+  %".23" = and i1 %".21", %".22"
+  br i1 %".23", label %"access_ok.1", label %"access_fail.1"
 access_ok.1:
-  %".19" = sub i32 2, 1
-  %"elem_ptr.1" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i32 %".19"
+  %".25" = sub i8 2, 1
+  %"elem_ptr.1" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i8 %".25"
   br label %"access_continue.1"
 access_fail.1:
   %"out_of_bounds_err_str_ptr.1" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".21" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.1")
+  %".27" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.1")
   call void @"llvm.trap"()
   br label %"access_continue.1"
 access_continue.1:
   %"final_elem_ptr.1" = phi  %"TAABB"* [%"elem_ptr.1", %"access_ok.1"], [null, %"access_fail.1"]
-  %".24" = call %"TVector3" @"Vector3"(float              0x0, float              0x0, float              0x0)
-  %".25" = call %"TVector3" @"Vector3"(float 0x4000000000000000, float 0x4000000000000000, float 0x4000000000000000)
-  %".26" = call %"TAABB" @"AABB"(%"TVector3" %".24", %"TVector3" %".25")
-  store %"TAABB" %".26", %"TAABB"* %"final_elem_ptr.1"
-  %".28" = icmp uge i32 3, 1
-  %".29" = icmp ule i32 3, 10
-  %".30" = and i1 %".28", %".29"
-  br i1 %".30", label %"access_ok.2", label %"access_fail.2"
+  %".30" = sitofp i8 0 to float
+  %".31" = sitofp i8 0 to float
+  %".32" = sitofp i8 0 to float
+  %".33" = call %"TVector3" @"Vector3"(float %".30", float %".31", float %".32")
+  %".34" = sitofp i8 2 to float
+  %".35" = sitofp i8 2 to float
+  %".36" = sitofp i8 2 to float
+  %".37" = call %"TVector3" @"Vector3"(float %".34", float %".35", float %".36")
+  %".38" = call %"TAABB" @"AABB"(%"TVector3" %".33", %"TVector3" %".37")
+  store %"TAABB" %".38", %"TAABB"* %"final_elem_ptr.1"
+  %".40" = icmp uge i8 3, 1
+  %".41" = icmp ule i8 3, 3
+  %".42" = and i1 %".40", %".41"
+  br i1 %".42", label %"access_ok.2", label %"access_fail.2"
 access_ok.2:
-  %".32" = sub i32 3, 1
-  %"elem_ptr.2" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i32 %".32"
+  %".44" = sub i8 3, 1
+  %"elem_ptr.2" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i8 %".44"
   br label %"access_continue.2"
 access_fail.2:
   %"out_of_bounds_err_str_ptr.2" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".34" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.2")
+  %".46" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.2")
   call void @"llvm.trap"()
   br label %"access_continue.2"
 access_continue.2:
   %"final_elem_ptr.2" = phi  %"TAABB"* [%"elem_ptr.2", %"access_ok.2"], [null, %"access_fail.2"]
-  %".37" = call %"TVector3" @"Vector3"(float 0x3ff0000000000000, float              0x0, float 0x3ff0000000000000)
-  %".38" = call %"TVector3" @"Vector3"(float 0x4000000000000000, float 0x4000000000000000, float 0x4000000000000000)
-  %".39" = call %"TAABB" @"AABB"(%"TVector3" %".37", %"TVector3" %".38")
-  store %"TAABB" %".39", %"TAABB"* %"final_elem_ptr.2"
-  %".41" = icmp uge i32 1, 1
-  %".42" = icmp ule i32 1, 10
-  %".43" = and i1 %".41", %".42"
-  br i1 %".43", label %"access_ok.3", label %"access_fail.3"
+  %".49" = sitofp i8 1 to float
+  %".50" = sitofp i8 0 to float
+  %".51" = sitofp i8 1 to float
+  %".52" = call %"TVector3" @"Vector3"(float %".49", float %".50", float %".51")
+  %".53" = sitofp i8 2 to float
+  %".54" = sitofp i8 2 to float
+  %".55" = sitofp i8 2 to float
+  %".56" = call %"TVector3" @"Vector3"(float %".53", float %".54", float %".55")
+  %".57" = call %"TAABB" @"AABB"(%"TVector3" %".52", %"TVector3" %".56")
+  store %"TAABB" %".57", %"TAABB"* %"final_elem_ptr.2"
+  %".59" = icmp uge i8 1, 1
+  %".60" = icmp ule i8 1, 3
+  %".61" = and i1 %".59", %".60"
+  br i1 %".61", label %"access_ok.3", label %"access_fail.3"
 access_ok.3:
-  %".45" = sub i32 1, 1
-  %"elem_ptr.3" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i32 %".45"
+  %".63" = sub i8 1, 1
+  %"elem_ptr.3" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i8 %".63"
   br label %"access_continue.3"
 access_fail.3:
   %"out_of_bounds_err_str_ptr.3" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".47" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.3")
+  %".65" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.3")
   call void @"llvm.trap"()
   br label %"access_continue.3"
 access_continue.3:
   %"final_elem_ptr.3" = phi  %"TAABB"* [%"elem_ptr.3", %"access_ok.3"], [null, %"access_fail.3"]
-  %".50" = load %"TAABB", %"TAABB"* %"final_elem_ptr.3"
-  call void @"PrintAABB"(%"TAABB" %".50")
-  %".52" = alloca [255 x i8]
-  store [255 x i8] c"\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".52"
-  %".54" = getelementptr [255 x i8], [255 x i8]* %".52", i8 0, i8 0
-  %".55" = call i32 (i8*, ...) @"printf"(i8* %".54")
+  %".68" = load %"TAABB", %"TAABB"* %"final_elem_ptr.3"
+  call void @"PrintAABB"(%"TAABB" %".68")
+  %".70" = alloca [255 x i8]
+  store [255 x i8] c"\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".70"
+  %".72" = getelementptr [255 x i8], [255 x i8]* %".70", i8 0, i8 0
+  %".73" = call i32 (i8*, ...) @"printf"(i8* %".72")
   %"end_line_str_ptr" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".56" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
-  %".57" = icmp uge i32 2, 1
-  %".58" = icmp ule i32 2, 10
-  %".59" = and i1 %".57", %".58"
-  br i1 %".59", label %"access_ok.4", label %"access_fail.4"
+  %".74" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
+  %".75" = icmp uge i8 2, 1
+  %".76" = icmp ule i8 2, 3
+  %".77" = and i1 %".75", %".76"
+  br i1 %".77", label %"access_ok.4", label %"access_fail.4"
 access_ok.4:
-  %".61" = sub i32 2, 1
-  %"elem_ptr.4" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i32 %".61"
+  %".79" = sub i8 2, 1
+  %"elem_ptr.4" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i8 %".79"
   br label %"access_continue.4"
 access_fail.4:
   %"out_of_bounds_err_str_ptr.4" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".63" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.4")
+  %".81" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.4")
   call void @"llvm.trap"()
   br label %"access_continue.4"
 access_continue.4:
   %"final_elem_ptr.4" = phi  %"TAABB"* [%"elem_ptr.4", %"access_ok.4"], [null, %"access_fail.4"]
-  %".66" = load %"TAABB", %"TAABB"* %"final_elem_ptr.4"
-  call void @"PrintAABB"(%"TAABB" %".66")
-  %".68" = alloca [255 x i8]
-  store [255 x i8] c"\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".68"
-  %".70" = getelementptr [255 x i8], [255 x i8]* %".68", i8 0, i8 0
-  %".71" = call i32 (i8*, ...) @"printf"(i8* %".70")
+  %".84" = load %"TAABB", %"TAABB"* %"final_elem_ptr.4"
+  call void @"PrintAABB"(%"TAABB" %".84")
+  %".86" = alloca [255 x i8]
+  store [255 x i8] c"\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".86"
+  %".88" = getelementptr [255 x i8], [255 x i8]* %".86", i8 0, i8 0
+  %".89" = call i32 (i8*, ...) @"printf"(i8* %".88")
   %"end_line_str_ptr.1" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".72" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
-  %".73" = icmp uge i32 3, 1
-  %".74" = icmp ule i32 3, 10
-  %".75" = and i1 %".73", %".74"
-  br i1 %".75", label %"access_ok.5", label %"access_fail.5"
+  %".90" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
+  %".91" = icmp uge i8 3, 1
+  %".92" = icmp ule i8 3, 3
+  %".93" = and i1 %".91", %".92"
+  br i1 %".93", label %"access_ok.5", label %"access_fail.5"
 access_ok.5:
-  %".77" = sub i32 3, 1
-  %"elem_ptr.5" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i32 %".77"
+  %".95" = sub i8 3, 1
+  %"elem_ptr.5" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i8 %".95"
   br label %"access_continue.5"
 access_fail.5:
   %"out_of_bounds_err_str_ptr.5" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".79" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.5")
+  %".97" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.5")
   call void @"llvm.trap"()
   br label %"access_continue.5"
 access_continue.5:
   %"final_elem_ptr.5" = phi  %"TAABB"* [%"elem_ptr.5", %"access_ok.5"], [null, %"access_fail.5"]
-  %".82" = load %"TAABB", %"TAABB"* %"final_elem_ptr.5"
-  call void @"PrintAABB"(%"TAABB" %".82")
-  %".84" = alloca [255 x i8]
-  store [255 x i8] c"\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".84"
-  %".86" = getelementptr [255 x i8], [255 x i8]* %".84", i8 0, i8 0
-  %".87" = call i32 (i8*, ...) @"printf"(i8* %".86")
+  %".100" = load %"TAABB", %"TAABB"* %"final_elem_ptr.5"
+  call void @"PrintAABB"(%"TAABB" %".100")
+  %".102" = alloca [255 x i8]
+  store [255 x i8] c"\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".102"
+  %".104" = getelementptr [255 x i8], [255 x i8]* %".102", i8 0, i8 0
+  %".105" = call i32 (i8*, ...) @"printf"(i8* %".104")
   %"end_line_str_ptr.2" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".88" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
-  call void @"FillCollisionMatrix"([10 x [10 x i16]]* %"collisionMatrix", [10 x %"TAABB"]* %"boxes")
-  store i16 1, i16* %"i"
+  %".106" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
+  call void @"FillCollisionMatrix"([3 x [3 x i16]]* %"collisionMatrix", [3 x %"TAABB"]* %"boxes")
+  %".108" = sext i8 1 to i16
+  store i16 %".108", i16* %"i"
   br label %"for_cond"
 for_cond:
-  %".92" = load i16, i16* %"i"
-  %".93" = icmp sle i16 %".92", 10
-  br i1 %".93", label %"for_body", label %"for_exit"
+  %".111" = load i16, i16* %"i"
+  %".112" = icmp sle i16 %".111", 3
+  br i1 %".112", label %"for_body", label %"for_exit"
 for_body:
-  store i16 1, i16* %"j"
+  %".114" = sext i8 1 to i16
+  store i16 %".114", i16* %"j"
   br label %"for_cond.1"
 for_exit:
   ret void
 for_cond.1:
-  %".97" = load i16, i16* %"j"
-  %".98" = icmp sle i16 %".97", 10
-  br i1 %".98", label %"for_body.1", label %"for_exit.1"
+  %".117" = load i16, i16* %"j"
+  %".118" = icmp sle i16 %".117", 3
+  br i1 %".118", label %"for_body.1", label %"for_exit.1"
 for_body.1:
-  %".100" = alloca [255 x i8]
-  store [255 x i8] c"Intersect AABB \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".100"
-  %".102" = getelementptr [255 x i8], [255 x i8]* %".100", i8 0, i8 0
-  %".103" = call i32 (i8*, ...) @"printf"(i8* %".102")
-  %".104" = load i16, i16* %"i"
-  %".105" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".105"
-  %".107" = getelementptr [4 x i8], [4 x i8]* %".105", i8 0, i8 0
-  %".108" = call i32 (i8*, ...) @"printf"(i8* %".107", i16 %".104")
-  %".109" = alloca [255 x i8]
-  store [255 x i8] c" vs \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".109"
-  %".111" = getelementptr [255 x i8], [255 x i8]* %".109", i8 0, i8 0
-  %".112" = call i32 (i8*, ...) @"printf"(i8* %".111")
-  %".113" = load i16, i16* %"j"
-  %".114" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".114"
-  %".116" = getelementptr [4 x i8], [4 x i8]* %".114", i8 0, i8 0
-  %".117" = call i32 (i8*, ...) @"printf"(i8* %".116", i16 %".113")
-  %".118" = alloca [255 x i8]
-  store [255 x i8] c": \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".118"
-  %".120" = getelementptr [255 x i8], [255 x i8]* %".118", i8 0, i8 0
-  %".121" = call i32 (i8*, ...) @"printf"(i8* %".120")
-  %".122" = load i16, i16* %"i"
-  %".123" = load i16, i16* %"j"
-  %".124" = icmp uge i16 %".122", 1
-  %".125" = icmp ule i16 %".122", 10
-  %".126" = and i1 %".124", %".125"
-  %".127" = icmp uge i16 %".123", 1
-  %".128" = icmp ule i16 %".123", 10
-  %".129" = and i1 %".127", %".128"
-  %".130" = and i1 %".126", %".129"
-  br i1 %".130", label %"access_ok.6", label %"access_fail.6"
+  %".120" = alloca [255 x i8]
+  store [255 x i8] c"Intersect AABB \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".120"
+  %".122" = getelementptr [255 x i8], [255 x i8]* %".120", i8 0, i8 0
+  %".123" = call i32 (i8*, ...) @"printf"(i8* %".122")
+  %".124" = load i16, i16* %"i"
+  %".125" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".125"
+  %".127" = getelementptr [4 x i8], [4 x i8]* %".125", i8 0, i8 0
+  %".128" = call i32 (i8*, ...) @"printf"(i8* %".127", i16 %".124")
+  %".129" = alloca [255 x i8]
+  store [255 x i8] c" vs \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".129"
+  %".131" = getelementptr [255 x i8], [255 x i8]* %".129", i8 0, i8 0
+  %".132" = call i32 (i8*, ...) @"printf"(i8* %".131")
+  %".133" = load i16, i16* %"j"
+  %".134" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".134"
+  %".136" = getelementptr [4 x i8], [4 x i8]* %".134", i8 0, i8 0
+  %".137" = call i32 (i8*, ...) @"printf"(i8* %".136", i16 %".133")
+  %".138" = alloca [255 x i8]
+  store [255 x i8] c": \00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00", [255 x i8]* %".138"
+  %".140" = getelementptr [255 x i8], [255 x i8]* %".138", i8 0, i8 0
+  %".141" = call i32 (i8*, ...) @"printf"(i8* %".140")
+  %".142" = load i16, i16* %"i"
+  %".143" = load i16, i16* %"j"
+  %".144" = icmp uge i16 %".142", 1
+  %".145" = icmp ule i16 %".142", 3
+  %".146" = and i1 %".144", %".145"
+  %".147" = icmp uge i16 %".143", 1
+  %".148" = icmp ule i16 %".143", 3
+  %".149" = and i1 %".147", %".148"
+  %".150" = and i1 %".146", %".149"
+  br i1 %".150", label %"access_ok.6", label %"access_fail.6"
 for_exit.1:
-  %".147" = add i16 %".92", 1
-  store i16 %".147", i16* %"i"
+  %".167" = add i16 %".111", 1
+  store i16 %".167", i16* %"i"
   br label %"for_cond"
 access_ok.6:
-  %".132" = sub i16 %".122", 1
-  %".133" = sub i16 %".123", 1
-  %"elem_ptr.6" = getelementptr [10 x [10 x i16]], [10 x [10 x i16]]* %"collisionMatrix", i32 0, i16 %".132", i16 %".133"
+  %".152" = sub i16 %".142", 1
+  %".153" = sub i16 %".143", 1
+  %"elem_ptr.6" = getelementptr [3 x [3 x i16]], [3 x [3 x i16]]* %"collisionMatrix", i32 0, i16 %".152", i16 %".153"
   br label %"access_continue.6"
 access_fail.6:
   %"out_of_bounds_err_str_ptr.6" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".135" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.6")
+  %".155" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.6")
   call void @"llvm.trap"()
   br label %"access_continue.6"
 access_continue.6:
   %"final_elem_ptr.6" = phi  i16* [%"elem_ptr.6", %"access_ok.6"], [null, %"access_fail.6"]
-  %".138" = load i16, i16* %"final_elem_ptr.6"
-  %".139" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".139"
-  %".141" = getelementptr [4 x i8], [4 x i8]* %".139", i8 0, i8 0
-  %".142" = call i32 (i8*, ...) @"printf"(i8* %".141", i16 %".138")
+  %".158" = load i16, i16* %"final_elem_ptr.6"
+  %".159" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".159"
+  %".161" = getelementptr [4 x i8], [4 x i8]* %".159", i8 0, i8 0
+  %".162" = call i32 (i8*, ...) @"printf"(i8* %".161", i16 %".158")
   %"end_line_str_ptr.3" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".143" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
-  %".144" = add i16 %".97", 1
-  store i16 %".144", i16* %"j"
+  %".163" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
+  %".164" = add i16 %".117", 1
+  store i16 %".164", i16* %"j"
   br label %"for_cond.1"
 }
 
@@ -441,101 +461,105 @@ entry:
   %".14" = load i1, i1* %"temp"
   br i1 %".14", label %"then", label %"else"
 then:
-  store i16 1, i16* %"Result"
+  %".16" = sext i8 1 to i16
+  store i16 %".16", i16* %"Result"
   br label %"end"
 else:
-  store i16 0, i16* %"Result"
+  %".19" = sext i8 0 to i16
+  store i16 %".19", i16* %"Result"
   br label %"end"
 end:
-  %".20" = load i16, i16* %"Result"
-  ret i16 %".20"
+  %".22" = load i16, i16* %"Result"
+  ret i16 %".22"
 }
 
-define void @"FillCollisionMatrix"([10 x [10 x i16]]* %"m", [10 x %"TAABB"]* %"boxes")
+define void @"FillCollisionMatrix"([3 x [3 x i16]]* %"m", [3 x %"TAABB"]* %"boxes")
 {
 entry:
   %"i" = alloca i16
   %"j" = alloca i16
-  store i16 1, i16* %"i"
+  %".4" = sext i8 1 to i16
+  store i16 %".4", i16* %"i"
   br label %"for_cond"
 for_cond:
-  %".6" = load i16, i16* %"i"
-  %".7" = icmp sle i16 %".6", 10
-  br i1 %".7", label %"for_body", label %"for_exit"
+  %".7" = load i16, i16* %"i"
+  %".8" = icmp sle i16 %".7", 3
+  br i1 %".8", label %"for_body", label %"for_exit"
 for_body:
-  store i16 1, i16* %"j"
+  %".10" = sext i8 1 to i16
+  store i16 %".10", i16* %"j"
   br label %"for_cond.1"
 for_exit:
   ret void
 for_cond.1:
-  %".11" = load i16, i16* %"j"
-  %".12" = icmp sle i16 %".11", 10
-  br i1 %".12", label %"for_body.1", label %"for_exit.1"
+  %".13" = load i16, i16* %"j"
+  %".14" = icmp sle i16 %".13", 3
+  br i1 %".14", label %"for_body.1", label %"for_exit.1"
 for_body.1:
-  %".14" = load i16, i16* %"i"
-  %".15" = load i16, i16* %"j"
-  %".16" = icmp uge i16 %".14", 1
-  %".17" = icmp ule i16 %".14", 10
-  %".18" = and i1 %".16", %".17"
-  %".19" = icmp uge i16 %".15", 1
-  %".20" = icmp ule i16 %".15", 10
-  %".21" = and i1 %".19", %".20"
-  %".22" = and i1 %".18", %".21"
-  br i1 %".22", label %"access_ok", label %"access_fail"
+  %".16" = load i16, i16* %"i"
+  %".17" = load i16, i16* %"j"
+  %".18" = icmp uge i16 %".16", 1
+  %".19" = icmp ule i16 %".16", 3
+  %".20" = and i1 %".18", %".19"
+  %".21" = icmp uge i16 %".17", 1
+  %".22" = icmp ule i16 %".17", 3
+  %".23" = and i1 %".21", %".22"
+  %".24" = and i1 %".20", %".23"
+  br i1 %".24", label %"access_ok", label %"access_fail"
 for_exit.1:
-  %".57" = add i16 %".6", 1
-  store i16 %".57", i16* %"i"
+  %".59" = add i16 %".7", 1
+  store i16 %".59", i16* %"i"
   br label %"for_cond"
 access_ok:
-  %".24" = sub i16 %".14", 1
-  %".25" = sub i16 %".15", 1
-  %"elem_ptr" = getelementptr [10 x [10 x i16]], [10 x [10 x i16]]* %"m", i32 0, i16 %".24", i16 %".25"
+  %".26" = sub i16 %".16", 1
+  %".27" = sub i16 %".17", 1
+  %"elem_ptr" = getelementptr [3 x [3 x i16]], [3 x [3 x i16]]* %"m", i32 0, i16 %".26", i16 %".27"
   br label %"access_continue"
 access_fail:
   %"out_of_bounds_err_str_ptr" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".27" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr")
+  %".29" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr")
   call void @"llvm.trap"()
   br label %"access_continue"
 access_continue:
   %"final_elem_ptr" = phi  i16* [%"elem_ptr", %"access_ok"], [null, %"access_fail"]
-  %".30" = load i16, i16* %"i"
-  %".31" = icmp uge i16 %".30", 1
-  %".32" = icmp ule i16 %".30", 10
-  %".33" = and i1 %".31", %".32"
-  br i1 %".33", label %"access_ok.1", label %"access_fail.1"
+  %".32" = load i16, i16* %"i"
+  %".33" = icmp uge i16 %".32", 1
+  %".34" = icmp ule i16 %".32", 3
+  %".35" = and i1 %".33", %".34"
+  br i1 %".35", label %"access_ok.1", label %"access_fail.1"
 access_ok.1:
-  %".35" = sub i16 %".30", 1
-  %"elem_ptr.1" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i16 %".35"
+  %".37" = sub i16 %".32", 1
+  %"elem_ptr.1" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i16 %".37"
   br label %"access_continue.1"
 access_fail.1:
   %"out_of_bounds_err_str_ptr.1" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".37" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.1")
+  %".39" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.1")
   call void @"llvm.trap"()
   br label %"access_continue.1"
 access_continue.1:
   %"final_elem_ptr.1" = phi  %"TAABB"* [%"elem_ptr.1", %"access_ok.1"], [null, %"access_fail.1"]
-  %".40" = load %"TAABB", %"TAABB"* %"final_elem_ptr.1"
-  %".41" = load i16, i16* %"j"
-  %".42" = icmp uge i16 %".41", 1
-  %".43" = icmp ule i16 %".41", 10
-  %".44" = and i1 %".42", %".43"
-  br i1 %".44", label %"access_ok.2", label %"access_fail.2"
+  %".42" = load %"TAABB", %"TAABB"* %"final_elem_ptr.1"
+  %".43" = load i16, i16* %"j"
+  %".44" = icmp uge i16 %".43", 1
+  %".45" = icmp ule i16 %".43", 3
+  %".46" = and i1 %".44", %".45"
+  br i1 %".46", label %"access_ok.2", label %"access_fail.2"
 access_ok.2:
-  %".46" = sub i16 %".41", 1
-  %"elem_ptr.2" = getelementptr [10 x %"TAABB"], [10 x %"TAABB"]* %"boxes", i32 0, i16 %".46"
+  %".48" = sub i16 %".43", 1
+  %"elem_ptr.2" = getelementptr [3 x %"TAABB"], [3 x %"TAABB"]* %"boxes", i32 0, i16 %".48"
   br label %"access_continue.2"
 access_fail.2:
   %"out_of_bounds_err_str_ptr.2" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".48" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.2")
+  %".50" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.2")
   call void @"llvm.trap"()
   br label %"access_continue.2"
 access_continue.2:
   %"final_elem_ptr.2" = phi  %"TAABB"* [%"elem_ptr.2", %"access_ok.2"], [null, %"access_fail.2"]
-  %".51" = load %"TAABB", %"TAABB"* %"final_elem_ptr.2"
-  %".52" = call i16 @"IntersectAABB"(%"TAABB" %".40", %"TAABB" %".51")
-  store i16 %".52", i16* %"final_elem_ptr"
-  %".54" = add i16 %".11", 1
-  store i16 %".54", i16* %"j"
+  %".53" = load %"TAABB", %"TAABB"* %"final_elem_ptr.2"
+  %".54" = call i16 @"IntersectAABB"(%"TAABB" %".42", %"TAABB" %".53")
+  store i16 %".54", i16* %"final_elem_ptr"
+  %".56" = add i16 %".13", 1
+  store i16 %".56", i16* %"j"
   br label %"for_cond.1"
 }
 

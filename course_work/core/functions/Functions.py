@@ -37,6 +37,7 @@ def callFunction(identifier, self, ctx:PascalParser.FunctionDesignatorContext):
 
         if not is_pointer and not isinstance(value.type, ir.ArrayType) and valSemantic == PascalTypes.numericSemanticLabel:
             value = castValue(self.getBuilder(), value, arg_type)
+            value_type = value.type
 
         if arg_type != value_type:
             raise TypeError(f"Неверный тип параметра {value_type} ({valSemantic}). Ожидалось {arg_type}, ({semantics[i]})")
