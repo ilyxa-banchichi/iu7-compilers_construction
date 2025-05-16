@@ -33,6 +33,7 @@ def exec(filename):
 if len(sys.argv) > 1:
     filename = sys.argv[1]
 else:
+    filename = "/Users/ilapetrov/Documents/GitHub/iu7-compilers_construction/course_work/tests/programs/AABBCollision.pas"
     filename = "tests/programs/AABBCollision.pas"
 
 # allTests = [

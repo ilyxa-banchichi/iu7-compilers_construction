@@ -93,7 +93,7 @@ var
     boxes: array[1..10] of TAABB;
     collisionMatrix: array[1..10, 1..10] of integer;
 begin
-    boxes[1] := AABB(Vector3(10, 5, 10), Vector3(1, 1, 1));
+{    boxes[1] := AABB(Vector3(10, 5, 10), Vector3(1, 1, 1));
     boxes[2] := AABB(Vector3(0, 0, 0), Vector3(2, 2, 2));
     boxes[3] := AABB(Vector3(1, 0, 1), Vector3(2, 2, 2));
 
@@ -102,13 +102,13 @@ begin
     PrintAABB(boxes[2]);
     writeln('');
     PrintAABB(boxes[3]);
-    writeln('');
+    writeln('');}
 
     FillCollisionMatrix(collisionMatrix, boxes);
 
     for i := 1 to 10 do begin
         for j := 1 to 10 do begin
-            writeln('Intersect AABB ', i, ' vs ', j, ': ', collisionMatrix[i, j]);
+            writeln('Intersect AABB', i, ' vs ', j, ': ', collisionMatrix[i, j]);
         end;
     end;
 end.

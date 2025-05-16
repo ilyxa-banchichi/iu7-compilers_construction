@@ -60,12 +60,15 @@ class LLVMPascalVisitor(PascalVisitor):
         BuiltinSymbols.addBuiltinSymbols(self.symbolTable, self.module)
 
         self.leftPartDefinition = LeftPartDefinition()
-        self.currentFunction = ""
+        self.currentFunction = []
         self.records = {}
         self.arrays = {}
 
     def getBuilder(self):
         return self.builder[-1]
+    
+    def getCurrentFunction(self):
+        return self.currentFunction[-1]
 
     def save(self, filename):
         with open(filename, "w") as f:
@@ -81,8 +84,8 @@ class LLVMPascalVisitor(PascalVisitor):
             return value
 
     def visitProgram(self, ctx):
-        self.currentFunction = "main"
-        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction][0].append_basic_block('entry')))
+        self.currentFunction.append("main")
+        self.builder.append(ir.IRBuilder(self.symbolTable[self.getCurrentFunction()][0].append_basic_block('entry')))
         self.symbolTable.enter_scope()
 
         self.visit(ctx.block())
@@ -120,10 +123,11 @@ class LLVMPascalVisitor(PascalVisitor):
         funcType = ir.FunctionType(resultType, types)
         function = ir.Function(self.module, funcType, name=identifier)
 
-        self.currentFunction = identifier
+        self.currentFunction.append(identifier)
         self.symbolTable[identifier] = (function, resultSemantic, semantics, arr_descs)
 
-        self.builder.append(ir.IRBuilder(self.symbolTable[self.currentFunction][0].append_basic_block('entry')))
+        newBuilder = ir.IRBuilder(self.symbolTable[self.getCurrentFunction()][0].append_basic_block('entry'))
+        self.builder.append(newBuilder)
         self.symbolTable.enter_scope()
 
         if resultSemantic != None:
@@ -154,6 +158,7 @@ class LLVMPascalVisitor(PascalVisitor):
 
         self.symbolTable.exit_scope()
         self.builder.pop()
+        self.currentFunction.pop()
 
         return str(self.module)
 

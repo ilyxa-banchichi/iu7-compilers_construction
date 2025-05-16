@@ -3,9 +3,9 @@ from llvmlite import ir
 from core.PascalTypes import *
 
 def visitWhileStatement(self, ctx:PascalParser.WhileStatementContext):
-    condBlock = self.symbolTable[self.currentFunction][0].append_basic_block("while_cond")
-    bodyBlock = self.symbolTable[self.currentFunction][0].append_basic_block("while_body")
-    exitBlock = self.symbolTable[self.currentFunction][0].append_basic_block("while_exit")
+    condBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block("while_cond")
+    bodyBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block("while_body")
+    exitBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block("while_exit")
 
     self.getBuilder().branch(condBlock)
 

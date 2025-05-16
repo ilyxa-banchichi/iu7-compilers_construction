@@ -3,9 +3,9 @@ from llvmlite import ir
 from core.PascalTypes import *
 
 def visitForStatement(self, ctx:PascalParser.ForStatementContext):
-    condBlock = self.symbolTable[self.currentFunction][0].append_basic_block("for_cond")
-    bodyBlock = self.symbolTable[self.currentFunction][0].append_basic_block("for_body")
-    exitBlock = self.symbolTable[self.currentFunction][0].append_basic_block("for_exit")
+    condBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block("for_cond")
+    bodyBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block("for_body")
+    exitBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block("for_exit")
 
     iterPrt, varSemantic = self.symbolTable[self.visit(ctx.identifier())]
     if varSemantic != PascalTypes.numericSemanticLabel or not isinstance(iterPrt.type.pointee, ir.IntType):

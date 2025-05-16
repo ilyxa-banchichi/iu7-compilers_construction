@@ -3,9 +3,9 @@ from llvmlite import ir
 from core.PascalTypes import *
 
 def visitIfStatement(self, ctx:PascalParser.IfStatementContext):
-    thenBlock = self.symbolTable[self.currentFunction][0].append_basic_block(name="then")
-    elseBlock = self.symbolTable[self.currentFunction][0].append_basic_block(name="else")
-    endBlock = self.symbolTable[self.currentFunction][0].append_basic_block(name="end")
+    thenBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block(name="then")
+    elseBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block(name="else")
+    endBlock = self.symbolTable[self.getCurrentFunction()][0].append_basic_block(name="end")
     expression, semantic = self.visit(ctx.expression())
 
     if semantic != PascalTypes.boolSemanticLabel:
