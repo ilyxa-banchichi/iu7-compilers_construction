@@ -1,6 +1,5 @@
 from core.lexer import Lexer
 from core.parser import Parser
-from core.tree_printer import parse_tree_to_dot
 
 def process_file(file_path):
     print(f'File {file_path}')
