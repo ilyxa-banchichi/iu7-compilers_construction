@@ -8,10 +8,10 @@ def relOperator(self, left, lSemantic, right, rSemantic, operator: str):
     right = self.load_if_pointer(right)
 
     if lSemantic != rSemantic:
-        raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
+        self.add_error(ctx, f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
 
     if lSemantic != PascalTypes.numericSemanticLabel:
-        raise TypeError(f"Cannot apply operator {operator} to not numeric type {left, lSemantic}")
+        self.add_error(ctx, f"Cannot apply operator {operator} to not numeric type {left, lSemantic}")
 
     if lSemantic == PascalTypes.numericSemanticLabel:
         if left.type != right.type:

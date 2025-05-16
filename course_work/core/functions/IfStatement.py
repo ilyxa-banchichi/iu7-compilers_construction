@@ -9,7 +9,7 @@ def visitIfStatement(self, ctx:PascalParser.IfStatementContext):
     expression, semantic = self.visit(ctx.expression())
 
     if semantic != PascalTypes.boolSemanticLabel:
-        raise TypeError(f"Cannot use {expression} {semantic} as conditional")
+        self.add_error(ctx, f"Cannot use {expression} {semantic} as conditional")
 
     expression = self.load_if_pointer(expression)
 

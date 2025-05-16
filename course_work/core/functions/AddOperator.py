@@ -3,18 +3,18 @@ from llvmlite import ir
 from core.PascalTypes import *
 from core.TypeCast import *
 
-def addOperator(self, left, lSemantic, right, rSemantic, operator):
+def addOperator(ctx, self, left, lSemantic, right, rSemantic, operator):
     left = self.load_if_pointer(left)
     right = self.load_if_pointer(right)
 
     if lSemantic != rSemantic:
-        raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
+        self.add_error(ctx, f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
 
     if lSemantic == PascalTypes.boolSemanticLabel:
         if operator.OR():
             return self.getBuilder().or_(left, right), lSemantic
         else:
-            raise TypeError(f"Cannot apply operator {operator.OR()} to float types")
+            self.add_error(ctx, f"Cannot apply operator {operator.OR()} to float types")
 
     if lSemantic == PascalTypes.numericSemanticLabel:
         if left.type != right.type:
@@ -26,7 +26,7 @@ def addOperator(self, left, lSemantic, right, rSemantic, operator):
             elif operator.MINUS():
                 return self.getBuilder().fsub(left, right), lSemantic
             elif operator.OR():
-                raise TypeError(f"Cannot apply operator {operator.OR()} to float types")
+                self.add_error(ctx, f"Cannot apply operator {operator.OR()} to float types")
         elif isinstance(left.type, ir.IntType):
             if operator.PLUS():
                 return self.getBuilder().add(left, right), lSemantic
@@ -35,5 +35,5 @@ def addOperator(self, left, lSemantic, right, rSemantic, operator):
             elif operator.OR():
                 return self.getBuilder().or_(left, right), lSemantic
 
-    raise TypeError(f"Cannot apply operator {operator.getText()} this context {left, lSemantic}")
+    self.add_error(ctx, f"Cannot apply operator {operator.getText()} this context {left, lSemantic}")
 

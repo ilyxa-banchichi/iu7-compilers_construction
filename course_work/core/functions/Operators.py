@@ -27,4 +27,4 @@ def visitRelationaloperator(self, ctx:PascalParser.RelationaloperatorContext):
     elif ctx.GT():
         return '>'
     elif ctx.IN():
-        raise TypeError("In operator not support")
+        self.add_error(ctx, "In operator not support")

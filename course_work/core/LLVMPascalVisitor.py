@@ -2,7 +2,8 @@ from collections import deque
 from antlr4.tree.Tree import TerminalNode
 from antlr.PascalVisitor import PascalVisitor
 from antlr.PascalParser import PascalParser
-from llvmlite import ir
+from llvmlite import ir, binding
+from core.Errors import SemanticErrorListener
 from core.PascalTypes import *
 from core.SymbolTable import *
 from core.BuiltinSymbols import *
@@ -22,7 +23,7 @@ from core.functions.Functions import *
 from core.TypeCast import *
 
 class LLVMPascalVisitor(PascalVisitor):
-    def __init__(self):
+    def __init__(self, error_listener: SemanticErrorListener):
         self.context = ir.Context()
         self.module = ir.Module('pascal_program', context=self.context)
         self.builder = []
@@ -32,6 +33,7 @@ class LLVMPascalVisitor(PascalVisitor):
         self.currentFunction = []
         self.records = {}
         self.arrays = {}
+        self.error_listener = error_listener
 
     def getBuilder(self):
         return self.builder[-1]
@@ -58,6 +60,10 @@ class LLVMPascalVisitor(PascalVisitor):
         else:
             return value.type
 
+    def add_error(self, ctx, msg):
+        self.error_listener.semanticError(ctx.start.line, ctx.start.column, msg)
+        raise Exception()
+
     def visitProgram(self, ctx):
         self.currentFunction.append("main")
         self.builder.append(ir.IRBuilder(self.symbolTable[self.getCurrentFunction()][0].append_basic_block('entry')))
@@ -72,6 +78,9 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitTypeDefinition(self, ctx:PascalParser.TypeDefinitionContext):
         identifier = self.visit(ctx.identifier())
+        if identifier in PascalTypes.strToType:
+            self.add_error(ctx, f"Попытка переопределить тип {identifier}")
+
         if ctx.type_():
             if ctx.type_().structuredType().unpackedStructuredType().recordType():
                 names, types, semantics, array_descriptions = self.visit(ctx.type_().structuredType())
@@ -79,13 +88,15 @@ class LLVMPascalVisitor(PascalVisitor):
                 struct.set_body(*types)
                 self.records[struct] = (names, semantics, array_descriptions)
                 PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
+
             if ctx.type_().structuredType().unpackedStructuredType().arrayType():
                 type, semantic, array_description = self.visit(ctx.type_().structuredType())
                 PascalTypes.strToType[identifier] = (type, semantic, array_description)
+
         elif ctx.functionType():
-            raise TypeError(f"Unsupported")
+            self.add_error(ctx, f"Unsupported")
         else:
-            raise TypeError(f"Incorrect type definition")
+            self.add_error(ctx, f"Incorrect type definition")
 
     def visitFunctionDeclaration(self, ctx:PascalParser.FunctionDeclarationContext):
         identifier = self.visit(ctx.identifier())
@@ -99,7 +110,10 @@ class LLVMPascalVisitor(PascalVisitor):
         function = ir.Function(self.module, funcType, name=identifier)
 
         self.currentFunction.append(identifier)
-        self.symbolTable[identifier] = (function, resultSemantic, semantics, arr_descs)
+        try:
+            self.symbolTable[identifier] = (function, resultSemantic, semantics, arr_descs)
+        except Exception as e:
+            self.add_error(ctx, str(e))
 
         newBuilder = ir.IRBuilder(self.symbolTable[self.getCurrentFunction()][0].append_basic_block('entry'))
         self.builder.append(newBuilder)
@@ -205,11 +219,14 @@ class LLVMPascalVisitor(PascalVisitor):
         description = []
         typeList = self.visit(ctx.typeList())
         for t in typeList:
+            if not isinstance(t[0], ir.Constant) or not isinstance(t[1], ir.Constant):
+                self.add_error(ctx, "Размерность массива должна задаваться константой")
+
             min = int(t[0].constant)
             max = int(t[1].constant)
 
             if min < 0 or max < 0:
-                raise TypeError("Нельзя создать массив отрицательной размерности")
+                self.add_error(ctx, "Нельзя создать массив отрицательной размерности")
 
             description.append((min, max))
             val = max - min + 1
@@ -228,7 +245,7 @@ class LLVMPascalVisitor(PascalVisitor):
         return tl
 
     def visitScalarType(self, ctx:PascalParser.ScalarTypeContext):
-        raise TypeError("Not supported")
+        self.add_error(ctx, "Not supported")
 
     def visitSubrangeType(self, ctx:PascalParser.SubrangeTypeContext):
         first, _ = self.visit(ctx.constant(0))
@@ -257,16 +274,22 @@ class LLVMPascalVisitor(PascalVisitor):
         semanticLabel = t[1]
         varNames = self.visit(ctx.identifierList())
         for varName in varNames:
-            allocaInstance =self.getBuilder().alloca(varType, name=varName)
-            if isinstance(varType, ir.ArrayType):
-                self.symbolTable[varName] = allocaInstance, semanticLabel, t[2]
-            else:
-                self.symbolTable[varName] = allocaInstance, semanticLabel
+            allocaInstance = self.getBuilder().alloca(varType, name=varName)
+            try:
+                if isinstance(varType, ir.ArrayType):
+                    self.symbolTable[varName] = allocaInstance, semanticLabel, t[2]
+                else:
+                    self.symbolTable[varName] = allocaInstance, semanticLabel
+            except Exception as e:
+                self.add_error(ctx, str(e))
 
     def visitConstantDefinition(self, ctx:PascalParser.ConstantDefinitionContext):
         ident = self.visit(ctx.identifier())
         val = self.visit(ctx.constant())
-        self.symbolTable[ident] = val
+        try:
+            self.symbolTable[ident] = val
+        except Exception as e:
+            self.add_error(ctx, str(e))
 
     def visitConstant(self, ctx:PascalParser.ConstantContext):
         if ctx.string():
@@ -275,36 +298,42 @@ class LLVMPascalVisitor(PascalVisitor):
             return self.visit(ctx.constantChr())
         if ctx.identifier():
             ident = self.visit(ctx.identifier())
-            num, semantic = self.symbolTable[ident]
+            try:
+                num, semantic = self.symbolTable[ident]
+            except Exception as e:
+                self.add_error(ctx, str(e))
         if ctx.unsignedNumber():
             num, semantic = self.visit(ctx.unsignedNumber())
         if ctx.sign() and ctx.sign().MINUS():
             if isinstance(num.type, ir.IntType):
-                ty = num.type.width
-                if num.type.width == 8:
+                ty = num.type
+                if ty.width == 8:
                     ty = PascalTypes.int
 
                 num = ir.Constant(ty, -int(num.constant))
             elif isinstance(num.type, (ir.FloatType, ir.DoubleType)):
                 num = ir.Constant(num.type, -float(num.constant))
             else:
-                raise TypeError("Cannot negate non-numeric type")
+                self.add_error(ctx, "Cannot negate non-numeric type")
         return num, semantic
 
     def visitTypeIdentifier(self, ctx:PascalParser.TypeIdentifierContext):
         text = ctx.getText()
-        type = PascalTypes.strToType[text]
+        try:
+            type = PascalTypes.strToType[text]
+        except Exception as e:
+            self.add_error(ctx, f"Несуществующий тип {text}")
         return type
 
     def visitAssignmentStatement(self, ctx:PascalParser.AssignmentStatementContext):
         (variable, varSemantic) = self.visit(ctx.variable())
         (value, valSemantic) = self.visit(ctx.expression())
         if not isinstance(variable.type, ir.PointerType):
-            raise TypeError("Нельзя присвоить значение константе")
+            self.add_error(ctx, "Нельзя присвоить значение константе")
         value = self.load_if_pointer(value)
 
         if not isinstance(self.pointee_type(variable), ir.ArrayType):
-            value = castStoredValue(self.getBuilder(), variable, value)
+            value = castStoredValue(ctx, self, variable, value)
         else:
             if varSemantic == PascalTypes.charSemanticLabel:
                 arr_ty = self.pointee_type(variable)
@@ -321,7 +350,7 @@ class LLVMPascalVisitor(PascalVisitor):
                             data += b'\x00' * pad_size
                         value = ir.Constant(arr_ty, data)
                     elif value.type.count > arr_ty.count:
-                        raise TypeError("Нельзя присвоить строку большего размера в переменную меньшего размера")
+                        self.add_error(ctx, "Нельзя присвоить строку большего размера в переменную меньшего размера")
 
         self.getBuilder().store(value, variable)
 
@@ -344,7 +373,7 @@ class LLVMPascalVisitor(PascalVisitor):
             right, rSemantic = self.visit(ctx.simpleExpression())
             operator = self.visit(ctx.additiveoperator())
 
-            return addOperator(self, left, lSemantic, right, rSemantic, operator)
+            return addOperator(ctx, self, left, lSemantic, right, rSemantic, operator)
 
         return left, lSemantic
 
@@ -353,13 +382,13 @@ class LLVMPascalVisitor(PascalVisitor):
         if ctx.shiftOperator():
             left = self.load_if_pointer(left)
             if lSemantic != PascalTypes.numericSemanticLabel or not isinstance(left.type, ir.IntType):
-                raise TypeError(f"Cannot apply shift operator {operator} to not integer type")
+                self.add_error(ctx, f"Cannot apply shift operator {operator} to not integer type")
 
             operator = self.visit(ctx.shiftOperator())
             right, rSemantic = self.visit(ctx.shiftExpression())
 
             right = self.load_if_pointer(right)
-            left, right = castValues(self.getBuilder(), left, right)
+            left, right = castValues(ctx, self, left, right)
 
             if operator.SHL():
                 return self.getBuilder().shl(left, right), lSemantic
@@ -392,12 +421,24 @@ class LLVMPascalVisitor(PascalVisitor):
     def visitSignedFactor(self, ctx:PascalParser.SignedFactorContext):
         signedFactor, semantic = self.visitChildren(ctx)
         if ctx.MINUS():
-            if isinstance(signedFactor.type, ir.IntType):
-                signedFactor =self.getBuilder().sub(ir.Constant(signedFactor.type, 0), signedFactor)
+            if isinstance(signedFactor, ir.Constant):
+                if not self.is_pointer(signedFactor):
+                    if isinstance(signedFactor.type, ir.IntType):
+                        ty = signedFactor.type
+                        if ty.width == 8:
+                            ty = PascalTypes.int
+
+                        signedFactor = ir.Constant(ty, -int(signedFactor.constant))
+                    elif isinstance(signedFactor.type, (ir.FloatType, ir.DoubleType)):
+                        signedFactor = ir.Constant(signedFactor.type, -float(signedFactor.constant))
+                    else:
+                        self.add_error(ctx, "Cannot negate non-numeric type")
+            elif isinstance(signedFactor.type, ir.IntType):
+                signedFactor = self.getBuilder().sub(ir.Constant(signedFactor.type, 0), signedFactor)
             elif isinstance(signedFactor.type, (ir.FloatType, ir.DoubleType)):
-                signedFactor =self.getBuilder().fsub(ir.Constant(signedFactor.type, 0), signedFactor)
+                signedFactor = self.getBuilder().fsub(ir.Constant(signedFactor.type, 0), signedFactor)
             else:
-                raise TypeError("Cannot negate non-numeric type")
+                self.add_error(ctx, "Cannot negate non-numeric type")
 
         return signedFactor, semantic
 
@@ -409,11 +450,11 @@ class LLVMPascalVisitor(PascalVisitor):
         elif ctx.unsignedConstant():
             factor, semantic = self.visit(ctx.unsignedConstant())
         elif ctx.set_():
-            raise Exception("Set in not support")
+            self.add_error(ctx, "Set in not support")
         elif ctx.NOT():
             factor, semantic = self.visit(ctx.factor())
             if isinstance(factor.type, ir.IntType):
-                factor =self.getBuilder().xor(factor, ir.Constant(factor.type, -1))
+                factor = self.getBuilder().xor(factor, ir.Constant(factor.type, -1))
         elif ctx.bool_():
             factor, semantic = self.visit(ctx.bool_())
         elif ctx.functionDesignator():
@@ -446,8 +487,10 @@ class LLVMPascalVisitor(PascalVisitor):
                         indices.append(i_val)
 
                     modifiers.append(("array_access", indices))
-
-        v = self.symbolTable[identifier]
+        try:
+            v = self.symbolTable[identifier]
+        except Exception as e:
+            self.add_error(ctx, str(e))
         currentNode, currentSemantic = v[0], v[1]
         array_desc = None
         if isinstance(self.pointee_type(currentNode), ir.ArrayType):
@@ -463,11 +506,11 @@ class LLVMPascalVisitor(PascalVisitor):
             if modType == "field":
                 currentNode, currentSemantic, array_desc = recordFieldAccess(self.getBuilder(), self.records, currentNode, modValue)
             elif modType == "array_access":
-                currentNode, array_desc = arrayElementAccess(self.getBuilder(), array_desc, currentNode, modValue, self.module)
+                currentNode, array_desc = arrayElementAccess(ctx, self, array_desc, currentNode, modValue, self.module)
 
         # if self.leftPartDefinition.ArrayDescription() != None:
         #     if self.leftPartDefinition.ArrayDescription() != array_desc:
-        #         raise TypeError(f"Ожидался массив размерности {self.leftPartDefinition.ArrayDescription()}, получен {array_desc}")
+        #         self.add_error(ctx, f"Ожидался массив размерности {self.leftPartDefinition.ArrayDescription()}, получен {array_desc}")
 
         return currentNode, currentSemantic
 

@@ -15,7 +15,7 @@ class SymbolTable:
         for level in range(self.__level, -1, -1):
             if item in self.__tables[level]:
                 return self.__tables[level][item]
-        return None
+        raise Exception(f"Не найден символ {item}")
 
     def __setitem__(self, key, value):
         if key in self.__tables[self.__level]:

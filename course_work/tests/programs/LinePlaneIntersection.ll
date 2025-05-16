@@ -22,149 +22,148 @@ entry:
   store float %".4", float* %"B"
   %".6" = sitofp i8 3 to float
   store float %".6", float* %"C"
-  %".8" = sub i8 0, 6
-  %".9" = sitofp i8 %".8" to float
-  store float %".9", float* %"D"
-  %".11" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
-  %".12" = sitofp i8 1 to float
-  store float %".12", float* %".11"
-  %".14" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
-  %".15" = sitofp i8 1 to float
-  store float %".15", float* %".14"
-  %".17" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
-  %".18" = sitofp i8 1 to float
-  store float %".18", float* %".17"
-  %".20" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
-  %".21" = sitofp i8 1 to float
-  store float %".21", float* %".20"
-  %".23" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
-  %".24" = sitofp i8 1 to float
-  store float %".24", float* %".23"
-  %".26" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
-  %".27" = sitofp i8 1 to float
-  store float %".27", float* %".26"
-  %".29" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
-  %".30" = load float, float* %"A"
-  %".31" = load float, float* %".29"
-  %".32" = fmul float %".30", %".31"
-  %".33" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
-  %".34" = load float, float* %"B"
-  %".35" = load float, float* %".33"
-  %".36" = fmul float %".34", %".35"
-  %".37" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
-  %".38" = load float, float* %"C"
-  %".39" = load float, float* %".37"
-  %".40" = fmul float %".38", %".39"
-  %".41" = load float, float* %"D"
-  %".42" = fadd float %".40", %".41"
-  %".43" = fadd float %".36", %".42"
-  %".44" = fadd float %".32", %".43"
-  %".45" = fsub float              0x0, %".44"
-  store float %".45", float* %"numerator"
-  %".47" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
-  %".48" = load float, float* %"A"
-  %".49" = load float, float* %".47"
-  %".50" = fmul float %".48", %".49"
-  %".51" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
-  %".52" = load float, float* %"B"
-  %".53" = load float, float* %".51"
-  %".54" = fmul float %".52", %".53"
-  %".55" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
-  %".56" = load float, float* %"C"
-  %".57" = load float, float* %".55"
-  %".58" = fmul float %".56", %".57"
-  %".59" = fadd float %".54", %".58"
-  %".60" = fadd float %".50", %".59"
-  store float %".60", float* %"denominator"
-  %".62" = load float, float* %"denominator"
-  %".63" = sitofp i8 0 to float
-  %".64" = fcmp oeq float %".62", %".63"
-  br i1 %".64", label %"then", label %"else"
+  %".8" = sitofp i16 -6 to float
+  store float %".8", float* %"D"
+  %".10" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
+  %".11" = sitofp i8 1 to float
+  store float %".11", float* %".10"
+  %".13" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
+  %".14" = sitofp i8 1 to float
+  store float %".14", float* %".13"
+  %".16" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
+  %".17" = sitofp i8 1 to float
+  store float %".17", float* %".16"
+  %".19" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
+  %".20" = sitofp i8 1 to float
+  store float %".20", float* %".19"
+  %".22" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
+  %".23" = sitofp i8 1 to float
+  store float %".23", float* %".22"
+  %".25" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
+  %".26" = sitofp i8 1 to float
+  store float %".26", float* %".25"
+  %".28" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
+  %".29" = load float, float* %"A"
+  %".30" = load float, float* %".28"
+  %".31" = fmul float %".29", %".30"
+  %".32" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
+  %".33" = load float, float* %"B"
+  %".34" = load float, float* %".32"
+  %".35" = fmul float %".33", %".34"
+  %".36" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
+  %".37" = load float, float* %"C"
+  %".38" = load float, float* %".36"
+  %".39" = fmul float %".37", %".38"
+  %".40" = load float, float* %"D"
+  %".41" = fadd float %".39", %".40"
+  %".42" = fadd float %".35", %".41"
+  %".43" = fadd float %".31", %".42"
+  %".44" = fsub float              0x0, %".43"
+  store float %".44", float* %"numerator"
+  %".46" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
+  %".47" = load float, float* %"A"
+  %".48" = load float, float* %".46"
+  %".49" = fmul float %".47", %".48"
+  %".50" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
+  %".51" = load float, float* %"B"
+  %".52" = load float, float* %".50"
+  %".53" = fmul float %".51", %".52"
+  %".54" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
+  %".55" = load float, float* %"C"
+  %".56" = load float, float* %".54"
+  %".57" = fmul float %".55", %".56"
+  %".58" = fadd float %".53", %".57"
+  %".59" = fadd float %".49", %".58"
+  store float %".59", float* %"denominator"
+  %".61" = load float, float* %"denominator"
+  %".62" = sitofp i8 0 to float
+  %".63" = fcmp oeq float %".61", %".62"
+  br i1 %".63", label %"then", label %"else"
 then:
-  %".66" = load float, float* %"numerator"
-  %".67" = sitofp i8 0 to float
-  %".68" = fcmp oeq float %".66", %".67"
-  br i1 %".68", label %"then.1", label %"else.1"
+  %".65" = load float, float* %"numerator"
+  %".66" = sitofp i8 0 to float
+  %".67" = fcmp oeq float %".65", %".66"
+  br i1 %".67", label %"then.1", label %"else.1"
 else:
-  %".83" = load float, float* %"numerator"
-  %".84" = load float, float* %"denominator"
-  %".85" = fdiv float %".83", %".84"
-  store float %".85", float* %"t"
-  %".87" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 0
-  %".88" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
-  %".89" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
-  %".90" = load float, float* %"t"
-  %".91" = load float, float* %".89"
-  %".92" = fmul float %".90", %".91"
-  %".93" = load float, float* %".88"
-  %".94" = fadd float %".93", %".92"
-  store float %".94", float* %".87"
-  %".96" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 1
-  %".97" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
-  %".98" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
-  %".99" = load float, float* %"t"
-  %".100" = load float, float* %".98"
-  %".101" = fmul float %".99", %".100"
-  %".102" = load float, float* %".97"
-  %".103" = fadd float %".102", %".101"
-  store float %".103", float* %".96"
-  %".105" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 2
-  %".106" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
-  %".107" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
-  %".108" = load float, float* %"t"
-  %".109" = load float, float* %".107"
-  %".110" = fmul float %".108", %".109"
-  %".111" = load float, float* %".106"
-  %".112" = fadd float %".111", %".110"
-  store float %".112", float* %".105"
-  %".114" = alloca [21 x i8]
-  store [21 x i8] c"Intersection point:\0a\00", [21 x i8]* %".114"
-  %".116" = getelementptr [21 x i8], [21 x i8]* %".114", i8 0, i8 0
-  %".117" = call i32 (i8*, ...) @"printf"(i8* %".116")
+  %".82" = load float, float* %"numerator"
+  %".83" = load float, float* %"denominator"
+  %".84" = fdiv float %".82", %".83"
+  store float %".84", float* %"t"
+  %".86" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 0
+  %".87" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 0
+  %".88" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 0
+  %".89" = load float, float* %"t"
+  %".90" = load float, float* %".88"
+  %".91" = fmul float %".89", %".90"
+  %".92" = load float, float* %".87"
+  %".93" = fadd float %".92", %".91"
+  store float %".93", float* %".86"
+  %".95" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 1
+  %".96" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 1
+  %".97" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 1
+  %".98" = load float, float* %"t"
+  %".99" = load float, float* %".97"
+  %".100" = fmul float %".98", %".99"
+  %".101" = load float, float* %".96"
+  %".102" = fadd float %".101", %".100"
+  store float %".102", float* %".95"
+  %".104" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 2
+  %".105" = getelementptr %"TVector3", %"TVector3"* %"P0", i32 0, i32 2
+  %".106" = getelementptr %"TVector3", %"TVector3"* %"d", i32 0, i32 2
+  %".107" = load float, float* %"t"
+  %".108" = load float, float* %".106"
+  %".109" = fmul float %".107", %".108"
+  %".110" = load float, float* %".105"
+  %".111" = fadd float %".110", %".109"
+  store float %".111", float* %".104"
+  %".113" = alloca [21 x i8]
+  store [21 x i8] c"Intersection point:\0a\00", [21 x i8]* %".113"
+  %".115" = getelementptr [21 x i8], [21 x i8]* %".113", i8 0, i8 0
+  %".116" = call i32 (i8*, ...) @"printf"(i8* %".115")
   %"end_line_str_ptr.2" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".118" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
-  %".119" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 0
-  %".120" = load float, float* %".119"
-  %".121" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".121"
-  %".123" = getelementptr [3 x i8], [3 x i8]* %".121", i8 0, i8 0
-  %".124" = call i32 (i8*, ...) @"printf"(i8* %".123", float %".120")
+  %".117" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
+  %".118" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 0
+  %".119" = load float, float* %".118"
+  %".120" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".120"
+  %".122" = getelementptr [3 x i8], [3 x i8]* %".120", i8 0, i8 0
+  %".123" = call i32 (i8*, ...) @"printf"(i8* %".122", float %".119")
   %"end_line_str_ptr.3" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".125" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
-  %".126" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 1
-  %".127" = load float, float* %".126"
-  %".128" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".128"
-  %".130" = getelementptr [3 x i8], [3 x i8]* %".128", i8 0, i8 0
-  %".131" = call i32 (i8*, ...) @"printf"(i8* %".130", float %".127")
+  %".124" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
+  %".125" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 1
+  %".126" = load float, float* %".125"
+  %".127" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".127"
+  %".129" = getelementptr [3 x i8], [3 x i8]* %".127", i8 0, i8 0
+  %".130" = call i32 (i8*, ...) @"printf"(i8* %".129", float %".126")
   %"end_line_str_ptr.4" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".132" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.4")
-  %".133" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 2
-  %".134" = load float, float* %".133"
-  %".135" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".135"
-  %".137" = getelementptr [3 x i8], [3 x i8]* %".135", i8 0, i8 0
-  %".138" = call i32 (i8*, ...) @"printf"(i8* %".137", float %".134")
+  %".131" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.4")
+  %".132" = getelementptr %"TVector3", %"TVector3"* %"intersection", i32 0, i32 2
+  %".133" = load float, float* %".132"
+  %".134" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".134"
+  %".136" = getelementptr [3 x i8], [3 x i8]* %".134", i8 0, i8 0
+  %".137" = call i32 (i8*, ...) @"printf"(i8* %".136", float %".133")
   %"end_line_str_ptr.5" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".139" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.5")
+  %".138" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.5")
   br label %"end"
 end:
   ret void
 then.1:
-  %".70" = alloca [6 x i8]
-  store [6 x i8] c"Legit\00", [6 x i8]* %".70"
-  %".72" = getelementptr [6 x i8], [6 x i8]* %".70", i8 0, i8 0
-  %".73" = call i32 (i8*, ...) @"printf"(i8* %".72")
+  %".69" = alloca [6 x i8]
+  store [6 x i8] c"Legit\00", [6 x i8]* %".69"
+  %".71" = getelementptr [6 x i8], [6 x i8]* %".69", i8 0, i8 0
+  %".72" = call i32 (i8*, ...) @"printf"(i8* %".71")
   %"end_line_str_ptr" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".74" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
+  %".73" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
   br label %"end.1"
 else.1:
-  %".76" = alloca [13 x i8]
-  store [13 x i8] c"Is parrallel\00", [13 x i8]* %".76"
-  %".78" = getelementptr [13 x i8], [13 x i8]* %".76", i8 0, i8 0
-  %".79" = call i32 (i8*, ...) @"printf"(i8* %".78")
+  %".75" = alloca [13 x i8]
+  store [13 x i8] c"Is parrallel\00", [13 x i8]* %".75"
+  %".77" = getelementptr [13 x i8], [13 x i8]* %".75", i8 0, i8 0
+  %".78" = call i32 (i8*, ...) @"printf"(i8* %".77")
   %"end_line_str_ptr.1" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".80" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
+  %".79" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
   br label %"end.1"
 end.1:
   br label %"end"

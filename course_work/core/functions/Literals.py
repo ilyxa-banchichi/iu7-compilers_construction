@@ -6,7 +6,10 @@ from core.BuiltinSymbols import *
 
 def visitUnsignedInteger(self, ctx:PascalParser.UnsignedIntegerContext):
     number = ctx.NUM_INT().getText()
-    type = PascalTypes.getIntLiteralType(int(number))
+    try:
+        type = PascalTypes.getIntLiteralType(int(number))
+    except Exception as e:
+        self.add_error(ctx, str(e))
 
     return ir.Constant(type, number), PascalTypes.numericSemanticLabel
 

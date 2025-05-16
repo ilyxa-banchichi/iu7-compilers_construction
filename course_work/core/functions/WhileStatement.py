@@ -12,7 +12,7 @@ def visitWhileStatement(self, ctx:PascalParser.WhileStatementContext):
     self.getBuilder().position_at_start(condBlock)
     expression, semantic = self.visit(ctx.expression())
     if semantic != PascalTypes.boolSemanticLabel:
-        raise TypeError("While condition must have boolean type")
+        self.add_error(ctx, "While condition must have boolean type")
 
     self.getBuilder().cbranch(expression, bodyBlock, exitBlock)
 

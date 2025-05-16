@@ -178,23 +178,23 @@ else.4:
   %".148" = icmp slt i16 %".146", %".147"
   br i1 %".148", label %"then.6", label %"else.6"
 end.4:
-  %".158" = load i16, i16* %"intVar"
-  %".159" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".159"
-  %".161" = getelementptr [4 x i8], [4 x i8]* %".159", i8 0, i8 0
-  %".162" = call i32 (i8*, ...) @"printf"(i8* %".161", i16 %".158")
+  %".155" = load i16, i16* %"intVar"
+  %".156" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".156"
+  %".158" = getelementptr [4 x i8], [4 x i8]* %".156", i8 0, i8 0
+  %".159" = call i32 (i8*, ...) @"printf"(i8* %".158", i16 %".155")
   %"end_line_str_ptr.14" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".163" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.14")
-  %".164" = alloca [27 x i8]
-  store [27 x i8] c"else then singleline test\0a\00", [27 x i8]* %".164"
-  %".166" = getelementptr [27 x i8], [27 x i8]* %".164", i8 0, i8 0
-  %".167" = call i32 (i8*, ...) @"printf"(i8* %".166")
+  %".160" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.14")
+  %".161" = alloca [27 x i8]
+  store [27 x i8] c"else then singleline test\0a\00", [27 x i8]* %".161"
+  %".163" = getelementptr [27 x i8], [27 x i8]* %".161", i8 0, i8 0
+  %".164" = call i32 (i8*, ...) @"printf"(i8* %".163")
   %"end_line_str_ptr.15" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".168" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.15")
-  %".169" = load i16, i16* %"intVar"
-  %".170" = sext i8 0 to i16
-  %".171" = icmp slt i16 %".169", %".170"
-  br i1 %".171", label %"then.7", label %"else.7"
+  %".165" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.15")
+  %".166" = load i16, i16* %"intVar"
+  %".167" = sext i8 0 to i16
+  %".168" = icmp slt i16 %".166", %".167"
+  br i1 %".168", label %"then.7", label %"else.7"
 then.5:
   store i16 10000, i16* %"intVar"
   br label %"end.5"
@@ -205,142 +205,129 @@ else.5:
 end.5:
   br label %"end.4"
 then.6:
-  %".150" = sub i16 0, 10000
-  store i16 %".150", i16* %"intVar"
+  store i16 -10000, i16* %"intVar"
   br label %"end.6"
 else.6:
-  %".153" = sub i8 0, 5
-  %".154" = sext i8 %".153" to i16
-  store i16 %".154", i16* %"intVar"
+  store i16 -5, i16* %"intVar"
   br label %"end.6"
 end.6:
   br label %"end.4"
 then.7:
-  %".173" = load i16, i16* %"intVar"
-  %".174" = sext i8 1 to i16
-  %".175" = icmp slt i16 %".173", %".174"
-  br i1 %".175", label %"then.8", label %"else.8"
+  %".170" = load i16, i16* %"intVar"
+  %".171" = sext i8 1 to i16
+  %".172" = icmp slt i16 %".170", %".171"
+  br i1 %".172", label %"then.8", label %"else.8"
 else.7:
-  %".183" = load i16, i16* %"intVar"
-  %".184" = sext i8 1 to i16
-  %".185" = icmp eq i16 %".183", %".184"
-  br i1 %".185", label %"then.9", label %"else.9"
+  %".180" = load i16, i16* %"intVar"
+  %".181" = sext i8 1 to i16
+  %".182" = icmp eq i16 %".180", %".181"
+  br i1 %".182", label %"then.9", label %"else.9"
 end.7:
-  %".195" = load i16, i16* %"intVar"
-  %".196" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".196"
-  %".198" = getelementptr [4 x i8], [4 x i8]* %".196", i8 0, i8 0
-  %".199" = call i32 (i8*, ...) @"printf"(i8* %".198", i16 %".195")
+  %".189" = load i16, i16* %"intVar"
+  %".190" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".190"
+  %".192" = getelementptr [4 x i8], [4 x i8]* %".190", i8 0, i8 0
+  %".193" = call i32 (i8*, ...) @"printf"(i8* %".192", i16 %".189")
   %"end_line_str_ptr.16" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".200" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.16")
-  %".201" = alloca [31 x i8]
-  store [31 x i8] c"then else then multiline test\0a\00", [31 x i8]* %".201"
-  %".203" = getelementptr [31 x i8], [31 x i8]* %".201", i8 0, i8 0
-  %".204" = call i32 (i8*, ...) @"printf"(i8* %".203")
+  %".194" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.16")
+  %".195" = alloca [31 x i8]
+  store [31 x i8] c"then else then multiline test\0a\00", [31 x i8]* %".195"
+  %".197" = getelementptr [31 x i8], [31 x i8]* %".195", i8 0, i8 0
+  %".198" = call i32 (i8*, ...) @"printf"(i8* %".197")
   %"end_line_str_ptr.17" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".205" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.17")
-  %".206" = load i16, i16* %"intVar"
-  %".207" = sext i8 0 to i16
-  %".208" = icmp slt i16 %".206", %".207"
-  br i1 %".208", label %"then.10", label %"else.10"
+  %".199" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.17")
+  %".200" = load i16, i16* %"intVar"
+  %".201" = sext i8 0 to i16
+  %".202" = icmp slt i16 %".200", %".201"
+  br i1 %".202", label %"then.10", label %"else.10"
 then.8:
   store i16 10000, i16* %"intVar"
   br label %"end.8"
 else.8:
-  %".179" = sext i8 1 to i16
-  store i16 %".179", i16* %"intVar"
+  %".176" = sext i8 1 to i16
+  store i16 %".176", i16* %"intVar"
   br label %"end.8"
 end.8:
   br label %"end.7"
 then.9:
-  %".187" = sub i16 0, 10000
-  store i16 %".187", i16* %"intVar"
+  store i16 -10000, i16* %"intVar"
   br label %"end.9"
 else.9:
-  %".190" = sub i8 0, 5
-  %".191" = sext i8 %".190" to i16
-  store i16 %".191", i16* %"intVar"
+  store i16 -5, i16* %"intVar"
   br label %"end.9"
 end.9:
   br label %"end.7"
 then.10:
-  %".210" = alloca [6 x i8]
-  store [6 x i8] c"then\0a\00", [6 x i8]* %".210"
-  %".212" = getelementptr [6 x i8], [6 x i8]* %".210", i8 0, i8 0
-  %".213" = call i32 (i8*, ...) @"printf"(i8* %".212")
+  %".204" = alloca [6 x i8]
+  store [6 x i8] c"then\0a\00", [6 x i8]* %".204"
+  %".206" = getelementptr [6 x i8], [6 x i8]* %".204", i8 0, i8 0
+  %".207" = call i32 (i8*, ...) @"printf"(i8* %".206")
   %"end_line_str_ptr.18" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".214" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.18")
-  %".215" = sub i16 0, 20000
-  %".216" = load i16, i16* %"intVar"
-  %".217" = icmp slt i16 %".216", %".215"
-  br i1 %".217", label %"then.11", label %"else.11"
+  %".208" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.18")
+  %".209" = load i16, i16* %"intVar"
+  %".210" = icmp slt i16 %".209", -20000
+  br i1 %".210", label %"then.11", label %"else.11"
 else.10:
-  %".254" = load i16, i16* %"intVar"
-  %".255" = sext i8 1 to i16
-  %".256" = icmp eq i16 %".254", %".255"
-  br i1 %".256", label %"then.13", label %"else.13"
+  %".244" = load i16, i16* %"intVar"
+  %".245" = sext i8 1 to i16
+  %".246" = icmp eq i16 %".244", %".245"
+  br i1 %".246", label %"then.13", label %"else.13"
 end.10:
-  %".266" = load i16, i16* %"intVar"
-  %".267" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".267"
-  %".269" = getelementptr [4 x i8], [4 x i8]* %".267", i8 0, i8 0
-  %".270" = call i32 (i8*, ...) @"printf"(i8* %".269", i16 %".266")
+  %".253" = load i16, i16* %"intVar"
+  %".254" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".254"
+  %".256" = getelementptr [4 x i8], [4 x i8]* %".254", i8 0, i8 0
+  %".257" = call i32 (i8*, ...) @"printf"(i8* %".256", i16 %".253")
   %"end_line_str_ptr.23" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".271" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.23")
+  %".258" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.23")
   ret void
 then.11:
-  %".219" = alloca [6 x i8]
-  store [6 x i8] c"then\0a\00", [6 x i8]* %".219"
-  %".221" = getelementptr [6 x i8], [6 x i8]* %".219", i8 0, i8 0
-  %".222" = call i32 (i8*, ...) @"printf"(i8* %".221")
+  %".212" = alloca [6 x i8]
+  store [6 x i8] c"then\0a\00", [6 x i8]* %".212"
+  %".214" = getelementptr [6 x i8], [6 x i8]* %".212", i8 0, i8 0
+  %".215" = call i32 (i8*, ...) @"printf"(i8* %".214")
   %"end_line_str_ptr.19" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".223" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.19")
+  %".216" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.19")
   store i16 10000, i16* %"intVar"
   br label %"end.11"
 else.11:
-  %".226" = alloca [6 x i8]
-  store [6 x i8] c"else\0a\00", [6 x i8]* %".226"
-  %".228" = getelementptr [6 x i8], [6 x i8]* %".226", i8 0, i8 0
-  %".229" = call i32 (i8*, ...) @"printf"(i8* %".228")
+  %".219" = alloca [6 x i8]
+  store [6 x i8] c"else\0a\00", [6 x i8]* %".219"
+  %".221" = getelementptr [6 x i8], [6 x i8]* %".219", i8 0, i8 0
+  %".222" = call i32 (i8*, ...) @"printf"(i8* %".221")
   %"end_line_str_ptr.20" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".230" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.20")
-  %".231" = sub i16 0, 15000
-  %".232" = load i16, i16* %"intVar"
-  %".233" = icmp sgt i16 %".232", %".231"
-  br i1 %".233", label %"then.12", label %"else.12"
+  %".223" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.20")
+  %".224" = load i16, i16* %"intVar"
+  %".225" = icmp sgt i16 %".224", -15000
+  br i1 %".225", label %"then.12", label %"else.12"
 end.11:
   br label %"end.10"
 then.12:
-  %".235" = alloca [6 x i8]
-  store [6 x i8] c"then\0a\00", [6 x i8]* %".235"
-  %".237" = getelementptr [6 x i8], [6 x i8]* %".235", i8 0, i8 0
-  %".238" = call i32 (i8*, ...) @"printf"(i8* %".237")
+  %".227" = alloca [6 x i8]
+  store [6 x i8] c"then\0a\00", [6 x i8]* %".227"
+  %".229" = getelementptr [6 x i8], [6 x i8]* %".227", i8 0, i8 0
+  %".230" = call i32 (i8*, ...) @"printf"(i8* %".229")
   %"end_line_str_ptr.21" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".239" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.21")
-  %".240" = sext i8 1 to i16
-  store i16 %".240", i16* %"intVar"
+  %".231" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.21")
+  %".232" = sext i8 1 to i16
+  store i16 %".232", i16* %"intVar"
   br label %"end.12"
 else.12:
-  %".243" = alloca [5 x i8]
-  store [5 x i8] c"else\00", [5 x i8]* %".243"
-  %".245" = getelementptr [5 x i8], [5 x i8]* %".243", i8 0, i8 0
-  %".246" = call i32 (i8*, ...) @"printf"(i8* %".245")
+  %".235" = alloca [5 x i8]
+  store [5 x i8] c"else\00", [5 x i8]* %".235"
+  %".237" = getelementptr [5 x i8], [5 x i8]* %".235", i8 0, i8 0
+  %".238" = call i32 (i8*, ...) @"printf"(i8* %".237")
   %"end_line_str_ptr.22" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".247" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.22")
-  %".248" = sub i8 0, 1
-  %".249" = sext i8 %".248" to i16
-  store i16 %".249", i16* %"intVar"
+  %".239" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.22")
+  store i16 -1, i16* %"intVar"
   br label %"end.12"
 end.12:
   br label %"end.11"
 then.13:
-  %".258" = sub i16 0, 10000
-  store i16 %".258", i16* %"intVar"
+  store i16 -10000, i16* %"intVar"
   br label %"end.13"
 else.13:
-  %".261" = sub i8 0, 5
-  %".262" = sext i8 %".261" to i16
-  store i16 %".262", i16* %"intVar"
+  store i16 -5, i16* %"intVar"
   br label %"end.13"
 end.13:
   br label %"end.10"

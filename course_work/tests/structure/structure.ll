@@ -91,406 +91,404 @@ access_fail.3:
   br label %"access_continue.3"
 access_continue.3:
   %"final_elem_ptr.3" = phi  i16* [%"elem_ptr.3", %"access_ok.3"], [null, %"access_fail.3"]
-  %".61" = sub i8 0, 99
-  %".62" = sext i8 %".61" to i16
-  store i16 %".62", i16* %"final_elem_ptr.3"
-  %".64" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
-  %".65" = icmp uge i8 5, 1
-  %".66" = icmp ule i8 5, 5
-  %".67" = and i1 %".65", %".66"
-  br i1 %".67", label %"access_ok.4", label %"access_fail.4"
+  store i16 -99, i16* %"final_elem_ptr.3"
+  %".62" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
+  %".63" = icmp uge i8 5, 1
+  %".64" = icmp ule i8 5, 5
+  %".65" = and i1 %".63", %".64"
+  br i1 %".65", label %"access_ok.4", label %"access_fail.4"
 access_ok.4:
-  %".69" = sub i8 5, 1
-  %"elem_ptr.4" = getelementptr [5 x i16], [5 x i16]* %".64", i32 0, i8 %".69"
+  %".67" = sub i8 5, 1
+  %"elem_ptr.4" = getelementptr [5 x i16], [5 x i16]* %".62", i32 0, i8 %".67"
   br label %"access_continue.4"
 access_fail.4:
   %"out_of_bounds_err_str_ptr.4" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".71" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.4")
+  %".69" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.4")
   call void @"llvm.trap"()
   br label %"access_continue.4"
 access_continue.4:
   %"final_elem_ptr.4" = phi  i16* [%"elem_ptr.4", %"access_ok.4"], [null, %"access_fail.4"]
-  %".74" = sext i8 99 to i16
-  store i16 %".74", i16* %"final_elem_ptr.4"
-  %".76" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
-  %".77" = icmp uge i8 1, 1
-  %".78" = icmp ule i8 1, 3
-  %".79" = and i1 %".77", %".78"
-  br i1 %".79", label %"access_ok.5", label %"access_fail.5"
+  %".72" = sext i8 99 to i16
+  store i16 %".72", i16* %"final_elem_ptr.4"
+  %".74" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
+  %".75" = icmp uge i8 1, 1
+  %".76" = icmp ule i8 1, 3
+  %".77" = and i1 %".75", %".76"
+  br i1 %".77", label %"access_ok.5", label %"access_fail.5"
 access_ok.5:
-  %".81" = sub i8 1, 1
-  %"elem_ptr.5" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".76", i32 0, i8 %".81"
+  %".79" = sub i8 1, 1
+  %"elem_ptr.5" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".74", i32 0, i8 %".79"
   br label %"access_continue.5"
 access_fail.5:
   %"out_of_bounds_err_str_ptr.5" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".83" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.5")
+  %".81" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.5")
   call void @"llvm.trap"()
   br label %"access_continue.5"
 access_continue.5:
   %"final_elem_ptr.5" = phi  [5 x i16]* [%"elem_ptr.5", %"access_ok.5"], [null, %"access_fail.5"]
-  %".86" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
-  %".87" = load [5 x i16], [5 x i16]* %".86"
-  store [5 x i16] %".87", [5 x i16]* %"final_elem_ptr.5"
-  %".89" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
-  %".90" = icmp uge i8 1, 1
-  %".91" = icmp ule i8 1, 3
-  %".92" = and i1 %".90", %".91"
-  br i1 %".92", label %"access_ok.6", label %"access_fail.6"
+  %".84" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
+  %".85" = load [5 x i16], [5 x i16]* %".84"
+  store [5 x i16] %".85", [5 x i16]* %"final_elem_ptr.5"
+  %".87" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
+  %".88" = icmp uge i8 1, 1
+  %".89" = icmp ule i8 1, 3
+  %".90" = and i1 %".88", %".89"
+  br i1 %".90", label %"access_ok.6", label %"access_fail.6"
 access_ok.6:
-  %".94" = sub i8 1, 1
-  %"elem_ptr.6" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".89", i32 0, i8 %".94"
+  %".92" = sub i8 1, 1
+  %"elem_ptr.6" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".87", i32 0, i8 %".92"
   br label %"access_continue.6"
 access_fail.6:
   %"out_of_bounds_err_str_ptr.6" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".96" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.6")
+  %".94" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.6")
   call void @"llvm.trap"()
   br label %"access_continue.6"
 access_continue.6:
   %"final_elem_ptr.6" = phi  [5 x i16]* [%"elem_ptr.6", %"access_ok.6"], [null, %"access_fail.6"]
-  %".99" = icmp uge i8 1, 1
-  %".100" = icmp ule i8 1, 5
-  %".101" = and i1 %".99", %".100"
-  br i1 %".101", label %"access_ok.7", label %"access_fail.7"
+  %".97" = icmp uge i8 1, 1
+  %".98" = icmp ule i8 1, 5
+  %".99" = and i1 %".97", %".98"
+  br i1 %".99", label %"access_ok.7", label %"access_fail.7"
 access_ok.7:
-  %".103" = sub i8 1, 1
-  %"elem_ptr.7" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.6", i32 0, i8 %".103"
+  %".101" = sub i8 1, 1
+  %"elem_ptr.7" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.6", i32 0, i8 %".101"
   br label %"access_continue.7"
 access_fail.7:
   %"out_of_bounds_err_str_ptr.7" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".105" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.7")
+  %".103" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.7")
   call void @"llvm.trap"()
   br label %"access_continue.7"
 access_continue.7:
   %"final_elem_ptr.7" = phi  i16* [%"elem_ptr.7", %"access_ok.7"], [null, %"access_fail.7"]
-  %".108" = load i16, i16* %"final_elem_ptr.7"
-  %".109" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".109"
-  %".111" = getelementptr [4 x i8], [4 x i8]* %".109", i8 0, i8 0
-  %".112" = call i32 (i8*, ...) @"printf"(i8* %".111", i16 %".108")
+  %".106" = load i16, i16* %"final_elem_ptr.7"
+  %".107" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".107"
+  %".109" = getelementptr [4 x i8], [4 x i8]* %".107", i8 0, i8 0
+  %".110" = call i32 (i8*, ...) @"printf"(i8* %".109", i16 %".106")
   %"end_line_str_ptr" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".113" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
-  %".114" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
-  %".115" = icmp uge i8 1, 1
-  %".116" = icmp ule i8 1, 3
-  %".117" = and i1 %".115", %".116"
-  br i1 %".117", label %"access_ok.8", label %"access_fail.8"
+  %".111" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
+  %".112" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
+  %".113" = icmp uge i8 1, 1
+  %".114" = icmp ule i8 1, 3
+  %".115" = and i1 %".113", %".114"
+  br i1 %".115", label %"access_ok.8", label %"access_fail.8"
 access_ok.8:
-  %".119" = sub i8 1, 1
-  %"elem_ptr.8" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".114", i32 0, i8 %".119"
+  %".117" = sub i8 1, 1
+  %"elem_ptr.8" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".112", i32 0, i8 %".117"
   br label %"access_continue.8"
 access_fail.8:
   %"out_of_bounds_err_str_ptr.8" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".121" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.8")
+  %".119" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.8")
   call void @"llvm.trap"()
   br label %"access_continue.8"
 access_continue.8:
   %"final_elem_ptr.8" = phi  [5 x i16]* [%"elem_ptr.8", %"access_ok.8"], [null, %"access_fail.8"]
-  %".124" = icmp uge i8 5, 1
-  %".125" = icmp ule i8 5, 5
-  %".126" = and i1 %".124", %".125"
-  br i1 %".126", label %"access_ok.9", label %"access_fail.9"
+  %".122" = icmp uge i8 5, 1
+  %".123" = icmp ule i8 5, 5
+  %".124" = and i1 %".122", %".123"
+  br i1 %".124", label %"access_ok.9", label %"access_fail.9"
 access_ok.9:
-  %".128" = sub i8 5, 1
-  %"elem_ptr.9" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.8", i32 0, i8 %".128"
+  %".126" = sub i8 5, 1
+  %"elem_ptr.9" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.8", i32 0, i8 %".126"
   br label %"access_continue.9"
 access_fail.9:
   %"out_of_bounds_err_str_ptr.9" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".130" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.9")
+  %".128" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.9")
   call void @"llvm.trap"()
   br label %"access_continue.9"
 access_continue.9:
   %"final_elem_ptr.9" = phi  i16* [%"elem_ptr.9", %"access_ok.9"], [null, %"access_fail.9"]
-  %".133" = load i16, i16* %"final_elem_ptr.9"
-  %".134" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".134"
-  %".136" = getelementptr [4 x i8], [4 x i8]* %".134", i8 0, i8 0
-  %".137" = call i32 (i8*, ...) @"printf"(i8* %".136", i16 %".133")
+  %".131" = load i16, i16* %"final_elem_ptr.9"
+  %".132" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".132"
+  %".134" = getelementptr [4 x i8], [4 x i8]* %".132", i8 0, i8 0
+  %".135" = call i32 (i8*, ...) @"printf"(i8* %".134", i16 %".131")
   %"end_line_str_ptr.1" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".138" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
-  %".139" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
-  %".140" = icmp uge i8 1, 1
-  %".141" = icmp ule i8 1, 5
-  %".142" = and i1 %".140", %".141"
-  br i1 %".142", label %"access_ok.10", label %"access_fail.10"
+  %".136" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
+  %".137" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
+  %".138" = icmp uge i8 1, 1
+  %".139" = icmp ule i8 1, 5
+  %".140" = and i1 %".138", %".139"
+  br i1 %".140", label %"access_ok.10", label %"access_fail.10"
 access_ok.10:
-  %".144" = sub i8 1, 1
-  %"elem_ptr.10" = getelementptr [5 x i16], [5 x i16]* %".139", i32 0, i8 %".144"
+  %".142" = sub i8 1, 1
+  %"elem_ptr.10" = getelementptr [5 x i16], [5 x i16]* %".137", i32 0, i8 %".142"
   br label %"access_continue.10"
 access_fail.10:
   %"out_of_bounds_err_str_ptr.10" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".146" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.10")
+  %".144" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.10")
   call void @"llvm.trap"()
   br label %"access_continue.10"
 access_continue.10:
   %"final_elem_ptr.10" = phi  i16* [%"elem_ptr.10", %"access_ok.10"], [null, %"access_fail.10"]
-  %".149" = sext i8 1 to i16
-  store i16 %".149", i16* %"final_elem_ptr.10"
-  %".151" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
-  %".152" = icmp uge i8 5, 1
-  %".153" = icmp ule i8 5, 5
-  %".154" = and i1 %".152", %".153"
-  br i1 %".154", label %"access_ok.11", label %"access_fail.11"
+  %".147" = sext i8 1 to i16
+  store i16 %".147", i16* %"final_elem_ptr.10"
+  %".149" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 9
+  %".150" = icmp uge i8 5, 1
+  %".151" = icmp ule i8 5, 5
+  %".152" = and i1 %".150", %".151"
+  br i1 %".152", label %"access_ok.11", label %"access_fail.11"
 access_ok.11:
-  %".156" = sub i8 5, 1
-  %"elem_ptr.11" = getelementptr [5 x i16], [5 x i16]* %".151", i32 0, i8 %".156"
+  %".154" = sub i8 5, 1
+  %"elem_ptr.11" = getelementptr [5 x i16], [5 x i16]* %".149", i32 0, i8 %".154"
   br label %"access_continue.11"
 access_fail.11:
   %"out_of_bounds_err_str_ptr.11" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".158" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.11")
+  %".156" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.11")
   call void @"llvm.trap"()
   br label %"access_continue.11"
 access_continue.11:
   %"final_elem_ptr.11" = phi  i16* [%"elem_ptr.11", %"access_ok.11"], [null, %"access_fail.11"]
-  %".161" = sext i8 2 to i16
-  store i16 %".161", i16* %"final_elem_ptr.11"
-  %".163" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
-  %".164" = icmp uge i8 1, 1
-  %".165" = icmp ule i8 1, 3
-  %".166" = and i1 %".164", %".165"
-  br i1 %".166", label %"access_ok.12", label %"access_fail.12"
+  %".159" = sext i8 2 to i16
+  store i16 %".159", i16* %"final_elem_ptr.11"
+  %".161" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
+  %".162" = icmp uge i8 1, 1
+  %".163" = icmp ule i8 1, 3
+  %".164" = and i1 %".162", %".163"
+  br i1 %".164", label %"access_ok.12", label %"access_fail.12"
 access_ok.12:
-  %".168" = sub i8 1, 1
-  %"elem_ptr.12" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".163", i32 0, i8 %".168"
+  %".166" = sub i8 1, 1
+  %"elem_ptr.12" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".161", i32 0, i8 %".166"
   br label %"access_continue.12"
 access_fail.12:
   %"out_of_bounds_err_str_ptr.12" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".170" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.12")
+  %".168" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.12")
   call void @"llvm.trap"()
   br label %"access_continue.12"
 access_continue.12:
   %"final_elem_ptr.12" = phi  [5 x i16]* [%"elem_ptr.12", %"access_ok.12"], [null, %"access_fail.12"]
-  %".173" = icmp uge i8 1, 1
-  %".174" = icmp ule i8 1, 5
-  %".175" = and i1 %".173", %".174"
-  br i1 %".175", label %"access_ok.13", label %"access_fail.13"
+  %".171" = icmp uge i8 1, 1
+  %".172" = icmp ule i8 1, 5
+  %".173" = and i1 %".171", %".172"
+  br i1 %".173", label %"access_ok.13", label %"access_fail.13"
 access_ok.13:
-  %".177" = sub i8 1, 1
-  %"elem_ptr.13" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.12", i32 0, i8 %".177"
+  %".175" = sub i8 1, 1
+  %"elem_ptr.13" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.12", i32 0, i8 %".175"
   br label %"access_continue.13"
 access_fail.13:
   %"out_of_bounds_err_str_ptr.13" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".179" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.13")
+  %".177" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.13")
   call void @"llvm.trap"()
   br label %"access_continue.13"
 access_continue.13:
   %"final_elem_ptr.13" = phi  i16* [%"elem_ptr.13", %"access_ok.13"], [null, %"access_fail.13"]
-  %".182" = load i16, i16* %"final_elem_ptr.13"
-  %".183" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".183"
-  %".185" = getelementptr [4 x i8], [4 x i8]* %".183", i8 0, i8 0
-  %".186" = call i32 (i8*, ...) @"printf"(i8* %".185", i16 %".182")
+  %".180" = load i16, i16* %"final_elem_ptr.13"
+  %".181" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".181"
+  %".183" = getelementptr [4 x i8], [4 x i8]* %".181", i8 0, i8 0
+  %".184" = call i32 (i8*, ...) @"printf"(i8* %".183", i16 %".180")
   %"end_line_str_ptr.2" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".187" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
-  %".188" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
-  %".189" = icmp uge i8 1, 1
-  %".190" = icmp ule i8 1, 3
-  %".191" = and i1 %".189", %".190"
-  br i1 %".191", label %"access_ok.14", label %"access_fail.14"
+  %".185" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.2")
+  %".186" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 8
+  %".187" = icmp uge i8 1, 1
+  %".188" = icmp ule i8 1, 3
+  %".189" = and i1 %".187", %".188"
+  br i1 %".189", label %"access_ok.14", label %"access_fail.14"
 access_ok.14:
-  %".193" = sub i8 1, 1
-  %"elem_ptr.14" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".188", i32 0, i8 %".193"
+  %".191" = sub i8 1, 1
+  %"elem_ptr.14" = getelementptr [3 x [5 x i16]], [3 x [5 x i16]]* %".186", i32 0, i8 %".191"
   br label %"access_continue.14"
 access_fail.14:
   %"out_of_bounds_err_str_ptr.14" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".195" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.14")
+  %".193" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.14")
   call void @"llvm.trap"()
   br label %"access_continue.14"
 access_continue.14:
   %"final_elem_ptr.14" = phi  [5 x i16]* [%"elem_ptr.14", %"access_ok.14"], [null, %"access_fail.14"]
-  %".198" = icmp uge i8 5, 1
-  %".199" = icmp ule i8 5, 5
-  %".200" = and i1 %".198", %".199"
-  br i1 %".200", label %"access_ok.15", label %"access_fail.15"
+  %".196" = icmp uge i8 5, 1
+  %".197" = icmp ule i8 5, 5
+  %".198" = and i1 %".196", %".197"
+  br i1 %".198", label %"access_ok.15", label %"access_fail.15"
 access_ok.15:
-  %".202" = sub i8 5, 1
-  %"elem_ptr.15" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.14", i32 0, i8 %".202"
+  %".200" = sub i8 5, 1
+  %"elem_ptr.15" = getelementptr [5 x i16], [5 x i16]* %"final_elem_ptr.14", i32 0, i8 %".200"
   br label %"access_continue.15"
 access_fail.15:
   %"out_of_bounds_err_str_ptr.15" = getelementptr inbounds [20 x i8], [20 x i8]* @"out_of_bounds_err_str", i32 0, i32 0
-  %".204" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.15")
+  %".202" = call i32 @"puts"(i8* %"out_of_bounds_err_str_ptr.15")
   call void @"llvm.trap"()
   br label %"access_continue.15"
 access_continue.15:
   %"final_elem_ptr.15" = phi  i16* [%"elem_ptr.15", %"access_ok.15"], [null, %"access_fail.15"]
-  %".207" = load i16, i16* %"final_elem_ptr.15"
-  %".208" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".208"
-  %".210" = getelementptr [4 x i8], [4 x i8]* %".208", i8 0, i8 0
-  %".211" = call i32 (i8*, ...) @"printf"(i8* %".210", i16 %".207")
+  %".205" = load i16, i16* %"final_elem_ptr.15"
+  %".206" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".206"
+  %".208" = getelementptr [4 x i8], [4 x i8]* %".206", i8 0, i8 0
+  %".209" = call i32 (i8*, ...) @"printf"(i8* %".208", i16 %".205")
   %"end_line_str_ptr.3" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".212" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
-  %".213" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 0
-  store [15 x i8] c"Bob\00\00\00\00\00\00\00\00\00\00\00\00", [15 x i8]* %".213"
-  %".215" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 1
-  store i8 77, i8* %".215"
-  %".217" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 2
-  %".218" = sext i8 22 to i16
-  store i16 %".218", i16* %".217"
-  %".220" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 3
-  store float 0x3fff851ec0000000, float* %".220"
-  %".222" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 4
-  store float 0x4050600000000000, float* %".222"
-  %".224" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 5
-  store i1 1, i1* %".224"
-  %".226" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 6
-  %".227" = sext i8 4 to i16
-  call void @"FillPhoneNumber"([11 x i16]* %".226", i16 %".227")
-  %".229" = alloca [7 x i8]
-  store [7 x i8] c"Name: \00", [7 x i8]* %".229"
-  %".231" = getelementptr [7 x i8], [7 x i8]* %".229", i8 0, i8 0
-  %".232" = call i32 (i8*, ...) @"printf"(i8* %".231")
-  %".233" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 0
-  %".234" = load [15 x i8], [15 x i8]* %".233"
-  %".235" = alloca [15 x i8]
-  store [15 x i8] %".234", [15 x i8]* %".235"
-  %".237" = getelementptr [15 x i8], [15 x i8]* %".235", i8 0, i8 0
-  %".238" = call i32 (i8*, ...) @"printf"(i8* %".237")
+  %".210" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
+  %".211" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 0
+  store [15 x i8] c"Bob\00\00\00\00\00\00\00\00\00\00\00\00", [15 x i8]* %".211"
+  %".213" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 1
+  store i8 77, i8* %".213"
+  %".215" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 2
+  %".216" = sext i8 22 to i16
+  store i16 %".216", i16* %".215"
+  %".218" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 3
+  store float 0x3fff851ec0000000, float* %".218"
+  %".220" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 4
+  store float 0x4050600000000000, float* %".220"
+  %".222" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 5
+  store i1 1, i1* %".222"
+  %".224" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 6
+  %".225" = sext i8 4 to i16
+  call void @"FillPhoneNumber"([11 x i16]* %".224", i16 %".225")
+  %".227" = alloca [7 x i8]
+  store [7 x i8] c"Name: \00", [7 x i8]* %".227"
+  %".229" = getelementptr [7 x i8], [7 x i8]* %".227", i8 0, i8 0
+  %".230" = call i32 (i8*, ...) @"printf"(i8* %".229")
+  %".231" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 0
+  %".232" = load [15 x i8], [15 x i8]* %".231"
+  %".233" = alloca [15 x i8]
+  store [15 x i8] %".232", [15 x i8]* %".233"
+  %".235" = getelementptr [15 x i8], [15 x i8]* %".233", i8 0, i8 0
+  %".236" = call i32 (i8*, ...) @"printf"(i8* %".235")
   %"end_line_str_ptr.4" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".239" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.4")
-  %".240" = alloca [6 x i8]
-  store [6 x i8] c"Sex: \00", [6 x i8]* %".240"
-  %".242" = getelementptr [6 x i8], [6 x i8]* %".240", i8 0, i8 0
-  %".243" = call i32 (i8*, ...) @"printf"(i8* %".242")
-  %".244" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 1
-  %".245" = load i8, i8* %".244"
-  %".246" = alloca [3 x i8]
-  store [3 x i8] c"%c\00", [3 x i8]* %".246"
-  %".248" = getelementptr [3 x i8], [3 x i8]* %".246", i8 0, i8 0
-  %".249" = call i32 (i8*, ...) @"printf"(i8* %".248", i8 %".245")
+  %".237" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.4")
+  %".238" = alloca [6 x i8]
+  store [6 x i8] c"Sex: \00", [6 x i8]* %".238"
+  %".240" = getelementptr [6 x i8], [6 x i8]* %".238", i8 0, i8 0
+  %".241" = call i32 (i8*, ...) @"printf"(i8* %".240")
+  %".242" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 1
+  %".243" = load i8, i8* %".242"
+  %".244" = alloca [3 x i8]
+  store [3 x i8] c"%c\00", [3 x i8]* %".244"
+  %".246" = getelementptr [3 x i8], [3 x i8]* %".244", i8 0, i8 0
+  %".247" = call i32 (i8*, ...) @"printf"(i8* %".246", i8 %".243")
   %"end_line_str_ptr.5" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".250" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.5")
-  %".251" = alloca [6 x i8]
-  store [6 x i8] c"Age: \00", [6 x i8]* %".251"
-  %".253" = getelementptr [6 x i8], [6 x i8]* %".251", i8 0, i8 0
-  %".254" = call i32 (i8*, ...) @"printf"(i8* %".253")
-  %".255" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 2
-  %".256" = load i16, i16* %".255"
-  %".257" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".257"
-  %".259" = getelementptr [4 x i8], [4 x i8]* %".257", i8 0, i8 0
-  %".260" = call i32 (i8*, ...) @"printf"(i8* %".259", i16 %".256")
+  %".248" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.5")
+  %".249" = alloca [6 x i8]
+  store [6 x i8] c"Age: \00", [6 x i8]* %".249"
+  %".251" = getelementptr [6 x i8], [6 x i8]* %".249", i8 0, i8 0
+  %".252" = call i32 (i8*, ...) @"printf"(i8* %".251")
+  %".253" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 2
+  %".254" = load i16, i16* %".253"
+  %".255" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".255"
+  %".257" = getelementptr [4 x i8], [4 x i8]* %".255", i8 0, i8 0
+  %".258" = call i32 (i8*, ...) @"printf"(i8* %".257", i16 %".254")
   %"end_line_str_ptr.6" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".261" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.6")
-  %".262" = alloca [9 x i8]
-  store [9 x i8] c"Height: \00", [9 x i8]* %".262"
-  %".264" = getelementptr [9 x i8], [9 x i8]* %".262", i8 0, i8 0
-  %".265" = call i32 (i8*, ...) @"printf"(i8* %".264")
-  %".266" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 3
-  %".267" = load float, float* %".266"
-  %".268" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".268"
-  %".270" = getelementptr [3 x i8], [3 x i8]* %".268", i8 0, i8 0
-  %".271" = call i32 (i8*, ...) @"printf"(i8* %".270", float %".267")
+  %".259" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.6")
+  %".260" = alloca [9 x i8]
+  store [9 x i8] c"Height: \00", [9 x i8]* %".260"
+  %".262" = getelementptr [9 x i8], [9 x i8]* %".260", i8 0, i8 0
+  %".263" = call i32 (i8*, ...) @"printf"(i8* %".262")
+  %".264" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 3
+  %".265" = load float, float* %".264"
+  %".266" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".266"
+  %".268" = getelementptr [3 x i8], [3 x i8]* %".266", i8 0, i8 0
+  %".269" = call i32 (i8*, ...) @"printf"(i8* %".268", float %".265")
   %"end_line_str_ptr.7" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".272" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.7")
-  %".273" = alloca [9 x i8]
-  store [9 x i8] c"Weight: \00", [9 x i8]* %".273"
-  %".275" = getelementptr [9 x i8], [9 x i8]* %".273", i8 0, i8 0
-  %".276" = call i32 (i8*, ...) @"printf"(i8* %".275")
-  %".277" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 3
-  %".278" = load float, float* %".277"
-  %".279" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".279"
-  %".281" = getelementptr [3 x i8], [3 x i8]* %".279", i8 0, i8 0
-  %".282" = call i32 (i8*, ...) @"printf"(i8* %".281", float %".278")
+  %".270" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.7")
+  %".271" = alloca [9 x i8]
+  store [9 x i8] c"Weight: \00", [9 x i8]* %".271"
+  %".273" = getelementptr [9 x i8], [9 x i8]* %".271", i8 0, i8 0
+  %".274" = call i32 (i8*, ...) @"printf"(i8* %".273")
+  %".275" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 3
+  %".276" = load float, float* %".275"
+  %".277" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".277"
+  %".279" = getelementptr [3 x i8], [3 x i8]* %".277", i8 0, i8 0
+  %".280" = call i32 (i8*, ...) @"printf"(i8* %".279", float %".276")
   %"end_line_str_ptr.8" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".283" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.8")
-  %".284" = alloca [13 x i8]
-  store [13 x i8] c"Is Student: \00", [13 x i8]* %".284"
-  %".286" = getelementptr [13 x i8], [13 x i8]* %".284", i8 0, i8 0
-  %".287" = call i32 (i8*, ...) @"printf"(i8* %".286")
-  %".288" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 5
-  %".289" = load i1, i1* %".288"
+  %".281" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.8")
+  %".282" = alloca [13 x i8]
+  store [13 x i8] c"Is Student: \00", [13 x i8]* %".282"
+  %".284" = getelementptr [13 x i8], [13 x i8]* %".282", i8 0, i8 0
+  %".285" = call i32 (i8*, ...) @"printf"(i8* %".284")
+  %".286" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 5
+  %".287" = load i1, i1* %".286"
   %"true_value_str_ptr" = getelementptr inbounds [5 x i8], [5 x i8]* @"true_value_str", i32 0, i32 0
   %"false_value_str_ptr" = getelementptr inbounds [6 x i8], [6 x i8]* @"false_value_str", i32 0, i32 0
-  %".290" = select  i1 %".289", i8* %"true_value_str_ptr", i8* %"false_value_str_ptr"
-  %".291" = call i32 (i8*, ...) @"printf"(i8* %".290")
+  %".288" = select  i1 %".287", i8* %"true_value_str_ptr", i8* %"false_value_str_ptr"
+  %".289" = call i32 (i8*, ...) @"printf"(i8* %".288")
   %"end_line_str_ptr.9" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".292" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.9")
-  %".293" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 6
-  %".294" = load [11 x i16], [11 x i16]* %".293"
-  call void @"PrintPhoneNumber"([11 x i16] %".294")
-  %".296" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 7
-  call void @"PrintAddress"([3 x [50 x i8]]* %".296")
-  %".298" = alloca [3 x i8]
-  store [3 x i8] c"%c\00", [3 x i8]* %".298"
-  %".300" = getelementptr [3 x i8], [3 x i8]* %".298", i8 0, i8 0
-  %".301" = call i32 (i8*, ...) @"printf"(i8* %".300", i8 10)
-  %".302" = alloca [7 x i8]
-  store [7 x i8] c"Name: \00", [7 x i8]* %".302"
-  %".304" = getelementptr [7 x i8], [7 x i8]* %".302", i8 0, i8 0
-  %".305" = call i32 (i8*, ...) @"printf"(i8* %".304")
-  %".306" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 0
-  %".307" = load [15 x i8], [15 x i8]* %".306"
-  %".308" = alloca [15 x i8]
-  store [15 x i8] %".307", [15 x i8]* %".308"
-  %".310" = getelementptr [15 x i8], [15 x i8]* %".308", i8 0, i8 0
-  %".311" = call i32 (i8*, ...) @"printf"(i8* %".310")
+  %".290" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.9")
+  %".291" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 6
+  %".292" = load [11 x i16], [11 x i16]* %".291"
+  call void @"PrintPhoneNumber"([11 x i16] %".292")
+  %".294" = getelementptr %"TPerson", %"TPerson"* %"person", i32 0, i32 7
+  call void @"PrintAddress"([3 x [50 x i8]]* %".294")
+  %".296" = alloca [3 x i8]
+  store [3 x i8] c"%c\00", [3 x i8]* %".296"
+  %".298" = getelementptr [3 x i8], [3 x i8]* %".296", i8 0, i8 0
+  %".299" = call i32 (i8*, ...) @"printf"(i8* %".298", i8 10)
+  %".300" = alloca [7 x i8]
+  store [7 x i8] c"Name: \00", [7 x i8]* %".300"
+  %".302" = getelementptr [7 x i8], [7 x i8]* %".300", i8 0, i8 0
+  %".303" = call i32 (i8*, ...) @"printf"(i8* %".302")
+  %".304" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 0
+  %".305" = load [15 x i8], [15 x i8]* %".304"
+  %".306" = alloca [15 x i8]
+  store [15 x i8] %".305", [15 x i8]* %".306"
+  %".308" = getelementptr [15 x i8], [15 x i8]* %".306", i8 0, i8 0
+  %".309" = call i32 (i8*, ...) @"printf"(i8* %".308")
   %"end_line_str_ptr.10" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".312" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.10")
-  %".313" = alloca [6 x i8]
-  store [6 x i8] c"Sex: \00", [6 x i8]* %".313"
-  %".315" = getelementptr [6 x i8], [6 x i8]* %".313", i8 0, i8 0
-  %".316" = call i32 (i8*, ...) @"printf"(i8* %".315")
-  %".317" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 1
-  %".318" = load i8, i8* %".317"
-  %".319" = alloca [3 x i8]
-  store [3 x i8] c"%c\00", [3 x i8]* %".319"
-  %".321" = getelementptr [3 x i8], [3 x i8]* %".319", i8 0, i8 0
-  %".322" = call i32 (i8*, ...) @"printf"(i8* %".321", i8 %".318")
+  %".310" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.10")
+  %".311" = alloca [6 x i8]
+  store [6 x i8] c"Sex: \00", [6 x i8]* %".311"
+  %".313" = getelementptr [6 x i8], [6 x i8]* %".311", i8 0, i8 0
+  %".314" = call i32 (i8*, ...) @"printf"(i8* %".313")
+  %".315" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 1
+  %".316" = load i8, i8* %".315"
+  %".317" = alloca [3 x i8]
+  store [3 x i8] c"%c\00", [3 x i8]* %".317"
+  %".319" = getelementptr [3 x i8], [3 x i8]* %".317", i8 0, i8 0
+  %".320" = call i32 (i8*, ...) @"printf"(i8* %".319", i8 %".316")
   %"end_line_str_ptr.11" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".323" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.11")
-  %".324" = alloca [6 x i8]
-  store [6 x i8] c"Age: \00", [6 x i8]* %".324"
-  %".326" = getelementptr [6 x i8], [6 x i8]* %".324", i8 0, i8 0
-  %".327" = call i32 (i8*, ...) @"printf"(i8* %".326")
-  %".328" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 2
-  %".329" = load i16, i16* %".328"
-  %".330" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".330"
-  %".332" = getelementptr [4 x i8], [4 x i8]* %".330", i8 0, i8 0
-  %".333" = call i32 (i8*, ...) @"printf"(i8* %".332", i16 %".329")
+  %".321" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.11")
+  %".322" = alloca [6 x i8]
+  store [6 x i8] c"Age: \00", [6 x i8]* %".322"
+  %".324" = getelementptr [6 x i8], [6 x i8]* %".322", i8 0, i8 0
+  %".325" = call i32 (i8*, ...) @"printf"(i8* %".324")
+  %".326" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 2
+  %".327" = load i16, i16* %".326"
+  %".328" = alloca [4 x i8]
+  store [4 x i8] c"%hd\00", [4 x i8]* %".328"
+  %".330" = getelementptr [4 x i8], [4 x i8]* %".328", i8 0, i8 0
+  %".331" = call i32 (i8*, ...) @"printf"(i8* %".330", i16 %".327")
   %"end_line_str_ptr.12" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".334" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.12")
-  %".335" = alloca [9 x i8]
-  store [9 x i8] c"Height: \00", [9 x i8]* %".335"
-  %".337" = getelementptr [9 x i8], [9 x i8]* %".335", i8 0, i8 0
-  %".338" = call i32 (i8*, ...) @"printf"(i8* %".337")
-  %".339" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 3
-  %".340" = load float, float* %".339"
-  %".341" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".341"
-  %".343" = getelementptr [3 x i8], [3 x i8]* %".341", i8 0, i8 0
-  %".344" = call i32 (i8*, ...) @"printf"(i8* %".343", float %".340")
+  %".332" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.12")
+  %".333" = alloca [9 x i8]
+  store [9 x i8] c"Height: \00", [9 x i8]* %".333"
+  %".335" = getelementptr [9 x i8], [9 x i8]* %".333", i8 0, i8 0
+  %".336" = call i32 (i8*, ...) @"printf"(i8* %".335")
+  %".337" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 3
+  %".338" = load float, float* %".337"
+  %".339" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".339"
+  %".341" = getelementptr [3 x i8], [3 x i8]* %".339", i8 0, i8 0
+  %".342" = call i32 (i8*, ...) @"printf"(i8* %".341", float %".338")
   %"end_line_str_ptr.13" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".345" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.13")
-  %".346" = alloca [9 x i8]
-  store [9 x i8] c"Weight: \00", [9 x i8]* %".346"
-  %".348" = getelementptr [9 x i8], [9 x i8]* %".346", i8 0, i8 0
-  %".349" = call i32 (i8*, ...) @"printf"(i8* %".348")
-  %".350" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 3
-  %".351" = load float, float* %".350"
-  %".352" = alloca [3 x i8]
-  store [3 x i8] c"%f\00", [3 x i8]* %".352"
-  %".354" = getelementptr [3 x i8], [3 x i8]* %".352", i8 0, i8 0
-  %".355" = call i32 (i8*, ...) @"printf"(i8* %".354", float %".351")
+  %".343" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.13")
+  %".344" = alloca [9 x i8]
+  store [9 x i8] c"Weight: \00", [9 x i8]* %".344"
+  %".346" = getelementptr [9 x i8], [9 x i8]* %".344", i8 0, i8 0
+  %".347" = call i32 (i8*, ...) @"printf"(i8* %".346")
+  %".348" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 3
+  %".349" = load float, float* %".348"
+  %".350" = alloca [3 x i8]
+  store [3 x i8] c"%f\00", [3 x i8]* %".350"
+  %".352" = getelementptr [3 x i8], [3 x i8]* %".350", i8 0, i8 0
+  %".353" = call i32 (i8*, ...) @"printf"(i8* %".352", float %".349")
   %"end_line_str_ptr.14" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".356" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.14")
-  %".357" = alloca [13 x i8]
-  store [13 x i8] c"Is Student: \00", [13 x i8]* %".357"
-  %".359" = getelementptr [13 x i8], [13 x i8]* %".357", i8 0, i8 0
-  %".360" = call i32 (i8*, ...) @"printf"(i8* %".359")
-  %".361" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 5
-  %".362" = load i1, i1* %".361"
+  %".354" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.14")
+  %".355" = alloca [13 x i8]
+  store [13 x i8] c"Is Student: \00", [13 x i8]* %".355"
+  %".357" = getelementptr [13 x i8], [13 x i8]* %".355", i8 0, i8 0
+  %".358" = call i32 (i8*, ...) @"printf"(i8* %".357")
+  %".359" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 5
+  %".360" = load i1, i1* %".359"
   %"true_value_str_ptr.1" = getelementptr inbounds [5 x i8], [5 x i8]* @"true_value_str", i32 0, i32 0
   %"false_value_str_ptr.1" = getelementptr inbounds [6 x i8], [6 x i8]* @"false_value_str", i32 0, i32 0
-  %".363" = select  i1 %".362", i8* %"true_value_str_ptr.1", i8* %"false_value_str_ptr.1"
-  %".364" = call i32 (i8*, ...) @"printf"(i8* %".363")
+  %".361" = select  i1 %".360", i8* %"true_value_str_ptr.1", i8* %"false_value_str_ptr.1"
+  %".362" = call i32 (i8*, ...) @"printf"(i8* %".361")
   %"end_line_str_ptr.15" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
-  %".365" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.15")
-  %".366" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 6
-  %".367" = load [11 x i16], [11 x i16]* %".366"
-  call void @"PrintPhoneNumber"([11 x i16] %".367")
+  %".363" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.15")
+  %".364" = getelementptr %"TPerson", %"TPerson"* %"person2", i32 0, i32 6
+  %".365" = load [11 x i16], [11 x i16]* %".364"
+  call void @"PrintPhoneNumber"([11 x i16] %".365")
   ret void
 }
 

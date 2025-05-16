@@ -4,8 +4,11 @@ from antlr.PascalLexer import PascalLexer
 from antlr.PascalParser import PascalParser
 from core.LLVMPascalVisitor import LLVMPascalVisitor
 from core.Errors import SyntaxErrorListener
+from core.Errors import SemanticErrorListener
+import traceback
 
 def generateIR(input_filename, output_filename):
+    print("For " + input_filename)
     lexer = PascalLexer(FileStream(input_filename))
     stream = CommonTokenStream(lexer)
     parser = PascalParser(stream)
@@ -20,18 +23,24 @@ def generateIR(input_filename, output_filename):
 
     # print(tree.toStringTree(recog=parser))
 
-    # generator = LLVMPascalVisitor(error_listener)
-    generator = LLVMPascalVisitor()
-    generator.visit(tree)
+    error_listener = SemanticErrorListener()
+    generator = LLVMPascalVisitor(error_listener)
+    try:
+        generator.visit(tree)
+    except Exception as e:
+        if len(error_listener.errors) != 0:
+            error_listener.print_errors()
+        else:
+            print("Unhandeled error", e)
+            traceback.print_exc()
+        return
+
+    print("Created " + output_filename)
     generator.save(output_filename)
 
 def generateForFile(inputFile) -> str:
     outputFile = inputFile[:-4] + ".ll"
-
-    print("For " + inputFile)
     generateIR(inputFile, outputFile)
-    print("Created " + outputFile)
-
     return outputFile;
 
 if __name__ == "__main__":
@@ -51,7 +60,7 @@ if __name__ == "__main__":
         "tests/programs/AABBCollision.pas",
     ]
 
-    generateForFile("tests/constants/constants.pas")
+    generateForFile("tests/programs/AABBCollision.pas")
 
-    for test in allTests:
-        generateForFile(test)
+    # for test in allTests:
+    #     generateForFile(test)

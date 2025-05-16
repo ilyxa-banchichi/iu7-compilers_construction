@@ -56,3 +56,9 @@ def writeln(self, ctx:PascalParser.FunctionDesignatorContext):
     write(self, ctx)
     end_line_str_ptr = get_or_create_global_string(self.module, self.getBuilder(), "\n", "end_line_str")
     self.getBuilder().call(procedure, [end_line_str_ptr])
+
+def read(self, ctx:PascalParser.FunctionDesignatorContext):
+    procedure = self.symbolTable["scanf"][0]
+    write(self, ctx)
+    end_line_str_ptr = get_or_create_global_string(self.module, self.getBuilder(), "\n", "end_line_str")
+    self.getBuilder().call(procedure, [end_line_str_ptr])

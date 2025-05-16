@@ -5,13 +5,13 @@ from core.TypeCast import *
 
 def mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator):
     if operator.STAR():
-        raise TypeError(f"Cannot apply operator {operator.DIV()} to bool types")
+        self.add_error(ctx, f"Cannot apply operator {operator.DIV()} to bool types")
     elif operator.SLASH():
-        raise TypeError(f"Cannot apply operator {operator.DIV()} to bool types")
+        self.add_error(ctx, f"Cannot apply operator {operator.DIV()} to bool types")
     elif operator.DIV():
-        raise TypeError(f"Cannot apply operator {operator.DIV()} to bool types")
+        self.add_error(ctx, f"Cannot apply operator {operator.DIV()} to bool types")
     elif operator.MOD():
-        raise TypeError(f"Cannot apply operator {operator.DIV()} to bool types")
+        self.add_error(ctx, f"Cannot apply operator {operator.DIV()} to bool types")
     elif operator.AND():
         return self.getBuilder().and_(left, right), lSemantic
 
@@ -22,11 +22,11 @@ def mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator):
         elif operator.SLASH():
             return self.getBuilder().fdiv(left, right), lSemantic
         elif operator.DIV():
-            raise TypeError(f"Cannot apply operator {operator.DIV()} to float types")
+            self.add_error(ctx, f"Cannot apply operator {operator.DIV()} to float types")
         elif operator.MOD():
-            raise TypeError(f"Cannot apply operator {operator.MOD()} to float types")
+            self.add_error(ctx, f"Cannot apply operator {operator.MOD()} to float types")
         elif operator.AND():
-            raise TypeError(f"Cannot apply operator {operator.AND()} to float types")
+            self.add_error(ctx, f"Cannot apply operator {operator.AND()} to float types")
 
     elif isinstance(left.type, ir.IntType):
         if operator.AND():
@@ -58,7 +58,7 @@ def mulOperator(self, left, lSemantic, right, rSemantic, operator):
     right = self.load_if_pointer(right)
 
     if lSemantic != rSemantic:
-        raise TypeError(f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
+        self.add_error(ctx, f"Cannot apply operator {operator.getText()} to different types {left.type} as {lSemantic} and {right.type} as {rSemantic}")
 
     if lSemantic == PascalTypes.boolSemanticLabel:
         return mulOperatorForLogical(self, left, lSemantic, right, rSemantic, operator)
@@ -68,4 +68,4 @@ def mulOperator(self, left, lSemantic, right, rSemantic, operator):
             left, right = castValues(self.getBuilder(), left, right)
         return mulOperatorForNumeric(self, left, lSemantic, right, rSemantic, operator)
 
-    raise TypeError(f"Cannot apply operator {operator.getText()} this context {left, lSemantic}")
+    self.add_error(ctx, f"Cannot apply operator {operator.getText()} this context {left, lSemantic}")
