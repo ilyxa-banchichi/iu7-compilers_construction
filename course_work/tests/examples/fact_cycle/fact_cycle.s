@@ -41,19 +41,19 @@ _fact:                                  ; @fact
 	.cfi_def_cfa_offset 16
 	mov	w8, #1                          ; =0x1
 	stp	w0, w8, [sp, #8]
-LBB1_1:                                 ; %while_cond
-                                        ; =>This Inner Loop Header: Depth=1
 	ldp	w8, w0, [sp, #8]
 	cmp	w8, #2
-	b.lt	LBB1_3
-; %bb.2:                                ; %while_body
-                                        ;   in Loop: Header=BB1_1 Depth=1
+	b.lt	LBB1_2
+LBB1_1:                                 ; %while_body
+                                        ; =>This Inner Loop Header: Depth=1
 	ldr	w8, [sp, #8]
 	mul	w9, w0, w8
 	sub	w8, w8, #1
 	stp	w8, w9, [sp, #8]
-	b	LBB1_1
-LBB1_3:                                 ; %while_exit
+	ldp	w8, w0, [sp, #8]
+	cmp	w8, #2
+	b.ge	LBB1_1
+LBB1_2:                                 ; %while_exit
 	add	sp, sp, #16
 	ret
 	.cfi_endproc

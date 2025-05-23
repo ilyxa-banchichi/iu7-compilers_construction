@@ -19,7 +19,6 @@ identifier
 
 block
     : (
-        // Удален labelDeclarationPart
         constantDefinitionPart
         | typeDefinitionPart
         | variableDeclarationPart

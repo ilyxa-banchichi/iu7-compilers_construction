@@ -149,7 +149,7 @@ Lloh5:
 	mov	w8, #66                         ; =0x42
 	str	xzr, [x21, #56]
 	str	x8, [x24, #288]
-	ldr	w9, [x21, #60]
+	lsr	x9, xzr, #32
 	add	x0, sp, #536
 	str	xzr, [x21, #240]
 	stp	wzr, w9, [x24, #56]

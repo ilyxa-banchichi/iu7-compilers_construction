@@ -19,14 +19,12 @@ _main:                                  ; @main
 	mov	w8, #1                          ; =0x1
 	stp	x0, x0, [x29, #-32]
 	strh	wzr, [x0, #8]
-LBB0_1:                                 ; %for_cond
-                                        ; =>This Inner Loop Header: Depth=1
 	sxth	w19, w8
 	sturh	w8, [x29, #-42]
 	cmp	w19, #10
-	b.gt	LBB0_3
-; %bb.2:                                ; %for_body
-                                        ;   in Loop: Header=BB0_1 Depth=1
+	b.gt	LBB0_2
+LBB0_1:                                 ; %for_body
+                                        ; =>This Inner Loop Header: Depth=1
 	ldur	x20, [x29, #-32]
 	mov	w0, #16                         ; =0x10
 	bl	_malloc
@@ -40,12 +38,15 @@ LBB0_1:                                 ; %for_cond
 	ldr	x8, [x8]
 	stur	x8, [x29, #-32]
 	add	w8, w19, #1
-	b	LBB0_1
-LBB0_3:                                 ; %for_exit
+	sxth	w19, w8
+	sturh	w8, [x29, #-42]
+	cmp	w19, #10
+	b.le	LBB0_1
+LBB0_2:                                 ; %for_exit
 	ldur	x8, [x29, #-24]
 	stur	x8, [x29, #-32]
-	cbz	x8, LBB0_5
-LBB0_4:                                 ; %while_body
+	cbz	x8, LBB0_4
+LBB0_3:                                 ; %while_body
                                         ; =>This Inner Loop Header: Depth=1
 	ldur	x8, [x29, #-32]
 	sub	x0, x29, #56
@@ -54,8 +55,8 @@ LBB0_4:                                 ; %while_body
 	ldur	x8, [x29, #-32]
 	ldr	x8, [x8]
 	stur	x8, [x29, #-32]
-	cbnz	x8, LBB0_4
-LBB0_5:                                 ; %while_exit
+	cbnz	x8, LBB0_3
+LBB0_4:                                 ; %while_exit
 	ldur	x8, [x29, #-24]
 	sub	x0, x29, #56
 	stur	x8, [x29, #-56]
@@ -83,8 +84,8 @@ Lloh1:
 	bl	_printf
 	ldur	x8, [x29, #-24]
 	stur	x8, [x29, #-32]
-	cbz	x8, LBB0_7
-LBB0_6:                                 ; %while_body.1
+	cbz	x8, LBB0_6
+LBB0_5:                                 ; %while_body.1
                                         ; =>This Inner Loop Header: Depth=1
 	ldur	x8, [x29, #-32]
 	sub	x0, x29, #56
@@ -93,16 +94,14 @@ LBB0_6:                                 ; %while_body.1
 	ldur	x8, [x29, #-32]
 	ldr	x8, [x8]
 	stur	x8, [x29, #-32]
-	cbnz	x8, LBB0_6
-LBB0_7:                                 ; %while_cond.2.preheader
+	cbnz	x8, LBB0_5
+LBB0_6:                                 ; %while_cond.2.preheader
 	sub	x8, x29, #24
-LBB0_8:                                 ; %while_cond.2
-                                        ; =>This Inner Loop Header: Depth=1
 	ldr	x8, [x8]
 	stur	x8, [x29, #-32]
-	cbz	x8, LBB0_10
-; %bb.9:                                ; %while_body.2
-                                        ;   in Loop: Header=BB0_8 Depth=1
+	cbz	x8, LBB0_8
+LBB0_7:                                 ; %while_body.2
+                                        ; =>This Inner Loop Header: Depth=1
 	ldur	x8, [x29, #-32]
 	mov	w0, #16                         ; =0x10
 	ldr	x8, [x8]
@@ -110,8 +109,10 @@ LBB0_8:                                 ; %while_cond.2
 	bl	_malloc
 	sub	x8, x29, #40
 	stur	x0, [x29, #-32]
-	b	LBB0_8
-LBB0_10:                                ; %while_exit.2
+	ldr	x8, [x8]
+	stur	x8, [x29, #-32]
+	cbnz	x8, LBB0_7
+LBB0_8:                                 ; %while_exit.2
 	sub	sp, x29, #16
 	ldp	x29, x30, [sp, #16]             ; 16-byte Folded Reload
 	ldp	x20, x19, [sp], #32             ; 16-byte Folded Reload
@@ -156,17 +157,15 @@ _reverse:                               ; @reverse
 	sub	sp, sp, #32
 	.cfi_def_cfa_offset 32
 	ldr	x8, [x0]
-	str	xzr, [sp, #24]
-	str	x8, [sp, #16]
+	stp	x8, xzr, [sp, #16]
 	cbz	x8, LBB2_2
 LBB2_1:                                 ; %while_body
                                         ; =>This Inner Loop Header: Depth=1
 	ldp	x9, x10, [sp, #16]
 	ldr	x8, [x9]
 	str	x10, [x9]
-	str	x9, [sp, #24]
+	stp	x8, x9, [sp, #16]
 	str	x8, [sp, #8]
-	str	x8, [sp, #16]
 	cbnz	x8, LBB2_1
 LBB2_2:                                 ; %while_exit
 	ldr	x8, [sp, #24]

@@ -45,7 +45,7 @@ if [ "$COMPILE_MODE" = true ]; then
 
   echo "Using target triple: $TARGET_TRIPLE"
 
-  llc -mtriple="$TARGET_TRIPLE" "$outdir/$filename_no_ext.ll" -o "$outdir/$filename_no_ext.s"
+  llc -O3 -mtriple="$TARGET_TRIPLE" "$outdir/$filename_no_ext.ll" -o "$outdir/$filename_no_ext.s"
   if [ $? -ne 0 ]; then
     echo "llc failed"
     exit 1

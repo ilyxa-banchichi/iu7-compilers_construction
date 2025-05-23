@@ -581,21 +581,19 @@ _FillPhoneNumber:                       ; @FillPhoneNumber
 	mov	w8, #26215                      ; =0x6667
 	mov	w9, #10                         ; =0xa
 	strh	w1, [sp, #14]
-LBB1_1:                                 ; %for_cond
-                                        ; =>This Inner Loop Header: Depth=1
 	sxth	w10, w11
 	strh	w11, [sp, #12]
 	cmp	w10, #11
-	b.gt	LBB1_5
+	b.gt	LBB1_4
+LBB1_1:                                 ; %for_body
+                                        ; =>This Inner Loop Header: Depth=1
+	ldrh	w11, [sp, #12]
+	cbz	w11, LBB1_5
 ; %bb.2:                                ; %for_body
                                         ;   in Loop: Header=BB1_1 Depth=1
-	ldrh	w11, [sp, #12]
-	cbz	w11, LBB1_6
-; %bb.3:                                ; %for_body
-                                        ;   in Loop: Header=BB1_1 Depth=1
 	cmp	w11, #12
-	b.hs	LBB1_6
-; %bb.4:                                ; %access_ok
+	b.hs	LBB1_5
+; %bb.3:                                ; %access_ok
                                         ;   in Loop: Header=BB1_1 Depth=1
 	ldrsh	w12, [sp, #14]
 	sub	w11, w11, #1
@@ -608,12 +606,15 @@ LBB1_1:                                 ; %for_cond
 	strh	w12, [sp, #14]
 	strh	w13, [x0, x11, lsl #1]
 	add	w11, w10, #1
-	b	LBB1_1
-LBB1_5:                                 ; %for_exit
+	sxth	w10, w11
+	strh	w11, [sp, #12]
+	cmp	w10, #11
+	b.le	LBB1_1
+LBB1_4:                                 ; %for_exit
 	ldp	x29, x30, [sp, #16]             ; 16-byte Folded Reload
 	add	sp, sp, #32
 	ret
-LBB1_6:                                 ; %access_fail
+LBB1_5:                                 ; %access_fail
 Lloh14:
 	adrp	x0, _out_of_bounds_err_str@PAGE
 Lloh15:
@@ -668,21 +669,19 @@ _PrintPhoneNumber:                      ; @PrintPhoneNumber
 	mov	w8, #1                          ; =0x1
 	sub	x19, x29, #54
 	movk	w20, #100, lsl #16
-LBB2_1:                                 ; %for_cond
-                                        ; =>This Inner Loop Header: Depth=1
 	sxth	w21, w8
 	sturh	w8, [x29, #-56]
 	cmp	w21, #11
-	b.gt	LBB2_5
+	b.gt	LBB2_4
+LBB2_1:                                 ; %for_body
+                                        ; =>This Inner Loop Header: Depth=1
+	ldurh	w8, [x29, #-56]
+	cbz	w8, LBB2_5
 ; %bb.2:                                ; %for_body
                                         ;   in Loop: Header=BB2_1 Depth=1
-	ldurh	w8, [x29, #-56]
-	cbz	w8, LBB2_6
-; %bb.3:                                ; %for_body
-                                        ;   in Loop: Header=BB2_1 Depth=1
 	cmp	w8, #12
-	b.hs	LBB2_6
-; %bb.4:                                ; %access_ok
+	b.hs	LBB2_5
+; %bb.3:                                ; %access_ok
                                         ;   in Loop: Header=BB2_1 Depth=1
 	sub	w8, w8, #1
 	mov	x9, sp
@@ -695,8 +694,11 @@ LBB2_1:                                 ; %for_cond
 	bl	_printf
 	add	sp, sp, #16
 	add	w8, w21, #1
-	b	LBB2_1
-LBB2_5:                                 ; %for_exit
+	sxth	w21, w8
+	sturh	w8, [x29, #-56]
+	cmp	w21, #11
+	b.le	LBB2_1
+LBB2_4:                                 ; %for_exit
 	mov	x8, sp
 	sub	x0, x8, #16
 	mov	sp, x0
@@ -712,7 +714,7 @@ LBB2_5:                                 ; %for_exit
 	ldp	x20, x19, [sp, #16]             ; 16-byte Folded Reload
 	ldp	x22, x21, [sp], #48             ; 16-byte Folded Reload
 	ret
-LBB2_6:                                 ; %access_fail
+LBB2_5:                                 ; %access_fail
 Lloh16:
 	adrp	x0, _out_of_bounds_err_str@PAGE
 Lloh17:

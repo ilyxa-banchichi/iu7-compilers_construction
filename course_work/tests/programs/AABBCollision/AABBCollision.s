@@ -32,9 +32,9 @@ _main:                                  ; @main
 	.cfi_offset b9, -112
 	.cfi_offset b10, -120
 	.cfi_offset b11, -128
-	cbnz	wzr, LBB0_23
+	cbnz	wzr, LBB0_22
 ; %bb.1:                                ; %entry
-	cbnz	wzr, LBB0_23
+	cbnz	wzr, LBB0_22
 ; %bb.2:                                ; %access_ok
 	fmov	s0, #10.00000000
 	fmov	s1, #5.00000000
@@ -57,10 +57,10 @@ _main:                                  ; @main
 	stp	s0, s1, [x29, #-192]
 	stp	s2, s3, [x29, #-184]
 	stp	s4, s5, [x29, #-176]
-	cbnz	wzr, LBB0_23
+	cbnz	wzr, LBB0_22
 ; %bb.3:                                ; %access_ok
 	mov	w8, #1                          ; =0x1
-	cbz	w8, LBB0_23
+	cbz	w8, LBB0_22
 ; %bb.4:                                ; %access_ok.1
 	movi	d0, #0000000000000000
 	movi	d1, #0000000000000000
@@ -83,10 +83,10 @@ _main:                                  ; @main
 	stp	s0, s1, [x29, #-168]
 	stp	s2, s3, [x29, #-160]
 	stp	s4, s5, [x29, #-152]
-	cbnz	wzr, LBB0_23
+	cbnz	wzr, LBB0_22
 ; %bb.5:                                ; %access_ok.1
 	mov	w8, #1                          ; =0x1
-	cbz	w8, LBB0_23
+	cbz	w8, LBB0_22
 ; %bb.6:                                ; %access_ok.2
 	movi	d1, #0000000000000000
 	fmov	s0, #1.00000000
@@ -109,10 +109,10 @@ _main:                                  ; @main
 	stp	s0, s1, [x29, #-144]
 	stp	s2, s3, [x29, #-136]
 	stp	s4, s5, [x29, #-128]
-	cbnz	wzr, LBB0_23
+	cbnz	wzr, LBB0_22
 ; %bb.7:                                ; %access_ok.2
 	mov	w8, #1                          ; =0x1
-	cbz	w8, LBB0_23
+	cbz	w8, LBB0_22
 ; %bb.8:                                ; %access_ok.3
 	ldp	s4, s5, [x29, #-176]
 	ldp	s2, s3, [x29, #-184]
@@ -128,10 +128,10 @@ Lloh0:
 Lloh1:
 	add	x0, x0, _end_line_str@PAGEOFF
 	bl	_printf
-	cbnz	wzr, LBB0_23
+	cbnz	wzr, LBB0_22
 ; %bb.9:                                ; %access_ok.3
 	mov	w8, #1                          ; =0x1
-	cbz	w8, LBB0_23
+	cbz	w8, LBB0_22
 ; %bb.10:                               ; %access_ok.4
 	ldp	s4, s5, [x29, #-152]
 	ldp	s2, s3, [x29, #-160]
@@ -147,10 +147,10 @@ Lloh2:
 Lloh3:
 	add	x0, x0, _end_line_str@PAGEOFF
 	bl	_printf
-	cbnz	wzr, LBB0_23
+	cbnz	wzr, LBB0_22
 ; %bb.11:                               ; %access_ok.4
 	mov	w8, #1                          ; =0x1
-	cbz	w8, LBB0_23
+	cbz	w8, LBB0_22
 ; %bb.12:                               ; %access_ok.5
 	ldp	s4, s5, [x29, #-128]
 	ldp	s2, s3, [x29, #-136]
@@ -196,19 +196,17 @@ LBB0_14:                                ; %for_cond
 	sxth	w27, w8
 	sturh	w8, [x29, #-114]
 	cmp	w27, #3
-	b.gt	LBB0_22
+	b.gt	LBB0_21
 ; %bb.15:                               ; %for_body
                                         ;   in Loop: Header=BB0_14 Depth=1
 	mov	w8, #1                          ; =0x1
-LBB0_16:                                ; %for_cond.1
-                                        ;   Parent Loop BB0_14 Depth=1
-                                        ; =>  This Inner Loop Header: Depth=2
 	sxth	w28, w8
 	sturh	w8, [x29, #-116]
 	cmp	w28, #3
 	b.gt	LBB0_13
-; %bb.17:                               ; %for_body.1
-                                        ;   in Loop: Header=BB0_16 Depth=2
+LBB0_16:                                ; %for_body.1
+                                        ;   Parent Loop BB0_14 Depth=1
+                                        ; =>  This Inner Loop Header: Depth=2
 	mov	x8, sp
 	sub	x0, x8, #16
 	mov	sp, x0
@@ -243,20 +241,20 @@ LBB0_16:                                ; %for_cond.1
 	sturh	w25, [x8, #-16]
 	bl	_printf
 	ldurh	w8, [x29, #-114]
-	cbz	w8, LBB0_23
-; %bb.18:                               ; %for_body.1
+	cbz	w8, LBB0_22
+; %bb.17:                               ; %for_body.1
                                         ;   in Loop: Header=BB0_16 Depth=2
 	cmp	w8, #3
-	b.hi	LBB0_23
-; %bb.19:                               ; %for_body.1
+	b.hi	LBB0_22
+; %bb.18:                               ; %for_body.1
                                         ;   in Loop: Header=BB0_16 Depth=2
 	ldurh	w9, [x29, #-116]
-	cbz	w9, LBB0_23
-; %bb.20:                               ; %for_body.1
+	cbz	w9, LBB0_22
+; %bb.19:                               ; %for_body.1
                                         ;   in Loop: Header=BB0_16 Depth=2
 	cmp	w9, #4
-	b.hs	LBB0_23
-; %bb.21:                               ; %access_ok.6
+	b.hs	LBB0_22
+; %bb.20:                               ; %access_ok.6
                                         ;   in Loop: Header=BB0_16 Depth=2
 	sub	w8, w8, #1
 	sub	w9, w9, #1
@@ -274,8 +272,12 @@ LBB0_16:                                ; %for_cond.1
 	mov	x0, x19
 	bl	_printf
 	add	w8, w28, #1
-	b	LBB0_16
-LBB0_22:                                ; %for_exit
+	sxth	w28, w8
+	sturh	w8, [x29, #-116]
+	cmp	w28, #3
+	b.le	LBB0_16
+	b	LBB0_13
+LBB0_21:                                ; %for_exit
 	sub	sp, x29, #112
 	ldp	x29, x30, [sp, #112]            ; 16-byte Folded Reload
 	ldp	x20, x19, [sp, #96]             ; 16-byte Folded Reload
@@ -286,7 +288,7 @@ LBB0_22:                                ; %for_exit
 	ldp	d9, d8, [sp, #16]               ; 16-byte Folded Reload
 	ldp	d11, d10, [sp], #128            ; 16-byte Folded Reload
 	ret
-LBB0_23:                                ; %access_fail
+LBB0_22:                                ; %access_fail
 Lloh6:
 	adrp	x0, _out_of_bounds_err_str@PAGE
 Lloh7:
@@ -578,50 +580,48 @@ LBB9_2:                                 ; %for_cond
 	sxth	w23, w8
 	strh	w8, [sp, #30]
 	cmp	w23, #3
-	b.gt	LBB9_14
+	b.gt	LBB9_13
 ; %bb.3:                                ; %for_body
                                         ;   in Loop: Header=BB9_2 Depth=1
 	mov	w8, #1                          ; =0x1
-LBB9_4:                                 ; %for_cond.1
-                                        ;   Parent Loop BB9_2 Depth=1
-                                        ; =>  This Inner Loop Header: Depth=2
 	sxth	w24, w8
 	strh	w8, [sp, #28]
 	cmp	w24, #3
 	b.gt	LBB9_1
+LBB9_4:                                 ; %for_body.1
+                                        ;   Parent Loop BB9_2 Depth=1
+                                        ; =>  This Inner Loop Header: Depth=2
+	ldrh	w9, [sp, #30]
+	cbz	w9, LBB9_14
 ; %bb.5:                                ; %for_body.1
                                         ;   in Loop: Header=BB9_4 Depth=2
-	ldrh	w9, [sp, #30]
-	cbz	w9, LBB9_15
+	cmp	w9, #3
+	b.hi	LBB9_14
 ; %bb.6:                                ; %for_body.1
                                         ;   in Loop: Header=BB9_4 Depth=2
-	cmp	w9, #3
-	b.hi	LBB9_15
+	ldrh	w8, [sp, #28]
+	cbz	w8, LBB9_14
 ; %bb.7:                                ; %for_body.1
                                         ;   in Loop: Header=BB9_4 Depth=2
-	ldrh	w8, [sp, #28]
-	cbz	w8, LBB9_15
-; %bb.8:                                ; %for_body.1
-                                        ;   in Loop: Header=BB9_4 Depth=2
 	cmp	w8, #4
-	b.hs	LBB9_15
-; %bb.9:                                ; %access_ok
+	b.hs	LBB9_14
+; %bb.8:                                ; %access_ok
                                         ;   in Loop: Header=BB9_4 Depth=2
 	ldrh	w11, [sp, #30]
-	cbz	w11, LBB9_15
-; %bb.10:                               ; %access_ok
+	cbz	w11, LBB9_14
+; %bb.9:                                ; %access_ok
                                         ;   in Loop: Header=BB9_4 Depth=2
 	cmp	w11, #4
-	b.hs	LBB9_15
-; %bb.11:                               ; %access_ok.1
+	b.hs	LBB9_14
+; %bb.10:                               ; %access_ok.1
                                         ;   in Loop: Header=BB9_4 Depth=2
 	ldrh	w10, [sp, #28]
-	cbz	w10, LBB9_15
-; %bb.12:                               ; %access_ok.1
+	cbz	w10, LBB9_14
+; %bb.11:                               ; %access_ok.1
                                         ;   in Loop: Header=BB9_4 Depth=2
 	cmp	w10, #4
-	b.hs	LBB9_15
-; %bb.13:                               ; %access_ok.2
+	b.hs	LBB9_14
+; %bb.12:                               ; %access_ok.2
                                         ;   in Loop: Header=BB9_4 Depth=2
 	sub	w11, w11, #1
 	sub	w10, w10, #1
@@ -643,8 +643,12 @@ LBB9_4:                                 ; %for_cond.1
 	bl	_IntersectAABB
 	add	w8, w24, #1
 	strh	w0, [x25]
-	b	LBB9_4
-LBB9_14:                                ; %for_exit
+	sxth	w24, w8
+	strh	w8, [sp, #28]
+	cmp	w24, #3
+	b.le	LBB9_4
+	b	LBB9_1
+LBB9_13:                                ; %for_exit
 	ldp	x29, x30, [sp, #96]             ; 16-byte Folded Reload
 	ldp	x20, x19, [sp, #80]             ; 16-byte Folded Reload
 	ldp	x22, x21, [sp, #64]             ; 16-byte Folded Reload
@@ -652,7 +656,7 @@ LBB9_14:                                ; %for_exit
 	ldp	x26, x25, [sp, #32]             ; 16-byte Folded Reload
 	add	sp, sp, #112
 	ret
-LBB9_15:                                ; %access_fail
+LBB9_14:                                ; %access_fail
 Lloh8:
 	adrp	x0, _out_of_bounds_err_str@PAGE
 Lloh9:

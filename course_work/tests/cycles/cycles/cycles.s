@@ -53,15 +53,13 @@ Lloh1:
 	mov	w8, #1                          ; =0x1
 	mov	w21, #26149                     ; =0x6625
 	movk	w20, #8253, lsl #16
-LBB0_1:                                 ; %for_cond
-                                        ; =>This Inner Loop Header: Depth=1
 	sxth	w22, w8
 	ldursh	w9, [x29, #-52]
 	sturh	w8, [x29, #-50]
 	cmp	w22, w9
-	b.gt	LBB0_3
-; %bb.2:                                ; %for_body
-                                        ;   in Loop: Header=BB0_1 Depth=1
+	b.gt	LBB0_2
+LBB0_1:                                 ; %for_body
+                                        ; =>This Inner Loop Header: Depth=1
 	ldurh	w8, [x29, #-50]
 	ldur	s1, [x29, #-56]
 	sxth	w9, w8
@@ -93,8 +91,12 @@ LBB0_1:                                 ; %for_cond
 	mov	x0, x19
 	bl	_printf
 	add	w8, w22, #1
-	b	LBB0_1
-LBB0_3:                                 ; %for_exit
+	sxth	w22, w8
+	ldursh	w9, [x29, #-52]
+	sturh	w8, [x29, #-50]
+	cmp	w22, w9
+	b.le	LBB0_1
+LBB0_2:                                 ; %for_exit
 	mov	w9, #1120403456                 ; =0x42c80000
 	mov	w20, #8297                      ; =0x2069
 	mov	w21, #26661                     ; =0x6825
@@ -108,13 +110,11 @@ Lloh3:
 	add	x19, x19, _end_line_str@PAGEOFF
 	stur	wzr, [x29, #-56]
 	sturh	w8, [x29, #-50]
-LBB0_4:                                 ; %while_cond
-                                        ; =>This Inner Loop Header: Depth=1
 	ldur	s0, [x29, #-56]
 	fcmp	s0, s8
-	b.pl	LBB0_6
-; %bb.5:                                ; %while_body
-                                        ;   in Loop: Header=BB0_4 Depth=1
+	b.pl	LBB0_4
+LBB0_3:                                 ; %while_body
+                                        ; =>This Inner Loop Header: Depth=1
 	ldurh	w8, [x29, #-50]
 	ldur	s1, [x29, #-56]
 	lsl	w8, w8, #1
@@ -139,8 +139,10 @@ LBB0_4:                                 ; %while_cond
 	add	sp, sp, #16
 	mov	x0, x19
 	bl	_printf
-	b	LBB0_4
-LBB0_6:                                 ; %while_exit
+	ldur	s0, [x29, #-56]
+	fcmp	s0, s8
+	b.mi	LBB0_3
+LBB0_4:                                 ; %while_exit
 	mov	x8, sp
 	sub	x0, x8, #16
 	mov	sp, x0

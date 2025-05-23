@@ -121,7 +121,12 @@ Lloh3:
 	str	d0, [sp, #-16]!
 	bl	_printf
 	add	sp, sp, #16
-	b	LBB0_6
+	mov	x0, x19
+	bl	_printf
+	sub	sp, x29, #16
+	ldp	x29, x30, [sp, #16]             ; 16-byte Folded Reload
+	ldp	x20, x19, [sp], #32             ; 16-byte Folded Reload
+	ret
 LBB0_4:                                 ; %else.1
 	mov	x10, #29513                     ; =0x7349
 	mov	w9, #27756                      ; =0x6c6c
@@ -132,9 +137,8 @@ LBB0_4:                                 ; %else.1
 	stur	w9, [x8, #-8]
 	movk	x10, #24946, lsl #48
 	stur	x10, [x8, #-16]
-LBB0_5:                                 ; %end
+LBB0_5:                                 ; %then.1
 	bl	_printf
-LBB0_6:                                 ; %end
 	mov	x0, x19
 	bl	_printf
 	sub	sp, x29, #16
