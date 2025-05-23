@@ -163,6 +163,10 @@ entry:
 
 declare i32 @"printf"(i8* %".1", ...)
 
+declare i8* @"malloc"(i64 %".1")
+
+declare void @"free"(i8* %".1")
+
 @"end_line_str" = internal constant [2 x i8] [i8 10, i8 0]
 @"true_value_str" = internal constant [5 x i8] [i8 116, i8 114, i8 117, i8 101, i8 0]
 @"false_value_str" = internal constant [6 x i8] [i8 102, i8 97, i8 108, i8 115, i8 101, i8 0]

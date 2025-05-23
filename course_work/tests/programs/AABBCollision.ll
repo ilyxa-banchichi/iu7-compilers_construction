@@ -9,7 +9,6 @@ define void @"main"()
 entry:
   %"i" = alloca i16
   %"j" = alloca i16
-  %"p" = alloca i16
   %"boxes" = alloca [3 x %"TAABB"]
   %"collisionMatrix" = alloca [3 x [3 x i16]]
   %".2" = icmp uge i8 1, 1
@@ -236,6 +235,10 @@ access_continue.6:
 }
 
 declare i32 @"printf"(i8* %".1", ...)
+
+declare i8* @"malloc"(i64 %".1")
+
+declare void @"free"(i8* %".1")
 
 define %"TVector3" @"Vector3"(float %"x", float %"y", float %"z")
 {

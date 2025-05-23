@@ -19,15 +19,15 @@ entry:
   %"ac2" = alloca [10 x [4 x i8]]
   store i8 10, i8* %"n"
   store i8 5, i8* %"m"
-  %".4" = alloca [7 x i8]
-  store [7 x i8] c"Array\0a\00", [7 x i8]* %".4"
-  %".6" = getelementptr [7 x i8], [7 x i8]* %".4", i8 0, i8 0
+  %".4" = alloca [6 x i8]
+  store [6 x i8] c"Array\00", [6 x i8]* %".4"
+  %".6" = getelementptr [6 x i8], [6 x i8]* %".4", i8 0, i8 0
   %".7" = call i32 (i8*, ...) @"printf"(i8* %".6")
   %"end_line_str_ptr" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".8" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr")
-  %".9" = alloca [5 x i8]
-  store [5 x i8] c"Int\0a\00", [5 x i8]* %".9"
-  %".11" = getelementptr [5 x i8], [5 x i8]* %".9", i8 0, i8 0
+  %".9" = alloca [4 x i8]
+  store [4 x i8] c"Int\00", [4 x i8]* %".9"
+  %".11" = getelementptr [4 x i8], [4 x i8]* %".9", i8 0, i8 0
   %".12" = call i32 (i8*, ...) @"printf"(i8* %".11")
   %"end_line_str_ptr.1" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".13" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.1")
@@ -77,9 +77,9 @@ for_body.1:
   %".46" = and i1 %".44", %".45"
   br i1 %".46", label %"access_ok.1", label %"access_fail.1"
 for_exit.1:
-  %".62" = alloca [7 x i8]
-  store [7 x i8] c"Float\0a\00", [7 x i8]* %".62"
-  %".64" = getelementptr [7 x i8], [7 x i8]* %".62", i8 0, i8 0
+  %".62" = alloca [6 x i8]
+  store [6 x i8] c"Float\00", [6 x i8]* %".62"
+  %".64" = getelementptr [6 x i8], [6 x i8]* %".62", i8 0, i8 0
   %".65" = call i32 (i8*, ...) @"printf"(i8* %".64")
   %"end_line_str_ptr.3" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".66" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.3")
@@ -222,15 +222,15 @@ for_body.5:
   %".151" = and i1 %".149", %".150"
   br i1 %".151", label %"access_ok.5", label %"access_fail.5"
 for_exit.5:
-  %".167" = alloca [8 x i8]
-  store [8 x i8] c"Matrix\0a\00", [8 x i8]* %".167"
-  %".169" = getelementptr [8 x i8], [8 x i8]* %".167", i8 0, i8 0
+  %".167" = alloca [7 x i8]
+  store [7 x i8] c"Matrix\00", [7 x i8]* %".167"
+  %".169" = getelementptr [7 x i8], [7 x i8]* %".167", i8 0, i8 0
   %".170" = call i32 (i8*, ...) @"printf"(i8* %".169")
   %"end_line_str_ptr.7" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".171" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.7")
-  %".172" = alloca [5 x i8]
-  store [5 x i8] c"Int\0a\00", [5 x i8]* %".172"
-  %".174" = getelementptr [5 x i8], [5 x i8]* %".172", i8 0, i8 0
+  %".172" = alloca [4 x i8]
+  store [4 x i8] c"Int\00", [4 x i8]* %".172"
+  %".174" = getelementptr [4 x i8], [4 x i8]* %".172", i8 0, i8 0
   %".175" = call i32 (i8*, ...) @"printf"(i8* %".174")
   %"end_line_str_ptr.8" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".176" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.8")
@@ -319,9 +319,9 @@ for_body.8:
   store i8 2, i8* %"j"
   br label %"for_cond.9"
 for_exit.8:
-  %".258" = alloca [7 x i8]
-  store [7 x i8] c"Float\0a\00", [7 x i8]* %".258"
-  %".260" = getelementptr [7 x i8], [7 x i8]* %".258", i8 0, i8 0
+  %".258" = alloca [6 x i8]
+  store [6 x i8] c"Float\00", [6 x i8]* %".258"
+  %".260" = getelementptr [6 x i8], [6 x i8]* %".258", i8 0, i8 0
   %".261" = call i32 (i8*, ...) @"printf"(i8* %".260")
   %"end_line_str_ptr.10" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".262" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.10")
@@ -431,9 +431,9 @@ for_body.12:
   store i8 2, i8* %"j"
   br label %"for_cond.13"
 for_exit.12:
-  %".344" = alloca [6 x i8]
-  store [6 x i8] c"Char\0a\00", [6 x i8]* %".344"
-  %".346" = getelementptr [6 x i8], [6 x i8]* %".344", i8 0, i8 0
+  %".344" = alloca [5 x i8]
+  store [5 x i8] c"Char\00", [5 x i8]* %".344"
+  %".346" = getelementptr [5 x i8], [5 x i8]* %".344", i8 0, i8 0
   %".347" = call i32 (i8*, ...) @"printf"(i8* %".346")
   %"end_line_str_ptr.12" = getelementptr inbounds [2 x i8], [2 x i8]* @"end_line_str", i32 0, i32 0
   %".348" = call i32 (i8*, ...) @"printf"(i8* %"end_line_str_ptr.12")
@@ -588,6 +588,10 @@ access_continue.11:
 }
 
 declare i32 @"printf"(i8* %".1", ...)
+
+declare i8* @"malloc"(i64 %".1")
+
+declare void @"free"(i8* %".1")
 
 @"end_line_str" = internal constant [2 x i8] [i8 10, i8 0]
 declare i32 @"puts"(i8* %".1")

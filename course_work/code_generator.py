@@ -47,26 +47,3 @@ def generateForFile(inputFile) -> str:
         return outputFile
     else:
         return None
-
-if __name__ == "__main__":
-    allTests = [
-        "tests/types/types.pas",
-        "tests/constants/constants.pas",
-        "tests/pointer/pointer.pas",
-        "tests/aritmhetic/aritmhetic.pas",
-        "tests/bits/bits.pas",
-        "tests/relational/relational.pas",
-        "tests/logical/logical.pas",
-        "tests/ifelse/ifelse.pas",
-        "tests/cycles/cycles.pas",
-        "tests/array/array.pas",
-        "tests/function/function.pas",
-        "tests/structure/structure.pas",
-        "tests/programs/LinePlaneIntersection.pas",
-        "tests/programs/AABBCollision.pas",
-    ]
-
-    generateForFile("tests/pointer/pointer.pas")
-
-    # for test in allTests:
-    #     generateForFile(test)

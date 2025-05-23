@@ -31,29 +31,28 @@ def exec(filename):
 
 if len(sys.argv) > 1:
     filename = sys.argv[1]
-else:
-    filename = "/Users/ilapetrov/Documents/GitHub/iu7-compilers_construction/course_work/tests/programs/AABBCollision.pas"
-    filename = "tests/programs/AABBCollision.pas"
-    filename = "tests/pointer/pointer.pas"
+exec(filename)
 
-allTests = [
-    "tests/types/types.pas",
-    "tests/constants/constants.pas",
-    "tests/pointer/pointer.pas",
-    "tests/aritmhetic/aritmhetic.pas",
-    "tests/bits/bits.pas",
-    "tests/relational/relational.pas",
-    "tests/logical/logical.pas",
-    "tests/ifelse/ifelse.pas",
-    "tests/cycles/cycles.pas",
-    "tests/array/array.pas",
-    "tests/function/function.pas",
-    "tests/structure/structure.pas",
-    "tests/programs/LinePlaneIntersection.pas",
-    "tests/programs/AABBCollision.pas",
-]
+# allTests = [
+#     "tests/types/types.pas",
+#     "tests/constants/constants.pas",
+#     "tests/pointer/pointer.pas",
+#     "tests/aritmhetic/aritmhetic.pas",
+#     "tests/bits/bits.pas",
+#     "tests/relational/relational.pas",
+#     "tests/logical/logical.pas",
+#     "tests/ifelse/ifelse.pas",
+#     "tests/cycles/cycles.pas",
+#     "tests/array/array.pas",
+#     "tests/function/function.pas",
+#     "tests/structure/structure.pas",
+#     # "tests/programs/LinePlaneIntersection.pas",
+#     "tests/programs/AABBCollision.pas",
+#     "tests/examples/fact_recursive.pas",
+#     "tests/examples/fact_cycle.pas",
+#     "tests/examples/list.pas",
+# ]
 
-for test in allTests:
-    exec(test)
+# for test in allTests:
+#     exec(test)
 
-# exec(filename)

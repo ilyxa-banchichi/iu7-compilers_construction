@@ -35,9 +35,17 @@ class LLVMPascalVisitor(PascalVisitor):
         self.arrays = {}
         self.error_listener = error_listener
 
+    def sizeof(self, typ: ir.Type, builder: ir.IRBuilder) -> ir.Value:
+        null_ptr = ir.Constant(typ, None)
+        gep = builder.gep(null_ptr, [ir.Constant(ir.IntType(32), 1)], inbounds=True)
+        return builder.ptrtoint(gep, ir.IntType(64))
+
+    def null_ptr(self, typ: ir.Type) -> ir.Constant:
+        return ir.Constant(typ.as_pointer(), None)
+
     def getBuilder(self):
         return self.builder[-1]
-    
+
     def getCurrentFunction(self):
         return self.currentFunction[-1]
 
@@ -82,14 +90,15 @@ class LLVMPascalVisitor(PascalVisitor):
             self.add_error(ctx, f"Попытка переопределить тип {identifier}")
 
         if ctx.type_():
-            if ctx.type_().structuredType().unpackedStructuredType().recordType():
-                names, types, semantics, array_descriptions = self.visit(ctx.type_().structuredType())
+            if ctx.type_().structuredType().recordType():
                 struct = self.context.get_identified_type(identifier)
+                PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
+                names, types, semantics, array_descriptions = self.visit(ctx.type_().structuredType())
                 struct.set_body(*types)
                 self.records[struct] = (names, semantics, array_descriptions)
                 PascalTypes.strToType[identifier] = (struct, PascalTypes.structSemanticLabel)
 
-            if ctx.type_().structuredType().unpackedStructuredType().arrayType():
+            if ctx.type_().structuredType().arrayType():
                 type, semantic, array_description = self.visit(ctx.type_().structuredType())
                 PascalTypes.strToType[identifier] = (type, semantic, array_description)
 
@@ -199,6 +208,10 @@ class LLVMPascalVisitor(PascalVisitor):
             return writeln(self, ctx)
         elif identifier == "write":
             return write(self, ctx)
+        elif identifier == "new":
+            return new(self, ctx)
+        elif identifier == "dispose":
+            return new(self, ctx)
         else:
             return callFunction(identifier, self, ctx)
 
@@ -334,7 +347,11 @@ class LLVMPascalVisitor(PascalVisitor):
         (value, valSemantic) = self.visit(ctx.expression())
         if not isinstance(variable.type, ir.PointerType):
             self.add_error(ctx, "Нельзя присвоить значение константе")
-        value = self.load_if_pointer(value)
+
+        if valSemantic == "nullptr":
+            value = self.null_ptr(variable.type.pointee.pointee)
+        else:
+            value = self.load_if_pointer(value)
 
         if not isinstance(self.pointee_type(variable), ir.ArrayType) and not isinstance(self.pointee_type(variable), ir.PointerType):
             value = castStoredValue(ctx, self, variable, value)
@@ -445,6 +462,12 @@ class LLVMPascalVisitor(PascalVisitor):
                 self.add_error(ctx, "Cannot negate non-numeric type")
 
         return signedFactor, semantic
+    
+    def visitUnsignedConstant(self, ctx:PascalParser.UnsignedConstantContext):
+        if ctx.NIL():
+            return "nullptr", "nullptr"
+        else:
+            return self.visitChildren(ctx)
 
     def visitFactor(self, ctx:PascalParser.FactorContext):
         if ctx.variable():
@@ -453,8 +476,6 @@ class LLVMPascalVisitor(PascalVisitor):
             factor, semantic = self.visit(ctx.expression())
         elif ctx.unsignedConstant():
             factor, semantic = self.visit(ctx.unsignedConstant())
-        elif ctx.set_():
-            self.add_error(ctx, "Set in not support")
         elif ctx.NOT():
             factor, semantic = self.visit(ctx.factor())
             if isinstance(factor.type, ir.IntType):

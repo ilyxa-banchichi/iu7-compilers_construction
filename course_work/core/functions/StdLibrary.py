@@ -62,3 +62,24 @@ def read(self, ctx:PascalParser.FunctionDesignatorContext):
     write(self, ctx)
     end_line_str_ptr = get_or_create_global_string(self.module, self.getBuilder(), "\n", "end_line_str")
     self.getBuilder().call(procedure, [end_line_str_ptr])
+
+def new(self, ctx:PascalParser.FunctionDesignatorContext):
+    malloc = self.symbolTable["malloc"][0]
+    for param in ctx.parameterList().actualParameter():
+        value, valSemantic = self.visit(param)
+        if not self.is_pointer(value):
+            self.add_error(ctx, "Аргумент New должен быть указателем")
+
+        size = self.sizeof(value.type.pointee, self.getBuilder())
+        malloc_ptr = self.getBuilder().call(malloc, [size])
+        typed_ptr = self.getBuilder().bitcast(malloc_ptr, value.type.pointee)
+
+        self.getBuilder().store(typed_ptr, value)
+
+def dispose(self, ctx:PascalParser.FunctionDesignatorContext):
+    free = self.symbolTable["free"][0]
+    for param in ctx.parameterList().actualParameter():
+        value, valSemantic = self.visit(param)
+        allocated_ptr = self.getBuilder().load(value)
+        raw_ptr = self.getBuilder().bitcast(allocated_ptr, ir.IntType(8).as_pointer())
+        self.getBuilder().call(free, [raw_ptr])

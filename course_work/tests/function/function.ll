@@ -65,6 +65,10 @@ entry:
 
 declare i32 @"printf"(i8* %".1", ...)
 
+declare i8* @"malloc"(i64 %".1")
+
+declare void @"free"(i8* %".1")
+
 define void @"swap"(float* %"x", float* %"y")
 {
 entry:

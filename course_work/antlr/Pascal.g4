@@ -33,8 +33,6 @@ usesUnitsPart
     : USES identifierList SEMI
     ;
 
-// Удалено правило labelDeclarationPart
-
 constantDefinitionPart
     : CONST (constantDefinition SEMI)+
     ;
@@ -122,14 +120,8 @@ typeIdentifier
     ;
 
 structuredType
-    : unpackedStructuredType
-    ;
-
-unpackedStructuredType
     : arrayType
     | recordType
-    | setType
-    | fileType
     ;
 
 stringtype
@@ -169,17 +161,8 @@ recordSection
     : identifierList COLON type_
     ;
 
-setType
-    : SET OF baseType
-    ;
-
 baseType
     : simpleType
-    ;
-
-fileType
-    : FILE OF type_
-    | FILE
     ;
 
 pointerType
@@ -246,7 +229,6 @@ assignmentStatement
 variable
     : (AT identifier | identifier) (
         LBRACK expression (COMMA expression)* RBRACK
-        | LBRACK2 expression (COMMA expression)* RBRACK2
         | DOT identifier
         | POINTER
     )*
@@ -305,7 +287,6 @@ factor
     | LPAREN expression RPAREN
     | functionDesignator
     | unsignedConstant
-    | set_
     | NOT factor
     | bool_
     ;
@@ -323,11 +304,6 @@ functionDesignator
 
 parameterList
     : actualParameter (COMMA actualParameter)*
-    ;
-
-set_
-    : LBRACK elementList RBRACK
-    | LBRACK2 elementList RBRACK2
     ;
 
 elementList
@@ -398,7 +374,6 @@ finalValue
     : expression
     ;
 
-// Лексер (удалены LABEL и GOTO)
 AND          : 'AND';
 ARRAY        : 'ARRAY';
 BEGIN        : 'BEGIN';
@@ -428,7 +403,6 @@ PROGRAM      : 'PROGRAM';
 REAL         : 'REAL';
 RECORD       : 'RECORD';
 REPEAT       : 'REPEAT';
-SET          : 'SET';
 THEN         : 'THEN';
 TO           : 'TO';
 TYPE         : 'TYPE';

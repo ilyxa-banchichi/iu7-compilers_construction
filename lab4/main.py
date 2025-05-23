@@ -42,9 +42,6 @@ if __name__ == "__main__":
         '3.txt',
         '4.txt',
         '5.txt',
-        # 'neg_1.txt',
-        # 'neg_2.txt',
-        # 'neg_3.txt',
     ]
     for file_name in files:
         process_file(file_name)

@@ -13,8 +13,8 @@ begin
     n := 10;
     m := 5;
 
-    writeln('Array\n');
-    writeln('Int\n');
+    writeln('Array');
+    writeln('Int');
     for i := 1 to n do begin
         a1[i] := (i - 1);
     end;
@@ -23,7 +23,7 @@ begin
         writeln(a1[i]);
     end;
 
-    writeln('Float\n');
+    writeln('Float');
     for i := 1 to n do begin
         ar1[i] := (i - 1);
     end;
@@ -41,8 +41,8 @@ begin
         writeln(ac1[i]);
     end;
 
-    writeln('Matrix\n');
-    writeln('Int\n');
+    writeln('Matrix');
+    writeln('Int');
     k := 0;
     for i := 1 to n do begin
         for j := 2 to m do begin
@@ -57,7 +57,7 @@ begin
         end;
     end;
 
-    writeln('Float\n');
+    writeln('Float');
     k := 0;
     for i := 1 to n do begin
         for j := 2 to m do begin
@@ -72,7 +72,7 @@ begin
         end;
     end;
 
-    writeln('Char\n');
+    writeln('Char');
     k := 60;
     for i := 1 to n do begin
         for j := 2 to m do begin

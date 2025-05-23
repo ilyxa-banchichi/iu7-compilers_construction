@@ -129,11 +129,6 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#unpackedStructuredType.
-    def visitUnpackedStructuredType(self, ctx:PascalParser.UnpackedStructuredTypeContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#stringtype.
     def visitStringtype(self, ctx:PascalParser.StringtypeContext):
         return self.visitChildren(ctx)
@@ -179,18 +174,8 @@ class PascalVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by PascalParser#setType.
-    def visitSetType(self, ctx:PascalParser.SetTypeContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by PascalParser#baseType.
     def visitBaseType(self, ctx:PascalParser.BaseTypeContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#fileType.
-    def visitFileType(self, ctx:PascalParser.FileTypeContext):
         return self.visitChildren(ctx)
 
 
@@ -331,11 +316,6 @@ class PascalVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by PascalParser#parameterList.
     def visitParameterList(self, ctx:PascalParser.ParameterListContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by PascalParser#set_.
-    def visitSet_(self, ctx:PascalParser.Set_Context):
         return self.visitChildren(ctx)
 
 

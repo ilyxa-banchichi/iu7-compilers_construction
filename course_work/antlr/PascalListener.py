@@ -224,15 +224,6 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#unpackedStructuredType.
-    def enterUnpackedStructuredType(self, ctx:PascalParser.UnpackedStructuredTypeContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#unpackedStructuredType.
-    def exitUnpackedStructuredType(self, ctx:PascalParser.UnpackedStructuredTypeContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#stringtype.
     def enterStringtype(self, ctx:PascalParser.StringtypeContext):
         pass
@@ -314,30 +305,12 @@ class PascalListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by PascalParser#setType.
-    def enterSetType(self, ctx:PascalParser.SetTypeContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#setType.
-    def exitSetType(self, ctx:PascalParser.SetTypeContext):
-        pass
-
-
     # Enter a parse tree produced by PascalParser#baseType.
     def enterBaseType(self, ctx:PascalParser.BaseTypeContext):
         pass
 
     # Exit a parse tree produced by PascalParser#baseType.
     def exitBaseType(self, ctx:PascalParser.BaseTypeContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#fileType.
-    def enterFileType(self, ctx:PascalParser.FileTypeContext):
-        pass
-
-    # Exit a parse tree produced by PascalParser#fileType.
-    def exitFileType(self, ctx:PascalParser.FileTypeContext):
         pass
 
 
@@ -590,15 +563,6 @@ class PascalListener(ParseTreeListener):
 
     # Exit a parse tree produced by PascalParser#parameterList.
     def exitParameterList(self, ctx:PascalParser.ParameterListContext):
-        pass
-
-
-    # Enter a parse tree produced by PascalParser#set_.
-    def enterSet_(self, ctx:PascalParser.Set_Context):
-        pass
-
-    # Exit a parse tree produced by PascalParser#set_.
-    def exitSet_(self, ctx:PascalParser.Set_Context):
         pass
 
 

@@ -494,6 +494,10 @@ access_continue.15:
 
 declare i32 @"printf"(i8* %".1", ...)
 
+declare i8* @"malloc"(i64 %".1")
+
+declare void @"free"(i8* %".1")
+
 define void @"FillPhoneNumber"([11 x i16]* %"phone", i16 %"startNumber")
 {
 entry:
