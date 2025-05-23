@@ -14,11 +14,12 @@ FILES=( \
     "tests/function/function.pas" \
     "tests/structure/structure.pas" \
     "tests/programs/AABBCollision.pas" \
+    "tests/programs/LinePlaneIntersection.pas" \
     "tests/examples/fact_recursive.pas" \
     "tests/examples/fact_cycle.pas" \
     "tests/examples/list.pas" \
 )
 
 for FILE in "${FILES[@]}"; do
-  python3 executor.py "$FILE"
+  ./pascal.sh -r "$FILE"
 done

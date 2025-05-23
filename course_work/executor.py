@@ -2,14 +2,14 @@ import sys
 import llvmlite.binding as llvm
 from llvmlite import ir
 import ctypes
-from code_generator import generateForFile
+from code_generator import generateIR
 
-def exec(filename):
-    filename = generateForFile(filename)
-    if filename == None:
-        return
+def exec(filename, output_dir):
+    output_name = generateIR(filename, output_dir)
+    if not output_name:
+        return None
 
-    with open(filename, "r") as f:
+    with open(output_name, "r") as f:
         ir_code = str(f.read())
 
     llvm.initialize()
@@ -29,30 +29,12 @@ def exec(filename):
 
         ctypes.CFUNCTYPE(None)(main_func)()
 
-if len(sys.argv) > 1:
-    filename = sys.argv[1]
-exec(filename)
+if __name__ == "__main__":
+    if len(sys.argv) > 2:
+        filename = sys.argv[1]
+        output_dir = sys.argv[2]
+    else:
+        print("Неверное количество аргументов")
 
-# allTests = [
-#     "tests/types/types.pas",
-#     "tests/constants/constants.pas",
-#     "tests/pointer/pointer.pas",
-#     "tests/aritmhetic/aritmhetic.pas",
-#     "tests/bits/bits.pas",
-#     "tests/relational/relational.pas",
-#     "tests/logical/logical.pas",
-#     "tests/ifelse/ifelse.pas",
-#     "tests/cycles/cycles.pas",
-#     "tests/array/array.pas",
-#     "tests/function/function.pas",
-#     "tests/structure/structure.pas",
-#     # "tests/programs/LinePlaneIntersection.pas",
-#     "tests/programs/AABBCollision.pas",
-#     "tests/examples/fact_recursive.pas",
-#     "tests/examples/fact_cycle.pas",
-#     "tests/examples/list.pas",
-# ]
-
-# for test in allTests:
-#     exec(test)
+    exec(filename, output_dir)
 

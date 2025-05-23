@@ -171,4 +171,8 @@ end.1:
 
 declare i32 @"printf"(i8* %".1", ...)
 
+declare i8* @"malloc"(i64 %".1")
+
+declare void @"free"(i8* %".1")
+
 @"end_line_str" = internal constant [2 x i8] [i8 10, i8 0]
