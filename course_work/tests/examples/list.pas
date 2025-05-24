@@ -12,7 +12,7 @@ type PNode = record
     Ptr: ^TNode
 end;
 
-function printNode(var node: PNode);
+function printNode(node: PNode);
 begin
     writeln(node.Ptr^.Value);
 end;
@@ -36,14 +36,15 @@ end;
 var
     head, current, temp: ^TNode;
     i: integer;
-    ttt: PNode;
+    mem: array[0..10] of TNode;
+    ptr: PNode;
 begin
-    new(head);
+    head := @mem[0];
     head^.Value := 0;
 
     current := head;
     for i := 1 to Count do begin
-        new(current^.Next);
+        current^.Next := @mem[i];
         current^.Next^.Next := nil;
         current^.Next^.Value := i;
         current := current^.Next;
@@ -51,27 +52,20 @@ begin
 
     current := head;
     while current <> nil do begin
-        ttt.Ptr := current;
-        printNode(ttt);
+        ptr.Ptr := current;
+        printNode(ptr);
         current := current^.Next;
     end;
 
-    ttt.Ptr := head;
-    reverse(ttt);
-    head := ttt.Ptr;
+    ptr.Ptr := head;
+    reverse(ptr);
+    head := ptr.Ptr;
 
     writeln('___Reserved_____');
     current := head;
     while current <> nil do begin
-        ttt.Ptr := current;
-        printNode(ttt);
+        ptr.Ptr := current;
+        printNode(ptr);
         current := current^.Next;
-    end;
-
-    current := head;
-    while current <> nil do begin
-        temp := current^.Next;
-        dispose(current);
-        current := temp;
     end;
 end.
