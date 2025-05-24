@@ -58,7 +58,7 @@ if [ "$COMPILE_MODE" = true ]; then
     exit 1
   fi
 
-  echo "Executable created: ./$BASENAME"
+  echo "Executable created: ./$outdir/bin/$filename_no_ext"
   if [ "$RUN_MODE" = true ]; then
     ./"$outdir/bin/$filename_no_ext"
   fi

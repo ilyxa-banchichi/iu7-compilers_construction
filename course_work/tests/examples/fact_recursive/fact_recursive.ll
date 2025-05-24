@@ -21,10 +21,6 @@ entry:
 
 declare i32 @"printf"(i8* %".1", ...)
 
-declare i8* @"malloc"(i64 %".1")
-
-declare void @"free"(i8* %".1")
-
 define i32 @"fact"(i32 %"n")
 {
 entry:
