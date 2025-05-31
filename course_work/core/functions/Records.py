@@ -34,12 +34,18 @@ def visitFixedPart(self, ctx:PascalParser.FixedPartContext):
     return names, types, semantics, array_descriptions
 
 def visitRecordSection(self, ctx:PascalParser.RecordSectionContext):
-    names = self.visit(ctx.identifierList())
+    self.tree_down("fieds")
+    self.tree_down("type")
     t = self.visit(ctx.type_())
+    self.tree_up()
+    self.tree_down("names")
+    names = self.visit(ctx.identifierList())
+    self.tree_up()
     var_type, sem, array_description = t[0], t[1], None
     if isinstance(var_type, ir.ArrayType):
         array_description = t[2]
 
+    self.tree_up()
     types = [var_type for n in names]
     semantics = [sem for n in names]
     array_descriptions = [array_description for n in names]

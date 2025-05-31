@@ -1,5 +1,4 @@
 grammar Pascal;
-
 options {
     caseInsensitive = true;
 }
@@ -7,16 +6,13 @@ options {
 program
     : programHeading (INTERFACE)? block DOT EOF
     ;
-
 programHeading
     : PROGRAM identifier (LPAREN identifierList RPAREN)? SEMI
     | UNIT identifier SEMI
     ;
-
 identifier
     : IDENT
     ;
-
 block
     : (
         constantDefinitionPart
@@ -27,23 +23,18 @@ block
         | IMPLEMENTATION
     )* compoundStatement
     ;
-
 usesUnitsPart
     : USES identifierList SEMI
     ;
-
 constantDefinitionPart
     : CONST (constantDefinition SEMI)+
     ;
-
 constantDefinition
     : identifier EQUAL constant
     ;
-
 constantChr
     : CHR LPAREN unsignedInteger RPAREN
     ;
-
 constant
     : unsignedNumber
     | sign unsignedNumber
@@ -52,179 +43,139 @@ constant
     | string
     | constantChr
     ;
-
 unsignedNumber
     : unsignedInteger
     | unsignedReal
     ;
-
 unsignedInteger
     : NUM_INT
     ;
-
 unsignedReal
     : NUM_REAL
     ;
-
 sign
     : PLUS
     | MINUS
     ;
-
 bool_
     : TRUE
     | FALSE
     ;
-
 string
     : STRING_LITERAL
     ;
-
 typeDefinitionPart
     : TYPE (typeDefinition SEMI)+
     ;
-
 typeDefinition
     : identifier EQUAL (type_ | functionType)
     ;
-
 functionType
     : FUNCTION (formalParameterList)? (COLON resultType)?
     ;
-
 type_
     : simpleType
     | structuredType
     | pointerType
     ;
-
 simpleType
     : scalarType
     | subrangeType
     | typeIdentifier
     | stringtype
     ;
-
 scalarType
     : LPAREN identifierList RPAREN
     ;
-
 subrangeType
     : constant DOTDOT constant
     ;
-
 typeIdentifier
     : identifier
     | (CHAR | BOOLEAN | INTEGER | REAL | STRING)
     ;
-
 structuredType
     : arrayType
     | recordType
     ;
-
 stringtype
     : STRING LBRACK (identifier | unsignedNumber) RBRACK
     ;
-
 arrayType
     : ARRAY LBRACK typeList RBRACK OF componentType
     | ARRAY LBRACK2 typeList RBRACK2 OF componentType
     ;
-
 typeList
     : indexType (COMMA indexType)*
     ;
-
 indexType
     : simpleType
     ;
-
 componentType
     : type_
     ;
-
 recordType
     : RECORD fieldList? END
     ;
-
 fieldList
     : fixedPart
     ;
-
 fixedPart
     : recordSection (SEMI recordSection)*
     ;
-
 recordSection
     : identifierList COLON type_
     ;
-
 baseType
     : simpleType
     ;
-
 pointerType
     : POINTER typeIdentifier
     ;
-
 variableDeclarationPart
     : VAR variableDeclaration (SEMI variableDeclaration)* SEMI
     ;
-
 variableDeclaration
     : identifierList COLON type_
     ;
-
 functionDeclarationPart
     : functionDeclaration SEMI
     ;
-
 formalParameterList
     : LPAREN formalParameterSection (SEMI formalParameterSection)* RPAREN
     ;
-
 formalParameterSection
     : parameterGroup
     | VAR parameterGroup
     | FUNCTION parameterGroup
     ;
-
 parameterGroup
     : identifierList COLON typeIdentifier
     ;
-
 identifierList
     : identifier (COMMA identifier)*
     ;
-
 constList
     : constant (COMMA constant)*
     ;
-
 functionDeclaration
     : FUNCTION identifier (formalParameterList)? (COLON resultType)? SEMI block
     ;
-
 resultType
     : typeIdentifier
     ;
-
 statement
     : simpleStatement
     | structuredStatement
     ;
-
 simpleStatement
     : assignmentStatement
     | functionDesignator
     | emptyStatement_
     ;
-
 assignmentStatement
     : variable ASSIGN expression
     ;
-
 variable
     : (AT identifier | identifier) (
         LBRACK expression (COMMA expression)* RBRACK
@@ -232,19 +183,15 @@ variable
         | POINTER
     )*
     ;
-
 expression
     : shiftExpression (relationaloperator shiftExpression)?
     ;
-
 shiftExpression
     : simpleExpression (shiftOperator shiftExpression)?
     ;
-
 shiftOperator
     : SHL | SHR
     ;
-
 relationaloperator
     : EQUAL
     | NOT_EQUAL
@@ -254,21 +201,17 @@ relationaloperator
     | GT
     | IN
     ;
-
 simpleExpression
     : term (additiveoperator simpleExpression)?
     ;
-
 additiveoperator
     : PLUS
     | MINUS
     | OR
     ;
-
 term
     : signedFactor (multiplicativeoperator term)?
     ;
-
 multiplicativeoperator
     : STAR
     | SLASH
@@ -276,11 +219,9 @@ multiplicativeoperator
     | MOD
     | AND
     ;
-
 signedFactor
     : (PLUS | MINUS)? factor
     ;
-
 factor
     : variable
     | LPAREN expression RPAREN
@@ -289,90 +230,70 @@ factor
     | NOT factor
     | bool_
     ;
-
 unsignedConstant
     : unsignedNumber
     | constantChr
     | string
     | NIL
     ;
-
 functionDesignator
     : identifier LPAREN parameterList RPAREN
     ;
-
 parameterList
     : actualParameter (COMMA actualParameter)*
     ;
-
 elementList
     : element (COMMA element)*
     |
     ;
-
 element
     : expression (DOTDOT expression)?
     ;
-
 actualParameter
     : expression parameterwidth*
     ;
-
 parameterwidth
     : COLON expression
     ;
-
 emptyStatement_
     :
     ;
-
 structuredStatement
     : compoundStatement
     | conditionalStatement
     | repetetiveStatement
     ;
-
 compoundStatement
     : BEGIN statements END
     ;
-
 statements
     : statement (SEMI statement)*
     ;
-
 conditionalStatement
     : ifStatement
     ;
-
 ifStatement
     : IF expression THEN statement (ELSE statement)?
     ;
-
 repetetiveStatement
     : whileStatement
     | forStatement
     ;
-
 whileStatement
     : WHILE expression DO statement
     ;
-
 forStatement
     : FOR identifier ASSIGN forList DO statement
     ;
-
 forList
     : initialValue (TO | DOWNTO) finalValue
     ;
-
 initialValue
     : expression
     ;
-
 finalValue
     : expression
     ;
-
 AND          : 'AND';
 ARRAY        : 'ARRAY';
 BEGIN        : 'BEGIN';
@@ -442,10 +363,8 @@ STRING       : 'STRING';
 IMPLEMENTATION: 'IMPLEMENTATION';
 TRUE         : 'TRUE';
 FALSE        : 'FALSE';
-
 SHL          : 'SHL';
 SHR          : 'SHR';
-
 WS           : [ \t\r\n]+ -> skip;
 COMMENT_1    : '(*' .*? '*)' -> skip;
 COMMENT_2    : '{' .*? '}' -> skip;

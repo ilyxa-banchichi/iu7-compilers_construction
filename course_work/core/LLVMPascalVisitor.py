@@ -20,6 +20,7 @@ from core.functions.WhileStatement import *
 from core.functions.Records import *
 from core.functions.Arrays import *
 from core.functions.Functions import *
+from core.ast import *
 from core.TypeCast import *
 
 class LLVMPascalVisitor(PascalVisitor):
@@ -34,6 +35,15 @@ class LLVMPascalVisitor(PascalVisitor):
         self.records = {}
         self.arrays = {}
         self.error_listener = error_listener
+
+    def tree_down(self, value):
+        print(value)
+        node = AstNode(self.tree, value)
+        self.tree.child.append(node)
+        self.tree = node
+
+    def tree_up(self):
+        self.tree = self.tree.parent
 
     def sizeof(self, typ: ir.Type, builder: ir.IRBuilder) -> ir.Value:
         null_ptr = ir.Constant(typ, None)
@@ -73,6 +83,7 @@ class LLVMPascalVisitor(PascalVisitor):
         raise Exception()
 
     def visitProgram(self, ctx):
+        self.tree = AstNode(None, "program")
         self.currentFunction.append("main")
         self.builder.append(ir.IRBuilder(self.symbolTable[self.getCurrentFunction()][0].append_basic_block('entry')))
         self.symbolTable.enter_scope()
@@ -84,7 +95,23 @@ class LLVMPascalVisitor(PascalVisitor):
 
         return str(self.module)
 
+    def visitSimpleStatement(self, ctx:PascalParser.SimpleStatementContext):
+        if not ctx.emptyStatement_():
+            self.tree_down(f"\<\<statement line: {ctx.start.line}\>\>")
+            c = self.visitChildren(ctx)
+            self.tree_up()
+        else:
+            c = self.visitChildren(ctx)
+        return c
+
+    def visitCompoundStatement(self, ctx:PascalParser.CompoundStatementContext):
+        self.tree_down(f"\<\<block\>\>")
+        c =  self.visitChildren(ctx)
+        self.tree_up()
+        return c
+
     def visitTypeDefinition(self, ctx:PascalParser.TypeDefinitionContext):
+        self.tree_down("\<\<type def\>\>")
         identifier = self.visit(ctx.identifier())
         if identifier in PascalTypes.strToType:
             self.add_error(ctx, f"Попытка переопределить тип {identifier}")
@@ -106,14 +133,28 @@ class LLVMPascalVisitor(PascalVisitor):
             self.add_error(ctx, f"Unsupported")
         else:
             self.add_error(ctx, f"Incorrect type definition")
+        self.tree_up()
 
     def visitFunctionDeclaration(self, ctx:PascalParser.FunctionDeclarationContext):
+        self.tree_down("\<\<function declaration\>\>")
+
+        self.tree_down("\<\<name\>\>")
         identifier = self.visit(ctx.identifier())
+        self.tree_up()
+
         resultType, resultSemantic = ir.VoidType(), None
+        self.tree_down("\<\<return type\>\>")
         if ctx.resultType():
             resultType, resultSemantic = self.visit(ctx.resultType())
+        else:
+            self.tree_down("void")
+            self.tree_up()
 
+        self.tree_up()
+
+        self.tree_down("\<\<params\>\>")
         names, types, semantics, modifiers, arr_descs = self.visit(ctx.formalParameterList())
+        self.tree_up()
 
         funcType = ir.FunctionType(resultType, types)
         function = ir.Function(self.module, funcType, name=identifier)
@@ -158,6 +199,7 @@ class LLVMPascalVisitor(PascalVisitor):
         self.builder.pop()
         self.currentFunction.pop()
 
+        self.tree_up()
         return str(self.module)
 
     def visitFormalParameterList(self, ctx:PascalParser.FormalParameterListContext):
@@ -191,8 +233,12 @@ class LLVMPascalVisitor(PascalVisitor):
         return names, types, semantics, modifiers, arr_descs
 
     def visitParameterGroup(self, ctx:PascalParser.ParameterGroupContext):
-        names = self.visit(ctx.identifierList())
+        self.tree_down("\<\<type\>\>")
         t = self.visit(ctx.typeIdentifier())
+        self.tree_up()
+        self.tree_down("\<\<names\>\>")
+        names = self.visit(ctx.identifierList())
+        self.tree_up()
         var_type, sem, arr_desc = t[0], t[1], None
         if isinstance(var_type, ir.ArrayType):
             arr_desc = t[2]
@@ -203,17 +249,24 @@ class LLVMPascalVisitor(PascalVisitor):
         return names, types, semantics, arr_descs
 
     def visitFunctionDesignator(self, ctx:PascalParser.FunctionDesignatorContext):
+        self.tree_down("\<\<function call\>\>")
+        self.tree_down("\<\<function\>\>")
         identifier = self.visit(ctx.identifier())
+        self.tree_up()
+        self.tree_down("\<\<args\>\>")
         if identifier == "writeln":
-            return writeln(self, ctx)
+            f = writeln(self, ctx)
         elif identifier == "write":
-            return write(self, ctx)
+            f =  write(self, ctx)
         elif identifier == "new":
-            return new(self, ctx)
+            f =  new(self, ctx)
         elif identifier == "dispose":
-            return new(self, ctx)
+            f =  new(self, ctx)
         else:
-            return callFunction(identifier, self, ctx)
+            f =  callFunction(identifier, self, ctx)
+        self.tree_up()
+        self.tree_up()
+        return f
 
     def visitRecordType(self, ctx:PascalParser.RecordTypeContext):
         return visitRecordType(self, ctx)
@@ -225,12 +278,17 @@ class LLVMPascalVisitor(PascalVisitor):
         return visitRecordSection(self, ctx)
 
     def visitArrayType(self, ctx:PascalParser.ArrayTypeContext):
+        self.tree_down("\<\<arr def\>\>")
+        self.tree_down("\<\<of type\>\>")
         c = self.visit(ctx.componentType())
+        self.tree_up()
         componentType, semantic = c[0], c[1]
 
         sizes = []
         description = []
+        self.tree_down("\<\<size from to\>\>")
         typeList = self.visit(ctx.typeList())
+        self.tree_up()
         for t in typeList:
             if not isinstance(t[0], ir.Constant) or not isinstance(t[1], ir.Constant):
                 self.add_error(ctx, "Размерность массива должна задаваться константой")
@@ -248,6 +306,7 @@ class LLVMPascalVisitor(PascalVisitor):
         if isinstance(componentType, ir.ArrayType):
             description.extend(c[2])
 
+        self.tree_up()
         return PascalTypes.getArrayType(componentType, sizes), semantic, description
 
     def visitTypeList(self, ctx:PascalParser.TypeListContext):
@@ -286,10 +345,15 @@ class LLVMPascalVisitor(PascalVisitor):
         if not ctx.type_():
             return
 
+        self.tree_down("\<\<var def\>\>")
+        self.tree_down("\<\<type\>\>")
         t = self.visit(ctx.type_())
+        self.tree_up()
         varType = t[0]
         semanticLabel = t[1]
+        self.tree_down("\<\<names\>\>")
         varNames = self.visit(ctx.identifierList())
+        self.tree_up()
         for varName in varNames:
             allocaInstance = self.getBuilder().alloca(varType, name=varName)
             try:
@@ -300,13 +364,17 @@ class LLVMPascalVisitor(PascalVisitor):
             except Exception as e:
                 self.add_error(ctx, str(e))
 
+        self.tree_up()
+
     def visitConstantDefinition(self, ctx:PascalParser.ConstantDefinitionContext):
+        self.tree_down("\<\<constant block\>\>")
         ident = self.visit(ctx.identifier())
         val = self.visit(ctx.constant())
         try:
             self.symbolTable[ident] = val
         except Exception as e:
             self.add_error(ctx, str(e))
+        self.tree_up()
 
     def visitConstant(self, ctx:PascalParser.ConstantContext):
         if ctx.string():
@@ -336,22 +404,29 @@ class LLVMPascalVisitor(PascalVisitor):
 
     def visitTypeIdentifier(self, ctx:PascalParser.TypeIdentifierContext):
         text = ctx.getText()
+        self.tree_down(text)
         try:
             type = PascalTypes.strToType[text]
         except Exception as e:
             self.add_error(ctx, f"Несуществующий тип {text}")
+        self.tree_up()
         return type
 
     def visitAssignmentStatement(self, ctx:PascalParser.AssignmentStatementContext):
+        self.tree_down("=")
         (variable, varSemantic) = self.visit(ctx.variable())
         (value, valSemantic) = self.visit(ctx.expression())
         if not isinstance(variable.type, ir.PointerType):
             self.add_error(ctx, "Нельзя присвоить значение константе")
 
         if valSemantic == "nullptr":
+            self.tree_down("null_ptr")
             value = self.null_ptr(variable.type.pointee.pointee)
+            self.tree_up()
         else:
             value = self.load_if_pointer(value)
+
+        self.tree_up()
 
         if not isinstance(self.pointee_type(variable), ir.ArrayType) and not isinstance(self.pointee_type(variable), ir.PointerType):
             value = castStoredValue(ctx, self, variable, value)
@@ -388,25 +463,36 @@ class LLVMPascalVisitor(PascalVisitor):
         return visitIfStatement(self, ctx)
 
     def visitSimpleExpression(self, ctx:PascalParser.SimpleExpressionContext):
-        left, lSemantic = self.visit(ctx.term())
+        operator = None
         if ctx.additiveoperator():
-
-            right, rSemantic = self.visit(ctx.simpleExpression())
             operator = self.visit(ctx.additiveoperator())
+            self.tree_down(operator.getText())
+
+        left, lSemantic = self.visit(ctx.term())
+        if operator:
+            right, rSemantic = self.visit(ctx.simpleExpression())
+            self.tree_up()
 
             return addOperator(ctx, self, left, lSemantic, right, rSemantic, operator)
+        # else:
+        #     self.tree_down(operator.getText())
 
         return left, lSemantic
 
     def visitShiftExpression(self, ctx:PascalParser.ShiftExpressionContext):
-        left, lSemantic = self.visit(ctx.simpleExpression())
+        operator = None
         if ctx.shiftOperator():
+            operator = self.visit(ctx.shiftOperator())
+            self.tree_down(operator.getText())
+
+        left, lSemantic = self.visit(ctx.simpleExpression())
+        if operator:
             left = self.load_if_pointer(left)
             if lSemantic != PascalTypes.numericSemanticLabel or not isinstance(left.type, ir.IntType):
                 self.add_error(ctx, f"Cannot apply shift operator {operator} to not integer type")
 
-            operator = self.visit(ctx.shiftOperator())
             right, rSemantic = self.visit(ctx.shiftExpression())
+            self.tree_up()
 
             right = self.load_if_pointer(right)
             left, right = castValues(ctx, self, left, right)
@@ -419,29 +505,42 @@ class LLVMPascalVisitor(PascalVisitor):
         return left, lSemantic
 
     def visitExpression(self, ctx:PascalParser.ExpressionContext):
-        left, lSemantic = self.visit(ctx.shiftExpression(0))
+        operator = None
         if ctx.relationaloperator():
             operator = self.visit(ctx.relationaloperator())
+            self.tree_down(operator)
+
+        left, lSemantic = self.visit(ctx.shiftExpression(0))
+        if operator:
             right, rSemantic = self.visit(ctx.shiftExpression(1))
+            self.tree_up()
 
             return relOperator(ctx, self, left, lSemantic, right, rSemantic, operator)
 
         return left, lSemantic
 
     def visitTerm(self, ctx:PascalParser.TermContext):
-        left, lSemantic = self.visit(ctx.signedFactor())
-
+        operator = None
         if ctx.multiplicativeoperator():
-            right, rSemantic = self.visit(ctx.term())
             operator = self.visit(ctx.multiplicativeoperator())
+            self.tree_down(operator.getText())
+
+        left, lSemantic = self.visit(ctx.signedFactor())
+        if operator:
+            right, rSemantic = self.visit(ctx.term())
+            self.tree_up()
 
             return mulOperator(ctx, self, left, lSemantic, right, rSemantic, operator)
 
         return left, lSemantic
 
     def visitSignedFactor(self, ctx:PascalParser.SignedFactorContext):
+        if ctx.MINUS():
+            self.tree_down("\<\<negate\>\>")
+
         signedFactor, semantic = self.visitChildren(ctx)
         if ctx.MINUS():
+            self.tree_up()
             if isinstance(signedFactor, ir.Constant):
                 if not self.is_pointer(signedFactor):
                     if isinstance(signedFactor.type, ir.IntType):
@@ -462,7 +561,7 @@ class LLVMPascalVisitor(PascalVisitor):
                 self.add_error(ctx, "Cannot negate non-numeric type")
 
         return signedFactor, semantic
-    
+
     def visitUnsignedConstant(self, ctx:PascalParser.UnsignedConstantContext):
         if ctx.NIL():
             return "nullptr", "nullptr"
@@ -488,6 +587,11 @@ class LLVMPascalVisitor(PascalVisitor):
         return factor, semantic
 
     def visitVariable(self, ctx:PascalParser.VariableContext):
+        self.tree_down("\<\<var access\>\>")
+        if ctx.AT():
+            self.tree_down("\<\<ref\>\>")
+            self.tree_up()
+
         identifier = self.visit(ctx.identifier(0))
         modifiers = []
         ident_index = 1
@@ -496,11 +600,14 @@ class LLVMPascalVisitor(PascalVisitor):
             child = ctx.children[i]
             if isinstance(child, TerminalNode):
                 if child.symbol.type == PascalParser.DOT:
+                    self.tree_down("\<\<get field\>\>")
                     ind = self.visit(ctx.identifier(ident_index))
                     ident_index += 1
                     modifiers.append(("field", ind))
+                    self.tree_up()
 
                 elif child.symbol.type == PascalParser.LBRACK:
+                    self.tree_down("\<\<array access\>\>")
                     ind, _ = self.visit(ctx.expression(expr_index))
                     i_val = self.load_if_pointer(ind)
                     indices = [i_val]
@@ -512,9 +619,12 @@ class LLVMPascalVisitor(PascalVisitor):
                         expr_index += 1
                         indices.append(i_val)
                     modifiers.append(("array_access", indices))
+                    self.tree_up()
 
                 elif child.symbol.type == PascalParser.POINTER:
+                    self.tree_down("\<\<pointee\>\>")
                     modifiers.append(("pointer", None))
+                    self.tree_up()
 
         try:
             v = self.symbolTable[identifier]
@@ -549,6 +659,7 @@ class LLVMPascalVisitor(PascalVisitor):
             currentNode = self.getBuilder().store(currentNode, ptr)
             currentNode = ptr
 
+        self.tree_up()
         return currentNode, currentSemantic
 
     def visitIdentifierList(self, ctx:PascalParser.IdentifierListContext):
@@ -571,16 +682,31 @@ class LLVMPascalVisitor(PascalVisitor):
         return visitRelationaloperator(self, ctx)
 
     def visitIdentifier(self, ctx:PascalParser.IdentifierContext):
-        return ctx.IDENT().getText()
+        val = ctx.IDENT().getText()
+        self.tree_down(val)
+        self.tree_up()
+        return val
 
     def visitUnsignedInteger(self, ctx:PascalParser.UnsignedIntegerContext):
-        return visitUnsignedInteger(self, ctx)
+        val = visitUnsignedInteger(self, ctx)
+        self.tree_down(val[0].constant)
+        self.tree_up()
+        return val
 
     def visitUnsignedReal(self, ctx:PascalParser.UnsignedRealContext):
-        return visitUnsignedReal(self, ctx)
+        val = visitUnsignedReal(self, ctx)
+        self.tree_down(val[0].constant)
+        self.tree_up()
+        return val
 
     def visitBool_(self, ctx:PascalParser.Bool_Context):
-        return visitBool_(self, ctx)
+        val = visitBool_(self, ctx)
+        self.tree_down(val[0].constant)
+        self.tree_up()
+        return val
 
     def visitString(self, ctx:PascalParser.StringContext):
-        return visitString(self, ctx)
+        val = visitString(self, ctx)
+        self.tree_down(val[0].constant)
+        self.tree_up()
+        return val

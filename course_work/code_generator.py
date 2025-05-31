@@ -7,6 +7,7 @@ from antlr.PascalParser import PascalParser
 from core.LLVMPascalVisitor import LLVMPascalVisitor
 from core.Errors import SyntaxErrorListener
 from core.Errors import SemanticErrorListener
+from core.ast import *
 import traceback
 
 def generateIR(input_filename, output_dir) -> str:
@@ -42,6 +43,8 @@ def generateIR(input_filename, output_dir) -> str:
 
     print("Created " + output_filename)
     generator.save(output_filename)
+    print(generator.tree)
+    draw_ast_forest([generator.tree])
     return output_filename
 
 if __name__ == "__main__":
