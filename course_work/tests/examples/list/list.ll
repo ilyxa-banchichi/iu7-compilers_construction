@@ -138,28 +138,6 @@ while_body.1:
   store %"TNode"* %".102", %"TNode"** %"current"
   br label %"while_cond.1"
 while_exit.1:
-  %".105" = load %"TNode"*, %"TNode"** %"current"
-  %".106" = icmp ne %"TNode"* %".105", null
-  br i1 %".106", label %"then", label %"else"
-then:
-  %".108" = load %"TNode"*, %"TNode"** %"current"
-  %".109" = getelementptr %"TNode", %"TNode"* %".108", i32 0, i32 1
-  %".110" = load i16, i16* %".109"
-  %".111" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".111"
-  %".113" = getelementptr [4 x i8], [4 x i8]* %".111", i8 0, i8 0
-  %".114" = call i32 (i8*, ...) @"printf"(i8* %".113", i16 %".110")
-  br label %"end"
-else:
-  %".116" = load %"TNode"*, %"TNode"** %"current"
-  %".117" = getelementptr %"TNode", %"TNode"* %".116", i32 0, i32 1
-  %".118" = load i16, i16* %".117"
-  %".119" = alloca [4 x i8]
-  store [4 x i8] c"%hd\00", [4 x i8]* %".119"
-  %".121" = getelementptr [4 x i8], [4 x i8]* %".119", i8 0, i8 0
-  %".122" = call i32 (i8*, ...) @"printf"(i8* %".121", i16 %".118")
-  br label %"end"
-end:
   ret void
 }
 

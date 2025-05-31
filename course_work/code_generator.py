@@ -43,8 +43,7 @@ def generateIR(input_filename, output_dir) -> str:
 
     print("Created " + output_filename)
     generator.save(output_filename)
-    print(generator.tree)
-    draw_ast_forest([generator.tree])
+    draw_ast([generator.tree], filename=path.stem, directory=output_dir)
     return output_filename
 
 if __name__ == "__main__":

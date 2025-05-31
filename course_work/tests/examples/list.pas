@@ -68,9 +68,4 @@ begin
         printNode(ptr);
         current := current^.Next;
     end;
-
-    if current <> nil then
-        write(current^.Value)
-    else
-        write(current^.Value)
 end.

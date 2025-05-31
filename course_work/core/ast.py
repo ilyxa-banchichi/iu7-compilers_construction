@@ -16,7 +16,7 @@ class AstNode:
         self.parent = parent
         self.child = []
 
-def draw_ast_forest(trees: list[AstNode], filename="ast_forest"):
+def draw_ast(trees: list[AstNode], filename="ast", directory=''):
     dot = Digraph("AST", format="svg")
     id_gen = (f"n{i}" for i in itertools.count())
 
@@ -34,4 +34,4 @@ def draw_ast_forest(trees: list[AstNode], filename="ast_forest"):
     for tree in trees:
         add_node(dot, tree)
 
-    dot.render(filename, cleanup=True)
+    dot.render(filename, directory=directory, cleanup=True)

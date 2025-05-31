@@ -37,7 +37,6 @@ class LLVMPascalVisitor(PascalVisitor):
         self.error_listener = error_listener
 
     def tree_down(self, value):
-        print(value)
         node = AstNode(self.tree, value)
         self.tree.child.append(node)
         self.tree = node
