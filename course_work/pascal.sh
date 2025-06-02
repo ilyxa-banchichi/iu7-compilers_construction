@@ -65,3 +65,5 @@ if [ "$COMPILE_MODE" = true ]; then
 else
   python3 executor.py "$FILENAME" "$outdir"
 fi
+
+exit 0
